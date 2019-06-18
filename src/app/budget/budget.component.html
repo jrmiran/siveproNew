@@ -1,0 +1,73 @@
+<section class="content-header">
+</section>
+
+
+<section class="content">
+    <section class="invoice">
+        <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
+
+        <form [formGroup]="orderForm" novalidate>
+             <!--{{orderForm.value | json}}
+            {{orderForm.valid}}
+           {{clientsJuridicoObj}}-->
+            <!--First Row-->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header">
+                        <i class="fa fa-usd"></i> Novo Orçamento
+                    </h2>
+                </div>
+            </div>
+            <!--/First Row-->
+
+            <!--Second Row-->
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-user"></i> Tipo do Cliente:</h3>
+                        </div>
+                        <div class="form-group">
+                            <sivp-radio [options]="tipoCliente" formControlName="tCliente" (click)="validateField()"></sivp-radio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/Second Row-->
+            
+            <!--Third Row-->
+            <div class="row">
+                <sivp-primary-box [title]="'Data'">
+                    <sivp-date-picker formControlName="data"></sivp-date-picker>
+                </sivp-primary-box>
+
+                <sivp-primary-box [title]="'Cliente'" *ngIf="validateCliente && clientsFisicoObj">
+                    <sivp-auto-complete  *ngIf="orderForm.value.tCliente == 'FIS'" [options]= "clientsFisicoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>
+                    <sivp-auto-complete  *ngIf="orderForm.value.tCliente == 'LOJ'" [options]= "clientsJuridicoObj" formControlName="cliente"  [bco]="main" [typeInput]="Client"></sivp-auto-complete>
+                    <sivp-auto-complete  *ngIf="orderForm.value.tCliente == 'ARQ'" [options]= "clientsArquitetoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>
+                </sivp-primary-box>
+            </div>
+            <!--/Third Row-->
+
+            <!--Fourth Row-->
+            <div class="row">
+                    <sivp-primary-box  [title]="'Terceiro'" *ngIf="validateTerceiro" [ngStyle]="{'visibility':showTerceiros ? 'visible' : 'hidden'}">
+                        <sivp-auto-complete [options]="terceirosObj" formControlName="terceiro" [typeInput]="Terceiro" [bco]="main" #completo></sivp-auto-complete>
+                    </sivp-primary-box>
+                <sivp-primary-box [title]="'Vendedor'" *ngIf="validateVendedor" [ngStyle]="{'visibility':showVendedores ? 'visible' : 'hidden'}">
+                    <sivp-auto-complete [options]="vendedoresObj" formControlName="vendedor" [typeInput]="Vendor" [bco]="main"  #vendedores></sivp-auto-complete>
+                </sivp-primary-box>
+            </div>
+            <!--/Fourth Row-->
+        </form>
+
+
+        <div class="row">
+            <div class="col-xs-12">
+                <a [routerLink]="['/newBudget2']" [queryParams]="formout2" class="btn btn-primary pull-right" [class.disabled]="!orderForm.valid"> Próximo <i class="fa fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </section>
+</section>

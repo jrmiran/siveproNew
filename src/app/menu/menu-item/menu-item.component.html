@@ -1,0 +1,19 @@
+
+<!--<a href="#">
+    <i class="fa fa-files-o"></i> <span>Orçamento</span>
+    <span class="pull-right-container">
+        <i class="fa fa-angle-left pull-right"></i>
+    </span>
+</a>-->   
+
+    <li class="treeview">
+            <a href="#">
+              <i class="fa fa-files-o"></i> <span>{{name}}</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+                <li *ngFor="let subItem of subItems; index as i"><a [routerLink]="[this.routers[i]]"><i class="fa fa-circle-o"></i> {{subItem}}</a></li>
+            </ul>
+    </li>

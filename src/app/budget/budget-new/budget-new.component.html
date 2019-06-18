@@ -1,0 +1,162 @@
+<section class="content" *ngIf="!items">
+    <p> CARREGANDO... </p>
+</section>
+
+<section class="content" *ngIf="items">
+    <section class="invoice">
+
+
+
+        <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
+        <form [formGroup]="orderForm" novalidate>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header">
+                        <i class="fa fa-usd"></i> Novo Orçamento
+                    </h2>
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Itens:</h3>
+                        </div>
+                        <sivp-table [name]="''" [headers]="['Id', 'Item']" [datas]="items" [ids]="['id','descricao']" [bnc]="main" [buttonOption]="true" [check]="checks" [comodos]="comods" [enableButton]="enableButton">
+                        </sivp-table>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Novo Cômodo:</h3>
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" formControlName="inputPlace" value="ddd" onblur="this.value = ''">
+                            <span class="input-group-btn">
+                                <button (click)="addPlace(orderForm.value.inputPlace)" type="button" class="btn btn-info btn-flat">Add</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-home"></i>
+                            <h3 class="box-title">Cômodos</h3>
+                        </div>
+
+                        <div *ngFor="let item of cbo.controls; let i = index" class="checkbox" formArrayName="checkBoxOption" (click)="setValue()">
+                            <label>
+                                <input (click)="setValueCheckBox(i)" type="checkbox" [formControlName]="i"> {{checks[i]}}
+                            </label>
+
+                            <a *ngIf="i > 0" class="btn text-right" (click)="removePlace2(i)">
+                                <i class="fa fa-trash"></i> Remover
+                            </a>
+                        </div>
+
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title"><i class="fa fa-pencil"></i> Orçamento:</h3>
+                    </div>
+                    <sivp-table [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo', 'necessario', 'valorUnitario', 'valorTotal']" [budgetTable]="true" [bnc]="main">
+                    </sivp-table>
+                </div>
+            </div>
+
+            <div class="col-sm-12 col-xs-12" *ngIf="currentItem >= 0">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title"><i class="fa fa-pencil"></i> Itens:</h3>
+                    </div>
+
+                    <div class="row">
+                        <label>
+                            <input (click)="setPedra()" type="checkbox"> Mármore/Granito
+                        </label>
+                    </div>
+
+                    <div class="row">
+                        <sivp-input-container [label]="'Quantidade'" class="form-group col-sm-3 col-xs-12">
+                            <input type="text" class="form-control" formControlName="txtQtd" placeholder="Qtd">
+                        </sivp-input-container>
+
+                        <sivp-input-container [label]="'Necessário'" class="form-group col-sm-3 col-xs-12">
+                            <input type="text" class="form-control" formControlName="txtNecessario" placeholder="Necessário">
+                        </sivp-input-container>
+
+                        <sivp-input-container [label]="'Medida'" class="form-group col-sm-3 col-xs-12">
+                            <input type="text" class="form-control" formControlName="txtMedida" placeholder="Medida">
+                        </sivp-input-container>
+
+                        <sivp-input-container [label]="'Valor Unitário (R$)'" class="form-group col-sm-3 col-xs-12">
+                            <input type="text" class="form-control" formControlName="txtValor" placeholder="Valor Unitário" currencyMask [(ngModel)]="value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                        </sivp-input-container>
+                    </div>
+
+                    <div class="row">
+                        <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
+                            <textarea cols="100" rows="7" placeholder="Descrição" formControlName="txtDetalhe"></textarea>
+                        </sivp-input-container>
+                    </div>
+
+                    <div class="row" *ngIf="pedraOption">
+                        <sivp-input-container [label]="'cm'" class="form-group col-sm-2 col-xs-12">
+                            <input type="text" class="form-control" formControlName="txtMedida1" placeholder="cm">
+                        </sivp-input-container>
+
+                        <div class="col-sm-1 col-xs-12">
+                            <p align="center">x</p>
+                        </div>
+
+                        <sivp-input-container [label]="'cm'" class="form-group col-sm-2 col-xs-12">
+                            <input type="text" class="form-control" formControlName="txtMedida2" placeholder="cm">
+                        </sivp-input-container>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <a (click)="changeItem()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Alterar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-xs-3">
+                    <sivp-input-container [label]="'desconto'" class="form-group pull-left">
+                        <input type="text" class="form-control" formControlName="txtDiscount" placeholder="Desconto (%)">
+                    </sivp-input-container>
+                </div>
+                <div class="col-xs-3">
+                    <a (click)="applyDiscount()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Aplicar Desconto </a>
+                </div>
+                <div class="col-xs-6">
+                    <a (click)="test()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Processar Orçamento
+                    </a>
+                </div>
+
+                <div class="col-xs-6">
+                    <a (click)="budgetInsertionTest()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> TESTE QUERY
+                    </a>
+                </div>
+
+            </div>
+        </form>
+    </section>
+</section>

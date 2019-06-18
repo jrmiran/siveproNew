@@ -1,0 +1,27 @@
+<h1 class="text-center display-5"> {{name}} </h1>
+<input *ngIf="searchBar=='true'" class="form-control" type="text" name="search" [(ngModel)]="filter" placeholder="Digite sua busca">
+<table class="table table-hover">
+
+    <caption>{{name}}</caption>
+    <thead>
+        <tr>
+            <th *ngFor="let header of headers" scope="col">{{header}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of datas | filter:filter | paginate: {itemsPerPage: 10, currentPage: p}; index as j" (click)="eventRow(j)">
+            <td *ngFor="let id of ids; index as i">
+                <span *ngIf="id == 'budgetId'">
+                    <a href="#">{{data[id]}}</a>
+                </span>
+                <span *ngIf="id != 'budgetId'">
+                    {{data[id]}}
+                </span>
+            </td>
+            <td *ngIf="buttonOption">
+                <button (click)="addBudgetItem(data['id'], data['descricao'])" type="button" class="btn btn-primary" [class.disabled]="!enableButton">Add</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<pagination-controls class="text-center" (pageChange)="p = $event"></pagination-controls>
