@@ -31,7 +31,8 @@ export class CreatePdfComponent implements OnInit {
     
     rows: BudgetPdf[] = [];
     
-    public gerarPDF(items: BudgetAmbient[], mainBudget: BudgetModel) {
+    public gerarPDF(items: BudgetAmbient[], mainBudget: BudgetModel, budgetNumber: any) {
+        var self = this;
         var doc = new jsPDF('p', 'pt', 'a4');
         var item = this.item;
         var rows = this.rows;
@@ -172,7 +173,7 @@ export class CreatePdfComponent implements OnInit {
         
         //********************************************************** BUDGET NUMBER AND DATE *******************************************************
         lineTop();
-        doc.autoTable(columnsInfo1, [{budgetNumber: "Orçamento No.: 2059", date: "Data: " + mainBudget.date, c1:"", c4:""}], {theme: 'plain', 
+        doc.autoTable(columnsInfo1, [{budgetNumber: "Orçamento No.: " + budgetNumber, date: "Data: " + mainBudget.date, c1:"", c4:""}], {theme: 'plain', 
             columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             budgetNumber: {cellWidth: 400, fontStyle: 'bold', halign: "left"},
@@ -272,9 +273,9 @@ export class CreatePdfComponent implements OnInit {
                             desc: {cellWidth: 103, fontStyle: 'bold'},
                             med: {cellWidth: 65, fontStyle: 'bold'},
                             det: {cellWidth: 115, fontStyle: 'bold'},
-                            unit: {cellWidth: 55, fontStyle: 'bold'},
-                            valor: {cellWidth: 55, fontStyle: 'bold'},
-                            nec: {cellWidth: 88, fontStyle: 'bold'},
+                            unit: {cellWidth: 60, fontStyle: 'bold'},
+                            valor: {cellWidth: 60, fontStyle: 'bold'},
+                            nec: {cellWidth: 78, fontStyle: 'bold'},
                             c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                           },
             styles: {halign: "center"},   
@@ -288,7 +289,7 @@ export class CreatePdfComponent implements OnInit {
         //******************************************************* BUDGET ITEMS + AMBIENT CELLS **************************************************
         items.forEach(function(data){
             row[0].cmd  = data.comodo;
-            row[0].value = "Total Ambiente: " + numberToReal(data.valorTotalAmbiente);
+            row[0].value = "Total Ambiente: " + numberToReal(data.valorTotalAmbiente) + "   ";
             
             //********************************************************** AMBIENT CELL **********************************************************
             console.log("AMBIENT CELL");
@@ -302,8 +303,8 @@ export class CreatePdfComponent implements OnInit {
                 item.desc = data.item[count];
                 item.med = data.medida[count];
                 item.det = data.detalhe[count];
-                item.unit = "";
-                item.valor = numberToReal(data.valor[count]);
+                item.unit = numberToReal(data.valor[count]);;
+                item.valor = numberToReal(data.valorTotal[count]);
                 item.nec = data.necessario[count];
                 item.comodo = data.comodo;
                 item.valorTotalItem = data.valorTotal[count];
@@ -335,9 +336,9 @@ export class CreatePdfComponent implements OnInit {
                             desc: {cellWidth: 103, fontStyle: 'bold'},
                             med: {cellWidth: 65, fontStyle: 'bold'},
                             det: {cellWidth: 115, fontStyle: 'bold'},
-                            unit: {cellWidth: 55, fontStyle: 'bold'},
-                            valor: {cellWidth: 55, fontStyle: 'bold'},
-                            nec: {cellWidth: 84, fontStyle: 'bold'},
+                            unit: {cellWidth: 60, fontStyle: 'bold'},
+                            valor: {cellWidth: 60, fontStyle: 'bold'},
+                            nec: {cellWidth: 74, fontStyle: 'bold'},
                             c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
             lineBottom();
@@ -350,7 +351,7 @@ export class CreatePdfComponent implements OnInit {
 
         //********************************************************* AMOUNT **********************************************************************
         console.log("AMOUNT");
-        doc.autoTable(columnTotal, [{valor: "Total: " + numberToReal(totalBudget)}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+        doc.autoTable(columnTotal, [{valor: "Total: " + numberToReal(totalBudget) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
@@ -361,7 +362,7 @@ export class CreatePdfComponent implements OnInit {
         if(mainBudget.discount > 0){
             console.log("DISCOUNT");
             //****************************************************** DISCOUNT ***************************************************************
-            doc.autoTable(columnTotal, [{valor: "Desconto: " + mainBudget.discount + "%"}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            doc.autoTable(columnTotal, [{valor: "Desconto: " + mainBudget.discount + "%   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.75, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
@@ -370,7 +371,7 @@ export class CreatePdfComponent implements OnInit {
             
             //****************************************************** VALUE WITH DISCOUNT ***************************************************************
             console.log("VALUE WITH DISCOUNT");
-            doc.autoTable(columnTotal, [{valor: "Valor Final: " + numberToReal(mainBudget.valorComDesconto)}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            doc.autoTable(columnTotal, [{valor: "Valor Final: " + numberToReal(mainBudget.valorComDesconto) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});

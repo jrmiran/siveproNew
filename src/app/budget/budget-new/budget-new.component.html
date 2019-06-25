@@ -1,8 +1,8 @@
-<section class="content" *ngIf="!items">
+<section class="content" *ngIf="!loadPage">
     <p> CARREGANDO... </p>
 </section>
 
-<section class="content" *ngIf="items">
+<section class="content" *ngIf="loadPage">
     <section class="invoice">
 
 
@@ -108,7 +108,7 @@
 
                     <div class="row">
                         <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
-                            <textarea cols="100" rows="7" placeholder="Descrição" formControlName="txtDetalhe"></textarea>
+                            <textarea class="md-textarea form-control" rows="5" placeholder="Descrição" formControlName="txtDetalhe"></textarea>
                         </sivp-input-container>
                     </div>
 
@@ -136,26 +136,32 @@
                 </div>
             </div>
 
-
-            <div class="row">
-                <div class="col-xs-3">
-                    <sivp-input-container [label]="'desconto'" class="form-group pull-left">
-                        <input type="text" class="form-control" formControlName="txtDiscount" placeholder="Desconto (%)">
+            <div class="col-sm-12 col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title"><i class="fa fa-pencil"></i> Complemento:</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
+                        <textarea class="md-textarea form-control" rows="5" placeholder="Observação" formControlName="txtObservacao"></textarea>
                     </sivp-input-container>
                 </div>
-                <div class="col-xs-3">
-                    <a (click)="applyDiscount()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Aplicar Desconto </a>
-                </div>
-                <div class="col-xs-6">
-                    <a (click)="test()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Processar Orçamento
-                    </a>
-                </div>
 
-                <div class="col-xs-6">
-                    <a (click)="budgetInsertionTest()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> TESTE QUERY
-                    </a>
+                <div class="row">
+                    <div class="col-xs-3">
+                        <sivp-input-container [label]="'desconto'" class="form-group pull-left">
+                            <input type="text" class="form-control" formControlName="txtDiscount" placeholder="Desconto (%)">
+                        </sivp-input-container>
+                    </div>
+                    <div class="col-xs-3">
+                        <a (click)="applyDiscount()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Aplicar Desconto </a>
+                    </div>
+                    <div class="col-xs-6">
+                        <a (click)="budgetInsertionTest()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Processar Orçamento
+                        </a>
+                    </div>
                 </div>
-
             </div>
         </form>
     </section>

@@ -15,9 +15,13 @@ export class BudgetTableComponent implements OnInit {
     buds: Object[];
     flag: boolean = true;
     n: number;
+    budgetTest: Object[];
     
     ngOnInit() {
-       this.n = 1; this.appService.budgets().subscribe(budgets => this.buds = budgets);
+        var self = this;
+        
+        this.n = 1; 
+        this.appService.budgets().subscribe(budgets => this.buds = budgets);
         
         interval(1000).pipe(
             map((x) => {

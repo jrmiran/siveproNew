@@ -13,6 +13,7 @@ import { NgControl } from '@angular/forms';
 import {Client} from '../../clients/client.model';
 import {Terceiro} from '../../clients/terceiro.model';
 import {BudgetInsertion} from '../budget-insertion.model';
+import {Observable} from "rxjs/Observable";
 
 @Component({
   selector: 'sivp-budget-new',
@@ -23,6 +24,38 @@ export class BudgetNewComponent implements OnInit {
     
   constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute) { }
     
+    
+    
+    qtds: number[] = [];
+    cods: string[] = [];
+    itemss: string[] = [];
+    detalhes: string[] = [];
+    medidas: string[] = [];
+    comodos: string[] = [];
+    necessarios: string[] = [];
+    valoresUnitarios: number[] = [];
+    valoresTotais: number[] = [];
+    descontos: number[] = [];
+    valoresComDesconto: number[] = [];
+    
+    qtdsString: string = "(";
+    codsString: string = "(";
+    itemsString: string = "(";
+    detalhesString: string = "(";
+    medidasString: string = "(";
+    comodosString: string = "(";
+    necessariosString: string = "(";
+    valoresUnitariosString: string = "(";
+    valoresTotaisString: string = "(";
+    descontosString: string = "(";
+    valoresComDescontoString: string = "(";
+    
+    
+    listTest: string[] = ['a','b','c','d'];
+    listTestString: string = "(";
+    insertedBudget: any;
+    
+    loadPage: boolean = false;
     orderForm: FormGroup;
     items: Object[];
     formin: {type: "", client: "", vendor: "", thirdy: "", date: ""};
@@ -131,7 +164,7 @@ export class BudgetNewComponent implements OnInit {
     
     test(){
         this.joinBudget();
-        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
+        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget, this.insertedBudget);
     }
     
     removePlace2(i: number){
@@ -215,6 +248,8 @@ export class BudgetNewComponent implements OnInit {
         console.log(this.mainBudget.valorTotal);
         console.log(this.mainBudget.valorComDesconto);
     }
+    
+    
 
     joinBudget(){
         var flag: boolean = false;
@@ -286,6 +321,79 @@ export class BudgetNewComponent implements OnInit {
         this.bInsertion.vendedor_id = this.client.id_vendor;//this.vendedor_id;
     }
     
+    
+    convertBudgetToString(): Promise<any>{
+        var self = this;
+        
+        return new Promise(function(resolve, reject){
+            self.appService.budgetInsertionTest(self.convertBInsertionToString()).subscribe(function(data){
+            self.insertedBudget = data['insertId'];
+        
+            self.budgets.forEach(function(data){
+                self.qtds.push(data.qtd);
+                self.cods.push(data.cod);
+                self.itemss.push(data.item);
+                self.detalhes.push(data.detalhe);
+                self.medidas.push(data.medida);
+                self.comodos.push(data.comodo);
+                self.necessarios.push(data.necessario);
+                self.valoresUnitarios.push(data.valorUnitario);
+                self.valoresTotais.push(data.valorTotal);
+                self.descontos.push(data.desconto);
+                self.valoresComDesconto.push(data.valorComDesconto);
+            });
+        
+            self.fillStringToQuery(self.qtds, self.qtdsString, self.insertedBudget)
+                .then(function(response){
+                        self.qtdsString = response;
+                });
+            self.fillStringToQuery(self.cods, self.codsString, self.insertedBudget)
+                .then(function(response){
+                        self.codsString = response;
+                });
+            self.fillStringToQuery(self.itemss, self.itemsString, self.insertedBudget)
+                .then(function(response){
+                        self.itemsString = response;
+                });
+            self.fillStringToQuery(self.detalhes, self.detalhesString, self.insertedBudget)
+                .then(function(response){
+                        self.detalhesString = response;
+                });
+            self.fillStringToQuery(self.medidas, self.medidasString, self.insertedBudget)
+                .then(function(response){
+                        self.medidasString = response;
+                });
+            self.fillStringToQuery(self.comodos, self.comodosString, self.insertedBudget)
+                .then(function(response){
+                        self.comodosString = response;
+                });
+            self.fillStringToQuery(self.necessarios, self.qtdsString, self.insertedBudget)
+                .then(function(response){
+                        self.necessariosString = response;
+                });
+            self.fillStringToQuery(self.valoresUnitarios, self.valoresUnitariosString, self.insertedBudget)
+                .then(function(response){
+                        self.valoresUnitariosString = response;
+                });
+            self.fillStringToQuery(self.valoresTotais, self.valoresTotaisString, self.insertedBudget)
+                .then(function(response){
+                        self.valoresTotaisString = response;
+                });
+            self.fillStringToQuery(self.descontos, self.descontosString, self.insertedBudget)
+                .then(function(response){
+                        self.descontosString = response;
+                });
+            self.fillStringToQuery(self.valoresComDesconto, self.valoresComDescontoString, self.insertedBudget)
+                .then(function(response){
+                        self.valoresComDescontoString = response;
+                });
+                resolve("convertBudgetToString executado com sucesso!!");
+            });
+        });
+    }
+    
+    
+    
     convertBInsertionToString(): string{
         
         var aprovado: number = 0;
@@ -316,7 +424,6 @@ export class BudgetNewComponent implements OnInit {
             tipoCliente = "Físico";
         }
         
-        
         return "(" + aprovado + "," +
                     "'" + caminho + "'" + "," +
                     "'" + data + "'" + "," +
@@ -332,6 +439,7 @@ export class BudgetNewComponent implements OnInit {
                     this.bInsertion.pessoa_id + "," +
                     this.bInsertion.vendedor_id + ")"
     }
+
     
     budgetInsertionTest(){
         var budgetId: number = 5;
@@ -340,28 +448,27 @@ export class BudgetNewComponent implements OnInit {
         var queryCodes = "";
         var queryAmbients = "";
         var response: any;
+        var self = this;
         
-        ambients.forEach(function(data){
-            queryAmbients = queryAmbients + "(" + budgetId + "," + data + "),";
+        
+        self.setBudgetInsertion();
+        console.log(self.bInsertion);
+        
+        this.convertBudgetToString().then(function(data){
+
+            
+
+            console.log(self.convertBInsertionToString());
+            //self.convertBudgetToString();
+            self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(0,0,0,0)", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
+                console.log(response);
+
+            });
+            self.test();
+            console.log(data);
         });
         
-        codes.forEach(function(data){
-            queryCodes = queryCodes + "(" + budgetId + "," + data + "),";
-        });
-        
-        
-        
-        queryCodes = queryCodes.substr(0,(queryCodes.length - 1));
-        queryAmbients = queryAmbients.substr(0,(queryAmbients.length - 1));
-        console.log(queryCodes+ " - " + queryAmbients);
-        
-        this.checkBInsertion();
-        
-        console.log(this.convertBInsertionToString());
-        this.appService.budgetInsertion(queryCodes, queryAmbients, this.convertBInsertionToString()).subscribe(budgetInsertion => response = budgetInsertion);
-        console.log(response);
     }
-    
     
     
     
@@ -370,11 +477,28 @@ export class BudgetNewComponent implements OnInit {
         this.setBudgetInsertion();
         console.log(this.bInsertion);
     }
-
-
+    
+    fillStringToQuery(list: any[], response: any, id: any): Promise<any>{
+        return new Promise(function (resolve, reject) {
+            list.forEach(function(data, index){
+                if(index == 0){
+                    response = response + id + ',' + "'" + data + "')";
+                } else{
+                    response = response + ",(" + id + ',' + "'" + data + "')";
+                }
+            });
+            console.log(response);
+            resolve(response);   
+        });
+    }
+    
   ngOnInit() {
       var self = this;
       this.start.start();
+      
+      this.fillStringToQuery(this.listTest, this.listTestString, 2).then(function(data){
+         console.log(data); 
+      });
       
       this.orderForm = this.formBuilder.group({
             inputPlace: this.formBuilder.control(''),
@@ -385,6 +509,7 @@ export class BudgetNewComponent implements OnInit {
             txtMedida1: this.formBuilder.control(''),
             txtMedida2: this.formBuilder.control(''),
             txtDetalhe: this.formBuilder.control(''),
+            txtObservacao: this.formBuilder.control(''),
             txtDiscount: this.formBuilder.control(''),
             checkBoxOption: this.buildComodos()
       })
@@ -403,8 +528,9 @@ export class BudgetNewComponent implements OnInit {
           console.log(self.thirdyDataObj[0]);
       
       });
+      
       this.appService.budgetItems().subscribe(budgetItems => this.items = budgetItems);
-      //this.appService.clientBudget("'" + this.formin.client + "'", "'" + this.formin.vendor + "'").subscribe(clientBudget => this.clientDataObj = clientBudget);
+      
       this.appService.clientBudget("'" + this.formin.client + "'", "'" + this.formin.vendor + "'").subscribe(function(clientBudget){
           self.clientDataObj = clientBudget;
           
@@ -422,22 +548,7 @@ export class BudgetNewComponent implements OnInit {
           console.log(self.bInsertion);
           console.log(self.clientData);
           console.log(self.clientDataObj[0]); 
+          self.loadPage = true;
       });
-      
-      
-      /*setTimeout(()=>{ 
-          console.log(this.clientDataObj); 
-          console.log(this.thirdyDataObj);
-          console.log(this.clientDataObj[0]); 
-          console.log(this.thirdyDataObj[0]);
-          this.setData();
-          this.setClient();
-          this.setThirdy();
-          this.setMainBudget();
-          this.setBudgetInsertion();
-          console.log(this.client);
-          console.log(this.thirdy);
-          console.log(this.bInsertion);
-      }, 2000);*/
   }
 }

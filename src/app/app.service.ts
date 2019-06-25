@@ -66,7 +66,21 @@ export class AppService{
         });
     }*/
     
-    budgetInsertion(codes: string, ambients: string, insertion: string){
-        return this.callQuery(`budgetInsertion/${codes}/${ambients}/${insertion}`);
+    budgetInsertion(
+                    codes: string, 
+                    ambients: string, 
+                    details: string,
+                    items: string,
+                    measures: string,
+                    needings: string,
+                    numbers: string,
+                    quantitys: string,
+                    values: string,
+                    insertion: string){
+        return this.callQuery(`budgetInsertion/${codes}/${ambients}/${details}/${items}/${measures}/${needings}/${numbers}/${quantitys}/${values}/${insertion}`);
+    }
+    
+    budgetInsertionTest(insertion: string){
+        return this.callQuery(`budgetInsertionTest/${insertion}`);
     }
 }
