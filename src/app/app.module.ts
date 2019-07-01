@@ -46,7 +46,11 @@ import { AutoCompleteComponent } from './shared/auto-complete/auto-complete.comp
 import {NgxMaskModule} from 'ngx-mask';
 import { TextMaskModule } from 'angular2-text-mask';
 import { CurrencyMaskModule } from "ng2-currency-mask";
-
+import { ModalComponent } from './modal/modal.component';
+import { BudgetItemsComponent } from './budget/budget-items/budget-items.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import {SpinnerService} from './shared/spinner.service';
 
 @NgModule({
   declarations: [
@@ -74,6 +78,9 @@ import { CurrencyMaskModule } from "ng2-currency-mask";
     DatePickerComponent,
     CreatePdfComponent,
     AutoCompleteComponent,
+    ModalComponent,
+    BudgetItemsComponent,
+    SpinnerComponent,
   ],
   imports: [
     BrowserModule,
@@ -93,12 +100,14 @@ import { CurrencyMaskModule } from "ng2-currency-mask";
     MatNativeDateModule,
     NgxMaskModule.forRoot(),
     TextMaskModule,
-    CurrencyMaskModule
+    CurrencyMaskModule,
+    NgxSpinnerModule
   ],
   providers: [
       AppService,
       StartService,
       BudgetService,
+      SpinnerService,
       {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
   ],
   bootstrap: [AppComponent]

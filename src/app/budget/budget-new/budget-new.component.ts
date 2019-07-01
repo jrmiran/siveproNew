@@ -14,6 +14,7 @@ import {Client} from '../../clients/client.model';
 import {Terceiro} from '../../clients/terceiro.model';
 import {BudgetInsertion} from '../budget-insertion.model';
 import {Observable} from "rxjs/Observable";
+import {SubItem} from "./sub-item.model";
 
 @Component({
   selector: 'sivp-budget-new',
@@ -55,8 +56,13 @@ export class BudgetNewComponent implements OnInit {
     listTestString: string = "(";
     insertedBudget: any;
     
+    numberValidator = /^[\d,.?!]+$/;
+    //numberValidator = /[\d][,][\d]/;
+    subItems: SubItem[] = [];
     loadPage: boolean = false;
     orderForm: FormGroup;
+    modalForm: FormGroup;
+    
     items: Object[];
     formin: {type: "", client: "", vendor: "", thirdy: "", date: ""};
     budgets: BudgetNew[] = [];
@@ -103,6 +109,46 @@ export class BudgetNewComponent implements OnInit {
         pessoa_id: 0, //this.pessoa_id;
         vendedor_id: 0//this.vendedor_id;
     };
+    
+    addSubItem(index: number){
+        
+        if(this.getSubItems(index).length == 0){
+            this.budgets[this.currentItem].qtd = 0;
+        }
+        
+        this.subItems.push({
+            index: index,    
+            qtd: this.modalForm.get('qtdSubItem').value + "  ",
+            unidade: this.modalForm.get('unidadeSubItem').value + "  ",
+            medida1: this.modalForm.get('medida1SubItem').value,
+            medida2: this.modalForm.get('medida2SubItem').value + "  ",
+            descricao: this.modalForm.get('descricaoSubItem').value,
+        });
+        
+        
+        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value)/10000).toFixed(2));
+        
+        this.budgets[this.currentItem].detalhe = this.budgets[this.currentItem].detalhe + "\n*" +  this.modalForm.get('qtdSubItem').value + " " + this.modalForm.get('unidadeSubItem').value + " " + this.modalForm.get('medida1SubItem').value + "x" + this.modalForm.get('medida2SubItem').value + " " + this.modalForm.get('descricaoSubItem').value;
+        this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
+        
+        
+        console.log(this.budgets[this.currentItem].valorUnitario);
+        this.modalForm.get('qtdSubItem').setValue("");
+        this.modalForm.get('unidadeSubItem').setValue("");
+        this.modalForm.get('medida1SubItem').setValue("");
+        this.modalForm.get('medida2SubItem').setValue("");
+        this.modalForm.get('descricaoSubItem').setValue("");
+    }
+    
+    getSubItems(index: number): SubItem[]{
+        var response: SubItem[] = [];
+        this.subItems.forEach(function(data){
+            if (data.index == index){
+                response.push(data);
+            }
+        });
+        return response;
+    }
     
     setData(){
         this.clientData = Object.assign(this.clientData, this.clientDataObj[0]);
@@ -151,7 +197,7 @@ export class BudgetNewComponent implements OnInit {
     comods: string[];
     enableButton: boolean;
     currentItem: number = -1;
-    createPdf = new CreatePdfComponent();
+    createPdf = new CreatePdfComponent(this.appService);
     cbo: FormArray;
     budgetsAmbient: BudgetAmbient[] = [];
     newItem: BudgetAmbient = {comodo:"", qtd:[], cod:[], item:[], detalhe:[], medida:[], necessario:[], valor:[], valorTotal:[], valorTotalAmbiente:0};
@@ -197,6 +243,7 @@ export class BudgetNewComponent implements OnInit {
         this.orderForm.get('txtNecessario').setValue(this.budgets[this.currentItem].necessario);
         this.orderForm.get('txtMedida').setValue(this.budgets[this.currentItem].medida);
         this.orderForm.get('txtValor').setValue(this.budgets[this.currentItem].valorUnitario);
+        this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
     }
     
     changeItem(){
@@ -208,17 +255,19 @@ export class BudgetNewComponent implements OnInit {
         this.budgets[this.currentItem].qtd = this.orderForm.get('txtQtd').value;
         this.budgets[this.currentItem].necessario = this.orderForm.get('txtNecessario').value;
         this.budgets[this.currentItem].detalhe = this.orderForm.get('txtDetalhe').value;
-        this.budgets[this.currentItem].valorUnitario = this.orderForm.get('txtValor').value;
+        this.budgets[this.currentItem].valorUnitario = this.appService.converteFloatMoeda(this.orderForm.get('txtValor').value);
         if(this.pedraOption){
            this.budgets[this.currentItem].valorTotal = (medida1 * medida2 * valor)/ 10000; 
             this.budgets[this.currentItem].medida = this.orderForm.get('txtMedida1').value + " x " + this.orderForm.get('txtMedida2').value;
         } else{
-            this.budgets[this.currentItem].valorTotal = qtd * valor;
+            this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
             this.budgets[this.currentItem].medida = this.orderForm.get('txtMedida').value;
         }
-        this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.budgets[this.currentItem].valorTotal;
+        this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
         
         this.pedraOption = false;
+        console.log(this.budgets[this.currentItem].valorUnitario);
+        
     }
     
     public setValue(){
@@ -250,12 +299,12 @@ export class BudgetNewComponent implements OnInit {
     }
     
     
-
     joinBudget(){
         var flag: boolean = false;
         var newItem = this.newItem;  
         var budgetsAmbient = this.budgetsAmbient;
         var keepGoing: boolean = true;
+        var self = this;
         this.budgets.forEach(function(b){
             if(budgetsAmbient.length > 0){
                 budgetsAmbient.forEach(function(value){
@@ -270,7 +319,7 @@ export class BudgetNewComponent implements OnInit {
                             value.necessario.push(b.necessario);
                             value.valor.push(b.valorUnitario);
                             value.valorTotal.push(b.valorTotal);
-                            value.valorTotalAmbiente = value.valorTotalAmbiente + b.valorTotal;
+                            value.valorTotalAmbiente = self.appService.converteMoedaFloat(value.valorTotalAmbiente) +self.appService.converteMoedaFloat(b.valorTotal);
                             keepGoing = false;
                         }
                     }
@@ -337,8 +386,8 @@ export class BudgetNewComponent implements OnInit {
                 self.medidas.push(data.medida);
                 self.comodos.push(data.comodo);
                 self.necessarios.push(data.necessario);
-                self.valoresUnitarios.push(data.valorUnitario);
-                self.valoresTotais.push(data.valorTotal);
+                self.valoresUnitarios.push(self.appService.converteMoedaFloat(data.valorUnitario));
+                self.valoresTotais.push(self.appService.converteMoedaFloat(data.valorTotal));
                 self.descontos.push(data.desconto);
                 self.valoresComDesconto.push(data.valorComDesconto);
             });
@@ -392,8 +441,6 @@ export class BudgetNewComponent implements OnInit {
         });
     }
     
-    
-    
     convertBInsertionToString(): string{
         
         var aprovado: number = 0;
@@ -424,6 +471,7 @@ export class BudgetNewComponent implements OnInit {
             tipoCliente = "Físico";
         }
         
+        console.log(this.bInsertion.valorTotal);
         return "(" + aprovado + "," +
                     "'" + caminho + "'" + "," +
                     "'" + data + "'" + "," +
@@ -460,14 +508,13 @@ export class BudgetNewComponent implements OnInit {
 
             console.log(self.convertBInsertionToString());
             //self.convertBudgetToString();
-            self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(0,0,0,0)", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
+            self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
                 console.log(response);
 
             });
             self.test();
             console.log(data);
         });
-        
     }
     
     
@@ -495,7 +542,6 @@ export class BudgetNewComponent implements OnInit {
   ngOnInit() {
       var self = this;
       this.start.start();
-      
       this.fillStringToQuery(this.listTest, this.listTestString, 2).then(function(data){
          console.log(data); 
       });
@@ -512,6 +558,14 @@ export class BudgetNewComponent implements OnInit {
             txtObservacao: this.formBuilder.control(''),
             txtDiscount: this.formBuilder.control(''),
             checkBoxOption: this.buildComodos()
+      })
+      
+      this.modalForm = this.formBuilder.group({
+            qtdSubItem: this.formBuilder.control('', [Validators.required, Validators.pattern(self.numberValidator)]),
+            unidadeSubItem: this.formBuilder.control('', [Validators.required]),
+            medida1SubItem: this.formBuilder.control('', [Validators.required, Validators.pattern(self.numberValidator)]),
+            medida2SubItem: this.formBuilder.control('', [Validators.required, Validators.pattern(self.numberValidator)]),
+            descricaoSubItem: this.formBuilder.control('', [Validators.required])
       })
       
       this.cbo = (this.orderForm.get('checkBoxOption') as FormArray);
@@ -551,4 +605,5 @@ export class BudgetNewComponent implements OnInit {
           self.loadPage = true;
       });
   }
+    
 }

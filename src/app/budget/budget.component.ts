@@ -13,6 +13,7 @@ import { timer } from 'rxjs/observable/timer';
 import { Http, Response } from "@angular/http";
 import 'rxjs/add/operator/map';
 import {AutoCompleteComponent} from '../shared/auto-complete/auto-complete.component';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 const source = timer(1000);
 @Component({
@@ -50,7 +51,7 @@ export class BudgetComponent implements OnInit, OnChanges{
     //public formout: BudgetModel = {client: "me", date: "today", type: "physical", terceiro:"", vendor:"", valorTotal: 0, discount: 0, valorComDesconto: 0};
     
     public formout = {client: "me", date: "today", type: "physical", terceiro:"", vendor:"", valorTotal: 0, discount: 0, valorComDesconto: 0};
-    constructor(private formBuilder: FormBuilder, private start: StartService, private budgetService: BudgetService, private appService: AppService){}
+    constructor(private formBuilder: FormBuilder, private start: StartService, private budgetService: BudgetService, private appService: AppService, private spinner: NgxSpinnerService){}
     
     validateField(){
         if(this.orderForm.value.tCliente == 'LOJ'){
@@ -90,6 +91,14 @@ export class BudgetComponent implements OnInit, OnChanges{
         this.formout.type = this.orderForm.value.tCliente;
         this.formout.terceiro = this.orderForm.value.terceiro;
         this.formout.vendor = this.orderForm.value.vendedor;
+    }
+    
+    showSpinner(show: boolean){
+        if(show){
+            this.spinner.show();
+        }else{
+            this.spinner.hide();
+        }
     }
     
     setFormout2(){
@@ -138,9 +147,13 @@ export class BudgetComponent implements OnInit, OnChanges{
     }
     
     ngOnInit() {                    
-        
+        var self = this;
+        this.showSpinner(true);
         this.main = this;
-        this.appService.clientsJuridico().subscribe(clientsJuridico => this.clientsJuridicoObj = clientsJuridico);
+        this.appService.clientsJuridico().subscribe(function(clientsJuridico){
+            self.clientsJuridicoObj = clientsJuridico
+            self.showSpinner(false);
+        });
         this.appService.clientsFisico().subscribe(clientsFisico => this.clientsFisicoObj = clientsFisico);
         this.appService.clientsArquiteto().subscribe(clientsArquiteto => this.clientsArquitetoObj = clientsArquiteto);
         this.terceirosObj = [{nome:'', id:''}];

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'sivp-comp1',
@@ -8,9 +9,12 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 })
 export class Comp1Component implements OnInit {
 
-  constructor() { }
+  constructor(private spinner: NgxSpinnerService) { }
 
+    showSpinner(){
+        this.spinner.show();
+    }
   ngOnInit() {
-  }
-
+      //this.spinner.show();
+  } 
 }

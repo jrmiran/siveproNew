@@ -19,7 +19,7 @@ export class BudgetTableComponent implements OnInit {
     
     ngOnInit() {
         var self = this;
-        
+        console.log(this.appService.converteMoedaFloat("R$ 150.000,94"))
         this.n = 1; 
         this.appService.budgets().subscribe(budgets => this.buds = budgets);
         
@@ -39,5 +39,9 @@ export class BudgetTableComponent implements OnInit {
                 console.log("NADA");
             }
         }*/
+        
+        
     }
+    
+    
 }

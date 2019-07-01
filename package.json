@@ -48,6 +48,7 @@
     "ngx-mask-2": "^6.5.23",
     "ngx-pagination": "^3.2.1",
     "ngx-select2": "^0.2.1",
+    "ngx-spinner": "^7.1.4",
     "rxjs": "^6.2.0",
     "rxjs-compat": "^6.2.0",
     "typescript": "~2.7.2",

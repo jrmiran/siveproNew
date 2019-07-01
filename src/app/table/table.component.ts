@@ -5,6 +5,7 @@ import {BudgetNew} from '../budget/budget-new/budget-new.model';
 import {CheckBox} from '../shared/check/check-box.model';
 import {StartService} from '../start.service';
 import {AppService} from '../app.service';
+import {BudgetItemsComponent} from '../budget/budget-items/budget-items.component';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import "rxjs/add/operator/map";
 
@@ -27,26 +28,22 @@ export class TableComponent implements OnInit {
     @Input() check: string[];
     @Input() enableButton: boolean;
     @Input() comodos: string[];
+    @Input() itemButton: boolean = false;
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
     @Input() budgetTable: boolean = false;
+    @Input() budgetItem: BudgetItemsComponent;
     
     orderForm: FormGroup;
     filter: Object;
     p: Object;
     b: BudgetNew;
-    
-    
-    
 
-    
-    addBudgetItem(id: string, item: string){
+    addBudgetItem(id: string, item: string, valorUnitario: string){
+        var self = this;
         this.bnc.setValue();
-        let bb = this.b;
-        let bc = this.budgetComponent;
-        let bncc = this.bnc;
         this.comodos.forEach(function(comodo){
-            bb = {
+            self.b = {
             qtd: 1,
             cod: id,
             item: item,
@@ -54,23 +51,24 @@ export class TableComponent implements OnInit {
             medida: "",
             comodo: comodo,
             necessario: "",
-            valorUnitario: 0,
-            valorTotal: 0,
+            valorUnitario: "R$ " + valorUnitario,
+            valorTotal: "R$ " + valorUnitario,
             desconto: 0,
             valorComDesconto: 0    
         }
-        bc.addItemBudget(bb, bncc);
+        self.budgetComponent.addItemBudget(self.b, self.bnc);
         });
-        //console.log(this.comodos);
-        
     }
     
+    openModalItem(id: number, descricao: string, valorUnitario: string){
+        this.budgetItem.openModalFunction(true, id, descricao, valorUnitario);
+    }
     
     eventRow(i:number){
         if(this.budgetTable){
             this.bnc.clickRow(i);
-        }else{
-            //console.log("OK");
+        }else if(this.itemButton){
+            this.budgetItem.clickRow(i);
         }
     }
     
@@ -87,10 +85,4 @@ export class TableComponent implements OnInit {
         })
         
     }
-    
-    
-    /*pageChanged($event){
-        this.numberOfPage = this.numberOfPage + 1;
-    }*/
-
 }

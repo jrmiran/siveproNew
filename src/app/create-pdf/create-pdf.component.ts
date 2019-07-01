@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 import {BudgetAmbient} from '../budget/budget-new/budget-ambient.model'
 import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import {BudgetPdf} from './budget-pdf.model';
 import {BudgetModel} from '../budget/budget.model';
+import {AppService} from '../app.service';
 
 @Component({
   selector: 'sivp-create-pdf',
   templateUrl: './create-pdf.component.html',
   styleUrls: ['./create-pdf.component.css']
 })
+@Injectable()
 export class CreatePdfComponent implements OnInit {
 
-  constructor() { }
+  constructor(private appService: AppService) { }
     
     item: BudgetPdf = { c1:"",
                         cod: "",
@@ -289,8 +291,9 @@ export class CreatePdfComponent implements OnInit {
         //******************************************************* BUDGET ITEMS + AMBIENT CELLS **************************************************
         items.forEach(function(data){
             row[0].cmd  = data.comodo;
-            row[0].value = "Total Ambiente: " + numberToReal(data.valorTotalAmbiente) + "   ";
-            
+            console.log(self.appService.converteMoedaFloat(data.valorTotalAmbiente));
+            //row[0].value = "Total Ambiente: " + numberToReal(data.valorTotalAmbiente) + "   ";
+            row[0].value = "Total Ambiente: " + self.appService.converteFloatMoeda(data.valorTotalAmbiente) + "  ";
             //********************************************************** AMBIENT CELL **********************************************************
             console.log("AMBIENT CELL");
             doc.autoTable(column, row, {margin: {left: 25}, styles: {halign: "center", fillColor: [211,211,211], cellPadding: 1}, columnStyles: styleColumnAmbient, startY: doc.previousAutoTable.finalY, theme: 'plain'});
@@ -303,8 +306,10 @@ export class CreatePdfComponent implements OnInit {
                 item.desc = data.item[count];
                 item.med = data.medida[count];
                 item.det = data.detalhe[count];
-                item.unit = numberToReal(data.valor[count]);;
-                item.valor = numberToReal(data.valorTotal[count]);
+                //item.unit = numberToReal(data.valor[count]);;
+                item.unit = data.valor[count].toString();
+                //item.valor = numberToReal(data.valorTotal[count]);
+                item.valor = data.valorTotal[count].toString();
                 item.nec = data.necessario[count];
                 item.comodo = data.comodo;
                 item.valorTotalItem = data.valorTotal[count];
@@ -345,13 +350,14 @@ export class CreatePdfComponent implements OnInit {
             //********************************************* BUDGET ITEM *******************************************************
             
             rows = [];
-            totalBudget = totalBudget + data.valorTotalAmbiente;
+            totalBudget = totalBudget + self.appService.converteMoedaFloat(data.valorTotalAmbiente);
         });
         //******************************************************* BUDGET ITEMS + AMBIENT CELLS **************************************************
 
         //********************************************************* AMOUNT **********************************************************************
         console.log("AMOUNT");
-        doc.autoTable(columnTotal, [{valor: "Total: " + numberToReal(totalBudget) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+        //doc.autoTable(columnTotal, [{valor: "Total: " + numberToReal(totalBudget) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+        doc.autoTable(columnTotal, [{valor: "Total: " + self.appService.converteFloatMoeda(totalBudget) + "  "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
@@ -362,7 +368,7 @@ export class CreatePdfComponent implements OnInit {
         if(mainBudget.discount > 0){
             console.log("DISCOUNT");
             //****************************************************** DISCOUNT ***************************************************************
-            doc.autoTable(columnTotal, [{valor: "Desconto: " + mainBudget.discount + "%   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            doc.autoTable(columnTotal, [{valor: "Desconto: " + mainBudget.discount + "%  "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.75, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
@@ -371,7 +377,8 @@ export class CreatePdfComponent implements OnInit {
             
             //****************************************************** VALUE WITH DISCOUNT ***************************************************************
             console.log("VALUE WITH DISCOUNT");
-            doc.autoTable(columnTotal, [{valor: "Valor Final: " + numberToReal(mainBudget.valorComDesconto) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            //doc.autoTable(columnTotal, [{valor: "Valor Final: " + numberToReal(mainBudget.valorComDesconto) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            doc.autoTable(columnTotal, [{valor: "Valor Final: " + mainBudget.valorComDesconto + "  "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});

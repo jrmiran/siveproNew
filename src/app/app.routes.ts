@@ -6,6 +6,7 @@ import {BudgetComponent} from './budget/budget.component';
 import {LoginComponent} from './login/login.component';
 import {BudgetTableComponent} from './budget/budget-table/budget-table.component';
 import {BudgetNewComponent} from './budget/budget-new/budget-new.component';
+import {BudgetItemsComponent} from './budget/budget-items/budget-items.component';
 
 
 export const ROUTES: Routes = [
@@ -16,5 +17,6 @@ export const ROUTES: Routes = [
     {path: 'budget', component: BudgetTableComponent},
     {path: 'login', component: LoginComponent},
     {path: 'newBudget', component: BudgetComponent},
-    {path: 'newBudget2', component: BudgetNewComponent}
+    {path: 'newBudget2', component: BudgetNewComponent},
+    {path: 'budgetItems', component: BudgetItemsComponent}
 ]
