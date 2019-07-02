@@ -1,3 +1,7 @@
+<ngx-spinner name="spinnerCliente" bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+    <p> Caregando Clientes </p>
+</ngx-spinner>
+
 <section class="content-header">
 </section>
 
@@ -5,7 +9,6 @@
 <section class="content">
     <section class="invoice">
         <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
-        <button (click)="showSpinner(true)"></button>
         <form [formGroup]="orderForm" novalidate>
             <!--{{orderForm.value | json}}
             {{orderForm.valid}}
@@ -42,26 +45,25 @@
                 </sivp-primary-box>
 
                 <sivp-primary-box [title]="'Cliente'">
-                    <ngx-spinner type = "timer" [fullScreen]="false" bdColor = "#0c8193"> <p style="color: white" > Loading.. </p> </ngx-spinner>
-                    <sivp-auto-complete *ngIf="orderForm.value.tCliente == 'FIS'" [options]="clientsFisicoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>
-                    <sivp-auto-complete *ngIf="orderForm.value.tCliente == 'LOJ'" [options]="clientsJuridicoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>
-                    <sivp-auto-complete *ngIf="orderForm.value.tCliente == 'ARQ'" [options]="clientsArquitetoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>
+                    <sivp-auto-complete *ngIf="orderForm.value.tCliente == 'FIS'&&validateCliente" [options]="clientsFisicoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>
+                    <sivp-auto-complete *ngIf="orderForm.value.tCliente == 'LOJ'&&validateCliente&&validateTerceiro" [options]="clientsJuridicoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>
                 </sivp-primary-box>
             </div>
             <!--/Third Row-->
 
             <!--Fourth Row-->
             <div class="row">
-                <sivp-primary-box [title]="'Terceiro'" *ngIf="validateTerceiro" [ngStyle]="{'visibility':showTerceiros ? 'visible' : 'hidden'}">
-                    <sivp-auto-complete [options]="terceirosObj" formControlName="terceiro" [typeInput]="Terceiro" [bco]="main" #completo></sivp-auto-complete>
+                <sivp-primary-box [title]="'Terceiro'" *ngIf="validateTerceiro">
+                    <h6 [ngStyle]="{'visibility':!showTerceiros ? 'visible' : 'hidden'}"> AGUARDANDO SELEÇÃO DE CLIENTE </h6>
+                    <sivp-auto-complete *ngIf="validateTerceiro" [options]="terceirosObj" formControlName="terceiro" [typeInput]="Terceiro" [bco]="main" [ngStyle]="{'visibility':showTerceiros ? 'visible' : 'hidden'}" #completo></sivp-auto-complete>
                 </sivp-primary-box>
-                <sivp-primary-box [title]="'Vendedor'" *ngIf="validateVendedor" [ngStyle]="{'visibility':showVendedores ? 'visible' : 'hidden'}">
-                    <sivp-auto-complete [options]="vendedoresObj" formControlName="vendedor" [typeInput]="Vendor" [bco]="main" #vendedores></sivp-auto-complete>
+                <sivp-primary-box [title]="'Vendedor'" *ngIf="validateVendedor">
+                    <h6 [ngStyle]="{'visibility':!showVendedores ? 'visible' : 'hidden'}"> AGUARDANDO SELEÇÃO DE CLIENTE </h6>
+                    <sivp-auto-complete *ngIf="validateVendedor" [options]="vendedoresObj" formControlName="vendedor" [typeInput]="Vendor" [bco]="main" [ngStyle]="{'visibility':showVendedores ? 'visible' : 'hidden'}" #vendedores></sivp-auto-complete>
                 </sivp-primary-box>
             </div>
             <!--/Fourth Row-->
         </form>
-
 
         <div class="row">
             <div class="col-xs-12">

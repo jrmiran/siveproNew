@@ -51,8 +51,8 @@ export class TableComponent implements OnInit {
             medida: "",
             comodo: comodo,
             necessario: "",
-            valorUnitario: "R$ " + valorUnitario,
-            valorTotal: "R$ " + valorUnitario,
+            valorUnitario: valorUnitario,
+            valorTotal: valorUnitario,
             desconto: 0,
             valorComDesconto: 0    
         }

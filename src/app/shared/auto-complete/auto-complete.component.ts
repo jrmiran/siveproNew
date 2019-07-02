@@ -69,10 +69,13 @@ export class AutoCompleteComponent implements OnInit, ControlValueAccessor{
     }
 
     setValue(value: any){
+        var self = this;
         this.value = value;
         this.onChange(this.value);
         if(this.typeInput = "Client"){
-            this.appService.clientsEmpresa(`'${value}'`).subscribe(clientsEmpresa => this.bco.setTerceiros(clientsEmpresa));
+            this.appService.clientsEmpresa(`'${value}'`).subscribe(function(clientsEmpresa){
+                self.bco.setTerceiros(clientsEmpresa);
+            });
             this.appService.vendorEmpresa(`'${value}'`).subscribe(vendorEmpresa => this.bco.setVendedores(vendorEmpresa));
         }
         this.bco.setFormout2();

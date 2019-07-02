@@ -15,7 +15,9 @@ import {AppService} from '../app.service';
 export class CreatePdfComponent implements OnInit {
 
   constructor(private appService: AppService) { }
-    
+    defaultFontSize: number = 9;
+    defaultMarginLeft: number = 20;
+    defaultMarginRight: number = 21;
     item: BudgetPdf = { c1:"",
                         cod: "",
                         qtd: 0,
@@ -33,9 +35,10 @@ export class CreatePdfComponent implements OnInit {
     
     rows: BudgetPdf[] = [];
     
-    public gerarPDF(items: BudgetAmbient[], mainBudget: BudgetModel, budgetNumber: any) {
+    public gerarPDF(items: BudgetAmbient[], mainBudget: BudgetModel) {
         var self = this;
         var doc = new jsPDF('p', 'pt', 'a4');
+        
         var item = this.item;
         var rows = this.rows;
         var count: number = 0;
@@ -108,7 +111,7 @@ export class CreatePdfComponent implements OnInit {
                                         valor: {cellWidth:545, fillColor: [0,0,0]}
                                       },
                           styles: {halign: "center", cellPadding: 0, fontSize: 1},
-                          margin:{left: 25, top: 50},
+                          margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
                            showHead: "false",
                            startY: doc.previousAutoTable.finalY 
             });
@@ -127,7 +130,7 @@ export class CreatePdfComponent implements OnInit {
                                         valor: {cellWidth:545, fillColor: [0,0,0]}
                                       },
                           styles: {halign: "center", cellPadding: 0, fontSize: 1},
-                          margin:{left: 25, top: 50},
+                          margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
                            showHead: "false"
             });
         }
@@ -138,7 +141,7 @@ export class CreatePdfComponent implements OnInit {
                                         valor: {fillColor: [0,0,0]}
                                       },
                           styles: {halign: "center", cellPadding: 0, fontSize: 1},
-                          margin:{top:0, left: 450, right: 24},
+                          margin:{top:0, left: 450, right: self.defaultMarginRight},
                            showHead: "false",
                            startY: doc.previousAutoTable.finalY 
             });
@@ -165,7 +168,7 @@ export class CreatePdfComponent implements OnInit {
                             c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                           },    
                                             
-            margin:{left: 25},
+            margin:{left: self.defaultMarginLeft, right: self.defaultMarginRight},
             startY: doc.previousAutoTable.finalY  
         });
         
@@ -175,7 +178,7 @@ export class CreatePdfComponent implements OnInit {
         
         //********************************************************** BUDGET NUMBER AND DATE *******************************************************
         lineTop();
-        doc.autoTable(columnsInfo1, [{budgetNumber: "Orçamento No.: " + budgetNumber, date: "Data: " + mainBudget.date, c1:"", c4:""}], {theme: 'plain', 
+        doc.autoTable(columnsInfo1, [{budgetNumber: "Orçamento No.: " + mainBudget.number + "   Ed.: " + mainBudget.rectified, date: "Data: " + mainBudget.date, c1:"", c4:""}], {theme: 'plain', 
             columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             budgetNumber: {cellWidth: 400, fontStyle: 'bold', halign: "left"},
@@ -183,7 +186,7 @@ export class CreatePdfComponent implements OnInit {
                             c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                           },
             styles: {halign: "center", cellPadding: 1},                       
-            margin:{left: 25, top: 50},
+            margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
              startY: doc.previousAutoTable.finalY                  
         });
         lineBottom();
@@ -203,8 +206,8 @@ export class CreatePdfComponent implements OnInit {
                                         column2: {cellWidth: 160, fontStyle: 'bold', halign: "left"},
                                         c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                                       },
-                          styles: {halign: "center", cellPadding: 1},                       
-                          margin:{left: 25, top: 50},
+                          styles: {halign: "center", cellPadding: 1, fontSize: self.defaultFontSize},                       
+                          margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
                           startY: doc.previousAutoTable.finalY                    
             });
             lineBottom();
@@ -223,8 +226,8 @@ export class CreatePdfComponent implements OnInit {
                                         column4: {cellWidth: 160, fontStyle: 'bold', halign: "left"},
                                         c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                                       },
-                          styles: {halign: "center", cellPadding: 1},                       
-                          margin:{left: 25, top: 50},
+                          styles: {halign: "center", cellPadding: 1, fontSize: self.defaultFontSize},                       
+                          margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
                           startY: doc.previousAutoTable.finalY                
             });
             lineBottom();
@@ -233,17 +236,19 @@ export class CreatePdfComponent implements OnInit {
             //**********************************************************PHISIC CLIENT DATA*******************************************************
             console.log("NÃO É LOJA!");
             lineTop()
-            doc.autoTable(columnsInfo2, [{column1: "Loja: " + mainBudget.client.name, column2: ""},
+            doc.autoTable(columnsInfo2, [{column1: "Nome: " + mainBudget.client.name, column2: ""},
                                          {column1: "Vendedor: " + mainBudget.vendor, column2: "Telefone: " + mainBudget.client.tel},
                                          {column1: "E-mail: " + mainBudget.client.email, column2: "Celular: " + mainBudget.client.cel}],
                           {theme: 'plain', 
                           columnStyles: {
+                                        c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                                         column1: {cellWidth: 380, fontStyle: 'bold', halign: "left"},
                                         column2: {cellWidth: 160, fontStyle: 'bold', halign: "left"},
+                                        c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                                       },
-                          styles: {halign: "center", cellPadding: 1},                       
-                          margin:{left: 25, top: 50},
-                          startY: doc.previousAutoTable.finalY + 20                   
+                          styles: {halign: "center", cellPadding: 1, fontSize: self.defaultFontSize},                       
+                          margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
+                          startY: doc.previousAutoTable.finalY                   
             });
             lineBottom();
             //**********************************************************PHISIC CLIENT DATA*******************************************************
@@ -256,10 +261,10 @@ export class CreatePdfComponent implements OnInit {
         doc.autoTable(columnTotal, [{valor: "ORÇAMENTO"}],
                           {theme: 'plain', 
                           columnStyles: {
-                                        valor: {cellWidth: 540, fontStyle: 'bold', halign: "center", fontSize: 18},
+                                        valor: {cellWidth: 540, fontStyle: 'bold', halign: "center", fontSize: 16},
                                       },
                           styles: {halign: "center"},                       
-                          margin:{left: 25, top: 50},
+                          margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
                           startY: doc.previousAutoTable.finalY + 20                      
             });
         //**********************************************************BUDGET TITLE*******************************************************
@@ -280,23 +285,24 @@ export class CreatePdfComponent implements OnInit {
                             nec: {cellWidth: 78, fontStyle: 'bold'},
                             c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                           },
-            styles: {halign: "center"},   
+            styles: {halign: "center", fontSize: self.defaultFontSize},   
             bodyStyles:{cellPadding: 0, fontSize: 1.5, fillColor: [0,0,0]},                                                                                                 
-            margin:{left: 25},
+            margin:{left: self.defaultMarginLeft, right: self.defaultMarginRight},
              startY: doc.previousAutoTable.finalY                      
         });
         
         //********************************************************** HEADER *******************************************************
         
+        
         //******************************************************* BUDGET ITEMS + AMBIENT CELLS **************************************************
         items.forEach(function(data){
             row[0].cmd  = data.comodo;
-            console.log(self.appService.converteMoedaFloat(data.valorTotalAmbiente));
-            //row[0].value = "Total Ambiente: " + numberToReal(data.valorTotalAmbiente) + "   ";
-            row[0].value = "Total Ambiente: " + self.appService.converteFloatMoeda(data.valorTotalAmbiente) + "  ";
+            console.log(data.valorTotalAmbiente);
+            
+            row[0].value = "Total " + data.comodo + " : " + self.appService.converteFloatMoeda(data.valorTotalAmbiente) + "  ";
             //********************************************************** AMBIENT CELL **********************************************************
             console.log("AMBIENT CELL");
-            doc.autoTable(column, row, {margin: {left: 25}, styles: {halign: "center", fillColor: [211,211,211], cellPadding: 1}, columnStyles: styleColumnAmbient, startY: doc.previousAutoTable.finalY, theme: 'plain'});
+            doc.autoTable(column, row, {margin: {left: self.defaultMarginLeft, right: self.defaultMarginRight}, styles: {halign: "center", fillColor: [211,211,211], cellPadding: 1, fontSize: self.defaultFontSize}, columnStyles: styleColumnAmbient, startY: doc.previousAutoTable.finalY, theme: 'plain'});
             lineBottom();
             //********************************************************** AMBIENT CELL **********************************************************
             
@@ -334,16 +340,16 @@ export class CreatePdfComponent implements OnInit {
             
             //********************************************* BUDGET ITEM *******************************************************
             console.log("BUDGET ITEM");
-            doc.autoTable(columnsItems, rows, {margin: {left: 25}, startY: doc.previousAutoTable.finalY,theme: 'plain', columnStyles: {
+            doc.autoTable(columnsItems, rows, {margin: {left: self.defaultMarginLeft, right: self.defaultMarginRight}, startY: doc.previousAutoTable.finalY,theme: 'plain', styles: {fontSize: self.defaultFontSize}, columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             cod: {cellWidth: 30, fontStyle: 'bold'},
-                            qtd: {cellWidth: 27, fontStyle: 'bold'},
-                            desc: {cellWidth: 103, fontStyle: 'bold'},
+                            qtd: {cellWidth: 32, fontStyle: 'bold'},
+                            desc: {cellWidth: 95, fontStyle: 'bold'},
                             med: {cellWidth: 65, fontStyle: 'bold'},
-                            det: {cellWidth: 115, fontStyle: 'bold'},
-                            unit: {cellWidth: 60, fontStyle: 'bold'},
-                            valor: {cellWidth: 60, fontStyle: 'bold'},
-                            nec: {cellWidth: 74, fontStyle: 'bold'},
+                            det: {cellWidth: 110, fontStyle: 'bold'},
+                            unit: {cellWidth: 75, fontStyle: 'bold'},
+                            valor: {cellWidth: 75, fontStyle: 'bold'},
+                            nec: {cellWidth: 65, fontStyle: 'bold'},
                             c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
             lineBottom();
@@ -357,7 +363,7 @@ export class CreatePdfComponent implements OnInit {
         //********************************************************* AMOUNT **********************************************************************
         console.log("AMOUNT");
         //doc.autoTable(columnTotal, [{valor: "Total: " + numberToReal(totalBudget) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
-        doc.autoTable(columnTotal, [{valor: "Total: " + self.appService.converteFloatMoeda(totalBudget) + "  "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+        doc.autoTable(columnTotal, [{valor: "Total: " + self.appService.converteFloatMoeda(totalBudget) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
@@ -368,7 +374,7 @@ export class CreatePdfComponent implements OnInit {
         if(mainBudget.discount > 0){
             console.log("DISCOUNT");
             //****************************************************** DISCOUNT ***************************************************************
-            doc.autoTable(columnTotal, [{valor: "Desconto: " + mainBudget.discount + "%  "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            doc.autoTable(columnTotal, [{valor: "Desconto: " + mainBudget.discount + "%  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.75, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
@@ -378,7 +384,7 @@ export class CreatePdfComponent implements OnInit {
             //****************************************************** VALUE WITH DISCOUNT ***************************************************************
             console.log("VALUE WITH DISCOUNT");
             //doc.autoTable(columnTotal, [{valor: "Valor Final: " + numberToReal(mainBudget.valorComDesconto) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
-            doc.autoTable(columnTotal, [{valor: "Valor Final: " + mainBudget.valorComDesconto + "  "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            doc.autoTable(columnTotal, [{valor: "Valor Final: " + mainBudget.valorComDesconto + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
@@ -386,6 +392,25 @@ export class CreatePdfComponent implements OnInit {
             //****************************************************** VALUE WITH DISCOUNT ***************************************************************
         }
         //*********************************************************** DISCOUNT (IF APPLICABLE) ***********************************************************
+        
+        //**********************************************************BUDGET NOTE*******************************************************
+        console.log("NOTE");
+        
+        if(mainBudget.note != ""){
+            lineTop();
+            doc.autoTable(columnTotal, [{valor: mainBudget.note}],
+                              {theme: 'plain', 
+                              columnStyles: {
+                                            c1: {cellWidth: 0.03, fontStyle: 'bold', fillColor: [0,0,0]},
+                                            c4: {cellWidth: 0.03, fontStyle: 'bold', fillColor: [0,0,0]}
+                                          },
+                              styles: {halign: "center"},                       
+                              margin:{left: self.defaultMarginLeft, right: self.defaultMarginRight},
+                              startY: doc.previousAutoTable.finalY                   
+                });
+            lineBottom();
+        }
+        //**********************************************************BUDGET NOTE*******************************************************
         
         doc.save('table.pdf');
         

@@ -1,5 +1,6 @@
-<ngx-spinner>
-        </ngx-spinner>
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+    <p> Carregando Itens </p>
+</ngx-spinner>
 
 <section class="content">
     <section class="invoice" *ngIf="loadPage">
@@ -7,7 +8,7 @@
         <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
             <p style="font-size: 20px; color: white">Loading...</p>
         </ngx-spinner>
-        
+
         <div class="row">
             <div class="col-xs-12">
                 <h2 class="page-header">
@@ -27,10 +28,6 @@
                 </div>
             </div>
         </div>
-
-        <a class="btn text-right" (click)="openModalFunction(true)">
-            <i class="fa fa-plus-square"></i> Adcionar Sub-Itens Mármore/Granito
-        </a>
 
         <!----------------------------------- MODAL --------------------------------------------------------------------->
         <div class="modal fade" id="modal-default" [ngStyle]="{'display': openModal ? 'block' : 'none', 'opacity': 1}">
@@ -52,7 +49,7 @@
 
                                 <sivp-input-container [label]="'Valor Unitário (R$)'" class="form-group col-sm-3 col-xs-12">
                                     <label> Valor </label>
-                                    <input type="text" class="form-control" formControlName="txtValor" placeholder="Valor Unitário" currencyMask [(ngModel)]="value" [options]="{ prefix: '', thousands: '', decimal: ',' }">
+                                    <input type="text" class="form-control" formControlName="txtValor" placeholder="Valor Unitário" currencyMask [(ngModel)]="value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
                                 </sivp-input-container>
 
                                 <!--<sivp-input-container [label]="'Valor'" class="form-group col-sm-4 col-xs-12">

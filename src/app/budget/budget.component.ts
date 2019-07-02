@@ -54,19 +54,26 @@ export class BudgetComponent implements OnInit, OnChanges{
     constructor(private formBuilder: FormBuilder, private start: StartService, private budgetService: BudgetService, private appService: AppService, private spinner: NgxSpinnerService){}
     
     validateField(){
+        var self = this;
         if(this.orderForm.value.tCliente == 'LOJ'){
-            this.validateCliente = true;
-            this.validateTerceiro = true;
-            this.validateVendedor = true;
+            self.showSpinner(true, "spinnerCliente");
+            this.appService.clientsJuridico().subscribe(function(clientsJuridico){
+                self.validateCliente = true;
+                self.validateTerceiro = true;
+                self.validateVendedor = true;
+                self.clientsJuridicoObj = clientsJuridico
+                self.showSpinner(false, "spinnerCliente");
+            });
         }else if(this.orderForm.value.tCliente == 'FIS'){
-            this.validateCliente = true;
+            this.showSpinner(true, "spinnerCliente");
             this.validateTerceiro = false;
             this.validateVendedor = false;
-        }else if(this.orderForm.value.tCliente == 'ARQ'){
-            this.validateCliente = true;
-            this.validateTerceiro = true;
-            this.validateVendedor = false;
-        } 
+            this.appService.clientsFisico().subscribe(function(clientsFisico){
+                this.validateCliente = true;
+                self.clientsFisicoObj = clientsFisico;
+                self.showSpinner(false, "spinnerCliente");
+            });   
+        }
     }
     
     public setTerceiros(value: Object[]){
@@ -74,6 +81,7 @@ export class BudgetComponent implements OnInit, OnChanges{
         this.completo.options = this.terceirosObj;
         this.completo.inicia();
         this.showTerceiros = true;
+        this.showSpinner(false, "spinnerTerceiro");
         console.log("TRUE");
     }
     
@@ -82,6 +90,7 @@ export class BudgetComponent implements OnInit, OnChanges{
         this.vendedores.options = this.vendedoresObj;
         this.vendedores.inicia();
         this.showVendedores = true;
+        this.showSpinner(false, "spinnerVendedor");
     }
     
     setFormout(){
@@ -93,11 +102,11 @@ export class BudgetComponent implements OnInit, OnChanges{
         this.formout.vendor = this.orderForm.value.vendedor;
     }
     
-    showSpinner(show: boolean){
+    showSpinner(show: boolean, name: string){
         if(show){
-            this.spinner.show();
+            this.spinner.show(name);
         }else{
-            this.spinner.hide();
+            this.spinner.hide(name);
         }
     }
     
@@ -148,14 +157,16 @@ export class BudgetComponent implements OnInit, OnChanges{
     
     ngOnInit() {                    
         var self = this;
-        this.showSpinner(true);
         this.main = this;
-        this.appService.clientsJuridico().subscribe(function(clientsJuridico){
+        //this.showSpinner(true);
+        
+        /*this.appService.clientsJuridico().subscribe(function(clientsJuridico){
             self.clientsJuridicoObj = clientsJuridico
-            self.showSpinner(false);
+            self.showSpinner(false, "spinnerCliente");
         });
-        this.appService.clientsFisico().subscribe(clientsFisico => this.clientsFisicoObj = clientsFisico);
-        this.appService.clientsArquiteto().subscribe(clientsArquiteto => this.clientsArquitetoObj = clientsArquiteto);
+        this.appService.clientsFisico().subscribe(clientsFisico => this.clientsFisicoObj = clientsFisico);*/
+
+        
         this.terceirosObj = [{nome:'', id:''}];
         this.vendedoresObj = [{nome:'', id:''}];
          

@@ -15,6 +15,7 @@ import {Terceiro} from '../../clients/terceiro.model';
 import {BudgetInsertion} from '../budget-insertion.model';
 import {Observable} from "rxjs/Observable";
 import {SubItem} from "./sub-item.model";
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'sivp-budget-new',
@@ -23,7 +24,7 @@ import {SubItem} from "./sub-item.model";
 })
 export class BudgetNewComponent implements OnInit {
     
-  constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute) { }
+  constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute, private spinner: NgxSpinnerService) { }
     
     
     
@@ -150,6 +151,14 @@ export class BudgetNewComponent implements OnInit {
         return response;
     }
     
+    showSpinner(show: boolean){
+        if(show){
+            this.spinner.show();
+        }else{
+            this.spinner.hide();
+        } 
+    }
+    
     setData(){
         this.clientData = Object.assign(this.clientData, this.clientDataObj[0]);
         this.thirdyData = Object.assign(this.thirdyData, this.thirdyDataObj[0]);
@@ -158,13 +167,16 @@ export class BudgetNewComponent implements OnInit {
     }
     
     setMainBudget(){
-        this.mainBudget = { client: this.client,
+        this.mainBudget = { number: 0,
+                            rectified: 1,
+                            client: this.client,
                             date: this.formin.date,
                             terceiro: this.thirdy,
                             vendor: this.formin.vendor,
                             valorTotal: 0,
                             discount: 0,
-                            valorComDesconto: 0
+                            valorComDesconto: 0,
+                            note: ""
                            };
     }
     
@@ -209,8 +221,11 @@ export class BudgetNewComponent implements OnInit {
     
     
     test(){
+        this.mainBudget.number = this.insertedBudget;
+        this.mainBudget.note = this.orderForm.get('txtObservacao').value;
         this.joinBudget();
-        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget, this.insertedBudget);
+        
+        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
     }
     
     removePlace2(i: number){
@@ -239,10 +254,12 @@ export class BudgetNewComponent implements OnInit {
     
     public clickRow(i: number){
         this.currentItem = i;
+        console.log(this.budgets[this.currentItem].valorUnitario);
+        console.log(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
         this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
         this.orderForm.get('txtNecessario').setValue(this.budgets[this.currentItem].necessario);
         this.orderForm.get('txtMedida').setValue(this.budgets[this.currentItem].medida);
-        this.orderForm.get('txtValor').setValue(this.budgets[this.currentItem].valorUnitario);
+        this.orderForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
         this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
     }
     
@@ -300,14 +317,16 @@ export class BudgetNewComponent implements OnInit {
     
     
     joinBudget(){
-        var flag: boolean = false;
-        var newItem = this.newItem;  
-        var budgetsAmbient = this.budgetsAmbient;
+        var self = this;
+        var count = 0;
+        var flag: boolean = false; 
         var keepGoing: boolean = true;
         var self = this;
         this.budgets.forEach(function(b){
-            if(budgetsAmbient.length > 0){
-                budgetsAmbient.forEach(function(value){
+            count = count + 1;
+            if(self.budgetsAmbient.length > 0){
+                self.budgetsAmbient.forEach(function(value){
+                    console.log(self.budgetsAmbient.length);
                     if(keepGoing){
                         if(value.comodo === b.comodo){
                             flag = true;
@@ -319,29 +338,37 @@ export class BudgetNewComponent implements OnInit {
                             value.necessario.push(b.necessario);
                             value.valor.push(b.valorUnitario);
                             value.valorTotal.push(b.valorTotal);
-                            value.valorTotalAmbiente = self.appService.converteMoedaFloat(value.valorTotalAmbiente) +self.appService.converteMoedaFloat(b.valorTotal);
+                            value.valorTotalAmbiente = self.appService.converteMoedaFloat(value.valorTotalAmbiente) + self.appService.converteMoedaFloat(b.valorTotal);
                             keepGoing = false;
+                            console.log(value.valorTotalAmbiente);
                         }
                     }
                 }); 
             }
             if(!flag){
-                newItem.comodo = b.comodo;
-                newItem.qtd[0] = b.qtd;
-                newItem.cod[0] = b.cod;
-                newItem.item[0] = b.item;
-                newItem.detalhe[0] = b.detalhe;
-                newItem.medida[0] = b.medida;
-                newItem.necessario[0] = b.necessario;
-                newItem.valor[0] = b.valorUnitario;
-                newItem.valorTotal[0] = b.valorTotal; 
-                newItem.valorTotalAmbiente = b.valorTotal;
-                budgetsAmbient.push(newItem);
-                newItem = {comodo:"", qtd:[], cod:[], item:[], detalhe:[], medida:[], necessario:[], valor:[], valorTotal: [], valorTotalAmbiente: 0};
+                self.newItem.comodo = b.comodo;
+                self.newItem.qtd[0] = b.qtd;
+                self.newItem.cod[0] = b.cod;
+                self.newItem.item[0] = b.item;
+                self.newItem.detalhe[0] = b.detalhe;
+                self.newItem.medida[0] = b.medida;
+                self.newItem.necessario[0] = b.necessario;
+                self.newItem.valor[0] = b.valorUnitario;
+                self.newItem.valorTotal[0] = b.valorTotal; 
+                self.newItem.valorTotalAmbiente = b.valorTotal;
+                self.budgetsAmbient.push(self.newItem);
+                self.newItem = {comodo:"", qtd:[], cod:[], item:[], detalhe:[], medida:[], necessario:[], valor:[], valorTotal: [], valorTotalAmbiente: 0};
             }
             flag = false;
             keepGoing = true;
         });
+        
+        self.budgetsAmbient.forEach(function(data, index){
+           if(data.qtd.length  == 1){
+               self.budgetsAmbient[index].valorTotalAmbiente = self.appService.converteMoedaFloat(self.budgetsAmbient[index].valorTotalAmbiente);
+           } 
+        });
+
         console.log(this.budgetsAmbient);
     }
     
@@ -539,13 +566,13 @@ export class BudgetNewComponent implements OnInit {
         });
     }
     
+    
+    
   ngOnInit() {
       var self = this;
       this.start.start();
-      this.fillStringToQuery(this.listTest, this.listTestString, 2).then(function(data){
-         console.log(data); 
-      });
       
+      setTimeout(() => this.spinner.show(), 10);
       this.orderForm = this.formBuilder.group({
             inputPlace: this.formBuilder.control(''),
             txtQtd: this.formBuilder.control(''),
@@ -573,37 +600,42 @@ export class BudgetNewComponent implements OnInit {
       this.route.queryParams.subscribe(
         (queryParams: any) =>{
             this.formin = queryParams;
-            console.log(this.formin);
         }
       );
       
-      this.appService.thirdyBudget("'" + this.formin.client + "'", "'" + this.formin.thirdy + "'").subscribe(function(thirdyBudget){
+      this.appService.budgetItems().subscribe(function(budgetItems){
+          self.items = budgetItems;
+          
+      });
+      
+      
+      /*this.appService.thirdyBudget("'" + this.formin.client + "'", "'" + this.formin.thirdy + "'").subscribe(function(thirdyBudget){
           self.thirdyDataObj = thirdyBudget;
           console.log(self.thirdyDataObj[0]);
       
-      });
-      
-      this.appService.budgetItems().subscribe(budgetItems => this.items = budgetItems);
-      
+      });*/
+
       this.appService.clientBudget("'" + this.formin.client + "'", "'" + this.formin.vendor + "'").subscribe(function(clientBudget){
-          self.clientDataObj = clientBudget;
-          
-          console.log(self.clientDataObj); 
-          console.log(self.thirdyDataObj);
-          console.log(self.clientDataObj[0]); 
-          
-          self.setData();
-          self.setClient();
-          self.setThirdy();
-          self.setMainBudget();
-          self.setBudgetInsertion();
-          console.log(self.client);
-          console.log(self.thirdy);
-          console.log(self.bInsertion);
-          console.log(self.clientData);
-          console.log(self.clientDataObj[0]); 
-          self.loadPage = true;
+        self.appService.thirdyBudget("'" + self.formin.client + "'", "'" + self.formin.thirdy + "'").subscribe(function(thirdyBudget){
+              self.thirdyDataObj = thirdyBudget;
+              console.log(self.thirdyDataObj[0]);
+              self.clientDataObj = clientBudget;
+              console.log(self.clientDataObj); 
+              console.log(self.thirdyDataObj);
+              console.log(self.clientDataObj[0]); 
+              self.setData();
+              self.setClient();
+              self.setThirdy();
+              self.setMainBudget();
+              self.setBudgetInsertion();
+              console.log(self.client);
+              console.log(self.thirdy);
+              console.log(self.bInsertion);
+              console.log(self.clientData);
+              console.log(self.clientDataObj[0]); 
+            self.showSpinner(false);
+              self.loadPage = true;
+        });
       });
   }
-    
 }

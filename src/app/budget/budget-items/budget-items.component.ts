@@ -36,18 +36,19 @@ export class BudgetItemsComponent implements OnInit {
             
             console.log(id);
             this.modalForm.get('txtDescricao').setValue(this.descricao);
-            this.modalForm.get('txtValor').setValue(this.valor);
+            this.modalForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.valor));
         }
     }
     
     updateBudgetItem(){
         var self = this;
         
-        this.appService.updateBudgetItem(this.id, this.modalForm.get('txtDescricao').value, this.modalForm.get('txtValor').value).subscribe(function(data){
+        this.appService.updateBudgetItem(this.id, this.modalForm.get('txtDescricao').value, this.appService.converteFloatMoeda(this.modalForm.get('txtValor').value)).subscribe(function(data){
             console.log(data);
             self.openModalFunction(false);
-            self.itemsObject[self.currentItem].descricao = self.modalForm.get('txtDescricao').value;
-            self.itemsObject[self.currentItem].valorUnitario = self.modalForm.get('txtValor').value.toFixed(2).replace('.',',');
+            
+            self.itemsObject[self.findIndex(self.id)].descricao = self.modalForm.get('txtDescricao').value;
+            self.itemsObject[self.findIndex(self.id)].valorUnitario = self.appService.converteFloatMoeda(self.modalForm.get('txtValor').value);
         })
     }
     
@@ -55,18 +56,38 @@ export class BudgetItemsComponent implements OnInit {
         this.currentItem = i;
     }
     
+    showSpinner(show: boolean){
+        if(show){
+            this.spinner.show();
+        }else{
+            this.spinner.hide();
+        }
+    }
+    
+    findIndex(id: number): number{
+        var response: number = -1;
+        this.itemsObject.forEach(function(data, index){
+            if(data.id == id){
+                response = index;
+            }
+        });
+        return response;
+    }
+    
   ngOnInit() {
-      this.spinner.show();
-      /*var self = this;   
+      setTimeout(() => this.showSpinner(true), 10);
+      var self = this;   
+      
       this.appService.budgetItems().subscribe(function(budgetItems){
           self.items = budgetItems;
           self.itemsObject = Object.assign(self.itemsObject, self.items);
           self.loadPage = true;
+          self.showSpinner(false);
       });
       
       this.modalForm = this.formBuilder.group({
             txtValor: this.formBuilder.control('', [Validators.required]),
             txtDescricao: this.formBuilder.control('', [Validators.required]),
-      })*/
+      })
   }
 }
