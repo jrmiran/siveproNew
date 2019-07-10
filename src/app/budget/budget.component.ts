@@ -32,7 +32,6 @@ export class BudgetComponent implements OnInit, OnChanges{
     tipoCliente: RadioOption[] = [
         {label: 'Loja', value: 'LOJ'},
         {label: 'Cliente Físico', value: 'FIS'}
-        //{label: 'Arquiteto', value: 'ARQ'}
     ]
     clientsJuridicoObj: Object[];
     clientsFisicoObj: Object[];
@@ -55,24 +54,41 @@ export class BudgetComponent implements OnInit, OnChanges{
     
     validateField(){
         var self = this;
+        
         if(this.orderForm.value.tCliente == 'LOJ'){
-            self.showSpinner(true, "spinnerCliente");
-            this.appService.clientsJuridico().subscribe(function(clientsJuridico){
-                self.validateCliente = true;
-                self.validateTerceiro = true;
-                self.validateVendedor = true;
-                self.clientsJuridicoObj = clientsJuridico
-                self.showSpinner(false, "spinnerCliente");
-            });
+            if(!this.clientsJuridicoObj){
+                self.showSpinner(true, "spinnerCliente");
+                this.appService.clientsJuridico().subscribe(function(clientsJuridico){
+                    self.validateCliente = true;
+                    self.validateTerceiro = true;
+                    self.validateVendedor = true;
+                    self.clientsJuridicoObj = clientsJuridico;
+                    self.showSpinner(false, "spinnerCliente");
+                });
+            } else{
+                    self.validateCliente = true;
+                    self.validateTerceiro = true;
+                    self.validateVendedor = true;
+                    self.showSpinner(false, "spinnerCliente");
+            }
         }else if(this.orderForm.value.tCliente == 'FIS'){
             this.showSpinner(true, "spinnerCliente");
             this.validateTerceiro = false;
             this.validateVendedor = false;
-            this.appService.clientsFisico().subscribe(function(clientsFisico){
-                this.validateCliente = true;
-                self.clientsFisicoObj = clientsFisico;
-                self.showSpinner(false, "spinnerCliente");
-            });   
+            if(!this.clientsFisicoObj){
+                this.appService.clientsFisico().subscribe(function(clientsFisico){
+                    self.validateCliente = true;
+                    self.validateTerceiro = false;
+                    self.validateVendedor = false;
+                    self.clientsFisicoObj = clientsFisico;
+                    self.showSpinner(false, "spinnerCliente");
+                });
+            } else{
+                    self.validateCliente = true;
+                    self.validateTerceiro = false;
+                    self.validateVendedor = false;
+                    self.showSpinner(false, "spinnerCliente");
+            }   
         }
     }
     

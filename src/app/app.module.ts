@@ -43,7 +43,7 @@ import { DatePickerComponent } from './shared/date-picker/date-picker.component'
 import {DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from '@angular/material/core';
 import { CreatePdfComponent } from './create-pdf/create-pdf.component';
 import { AutoCompleteComponent } from './shared/auto-complete/auto-complete.component';
-import {NgxMaskModule} from 'ngx-mask';
+import {NgxMaskModule} from 'ngx-mask-2';
 import { TextMaskModule } from 'angular2-text-mask';
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { ModalComponent } from './modal/modal.component';
@@ -51,6 +51,11 @@ import { BudgetItemsComponent } from './budget/budget-items/budget-items.compone
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {SpinnerService} from './shared/spinner.service';
+import { ClientRegisterComponent } from './clients/client-register/client-register.component';
+import { ClientSearchComponent } from './clients/client-search/client-search.component';
+import { SellerRegisterComponent } from './seller-register/seller-register.component';
+import { SellerSearchComponent } from './seller-search/seller-search.component';
+import { BudgetEditComponent } from './budget/budget-edit/budget-edit.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +86,11 @@ import {SpinnerService} from './shared/spinner.service';
     ModalComponent,
     BudgetItemsComponent,
     SpinnerComponent,
+    ClientRegisterComponent,
+    ClientSearchComponent,
+    SellerRegisterComponent,
+    SellerSearchComponent,
+    BudgetEditComponent,
   ],
   imports: [
     BrowserModule,

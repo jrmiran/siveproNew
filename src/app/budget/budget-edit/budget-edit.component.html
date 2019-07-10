@@ -14,26 +14,29 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h2 class="page-header">
-                        <i class="fa fa-usd"></i> Novo Orçamento
+                        <i class="fa fa-usd"></i> Orçamento
 
                     </h2>
                     <div class="row">
-                        <label class="col-xs-1"> Cliente: </label>
-                        <p class="col-xs-11"> {{formin.client}} </p>
-                        
-                        <label class="col-xs-1" *ngIf="formin.type == 'LOJ'"> Terceiro: </label>
-                        <p class="col-xs-11" *ngIf="formin.type == 'LOJ'"> {{formin.thirdy}} </p>
-                        
-                        <label class="col-xs-1" *ngIf="formin.type == 'LOJ'"> Vendedor: </label>
-                        <p class="col-xs-11" *ngIf="formin.type == 'LOJ'"> {{formin.vendor}} </p>
-                        
-                        <label class="col-xs-1"> Data: </label>
-                        <p class="col-xs-11"> {{formin.date}} </p>
+                        <label class="col-sm-2"> Cliente: </label>
+                        <p class="col-sm-10"> {{nameClient}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-2" *ngIf="typeClient == 'LOJ'"> Terceiro: </label>
+                        <p class="col-xs-10" *ngIf="typeClient == 'LOJ'"> {{nameThirdy}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-2" *ngIf="typeClient == 'LOJ'"> Vendedor: </label>
+                        <p class="col-xs-10" *ngIf="typeClient == 'LOJ'"> {{nameVendor}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"> Data: </label>
+                        <p class="col-sm-10"> {{mainBudget.date}} </p>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" *ngIf="loadItems">
                 <div class="col-sm-6 col-xs-12">
                     <div class="box box-primary">
                         <div class="box-header">
@@ -87,12 +90,22 @@
                             <i class="fa fa-pencil"></i>
                             <h3 class="box-title"> Orçamento:</h3>
                         </div>
-                        <sivp-table [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo', 'necessario', 'valorUnitario', 'valorTotal']" [budgetTable]="true" [bnc]="main" [ipp]="1000" [showPagination]="false">
+                        <sivp-table [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo', 'necessario', 'valorUnitario', 'valorTotal']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [budgetEdit]="self">
                         </sivp-table>
+                        <div class="row">
+                            <label class="col-sm-10 col-xs-12 text-right">Valor total: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(mainBudget.valorTotal)}}</p>
+                            <span *ngIf="mainBudget.discount > 0">
+                                <label class="col-sm-10 col-xs-12 text-right"> Desconto: </label>
+                                <p class="col-sm-2 col-xs-12"> {{mainBudget.discount}} %</p>
+                                <label class="col-sm-10 col-xs-12 text-right">Valor com Desconto: </label>
+                                <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(mainBudget.valorComDesconto)}} </p>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-sm-12 col-xs-12" *ngIf="currentItem >= 0">
                     <div class="box box-primary">
@@ -123,7 +136,7 @@
                             </sivp-input-container>
 
                             <sivp-input-container [label]="'Valor Unitário (R$)'" class="form-group col-sm-3 col-xs-12">
-                                <input type="text" class="form-control" formControlName="txtValor" placeholder="Valor Unitário" currencyMask [(ngModel)]="value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                                <input (mousedown)="changeCurrentValue()" type="text" class="form-control" formControlName="txtValor" placeholder="Valor Unitário" currencyMask [(ngModel)]="value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
                             </sivp-input-container>
                         </div>
 
@@ -179,7 +192,7 @@
                             <a (click)="applyDiscount()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Aplicar Desconto </a>
                         </div>
                         <div class="col-xs-6">
-                            <a (click)="budgetInsertionTest()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Processar Orçamento
+                            <a (click)="editBudget()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Alterar Orçamento
                             </a>
                         </div>
                     </div>

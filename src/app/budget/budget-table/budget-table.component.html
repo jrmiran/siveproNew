@@ -1,10 +1,13 @@
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+    <p> Caregando Orçamentos </p>
+</ngx-spinner>
 
 <section class="content-header">
 </section>
 
 <section class="content">
     <section class="invoice">
-        <sivp-table [name]="'Orçamento'" [headers]="['Id', 'Cliente', 'Terceiro', 'Data', 'Valor']" [datas]="buds" [ids]="['budgetId','clientName','storeClient' ,'date', 'value']">
+        <sivp-table [name]="'Orçamento'" [headers]="['Id', 'Cliente', 'Terceiro', 'Data', 'Valor']" [datas]="buds" [ids]="['budgetId','clientName','storeClient' ,'date', 'value']" [btc]="self">
         </sivp-table>
     </section>
 </section>

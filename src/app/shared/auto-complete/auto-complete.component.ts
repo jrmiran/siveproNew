@@ -35,6 +35,7 @@ export class AutoCompleteComponent implements OnInit, ControlValueAccessor{
     @Input() typeInput: string;
     
     
+    
     public objs: Object[];
     
 
@@ -72,13 +73,15 @@ export class AutoCompleteComponent implements OnInit, ControlValueAccessor{
         var self = this;
         this.value = value;
         this.onChange(this.value);
-        if(this.typeInput = "Client"){
-            this.appService.clientsEmpresa(`'${value}'`).subscribe(function(clientsEmpresa){
-                self.bco.setTerceiros(clientsEmpresa);
-            });
-            this.appService.vendorEmpresa(`'${value}'`).subscribe(vendorEmpresa => this.bco.setVendedores(vendorEmpresa));
+        if(this.bco){
+            if(this.typeInput = "Client"){
+                this.appService.clientsEmpresa(`'${value}'`).subscribe(function(clientsEmpresa){
+                    self.bco.setTerceiros(clientsEmpresa);
+                });
+                this.appService.vendorEmpresa(`'${value}'`).subscribe(vendorEmpresa => this.bco.setVendedores(vendorEmpresa));
+            }
+            this.bco.setFormout2();
         }
-        this.bco.setFormout2();
     }
     
     writeValue(obj: any){

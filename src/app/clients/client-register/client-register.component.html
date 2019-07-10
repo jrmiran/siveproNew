@@ -1,0 +1,130 @@
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+    <p> Inserindo Cliente </p>
+</ngx-spinner>
+<section class="content-header">
+</section>
+
+<section class="content">
+    <section class="invoice">
+        <div class="text-center box-header">
+            <h1 class="box-title"> Cadastro de Cliente</h1>
+        </div>
+
+        <form [formGroup]="clientForm" novalidate>
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-user"></i> Tipo do Cliente</h3>
+                        </div>
+                        <div class="form-group">
+                            <sivp-radio [options]="tipoCliente" formControlName="rdTypeClient" (click)="validateField()"></sivp-radio>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" *ngIf="typeClient == 'Cliente Loja'">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-user"></i> Cliente Loja</h3>
+                        </div>
+                        <div class="form-group">
+                            <sivp-auto-complete [options]="clientsJuridicoObj" formControlName="txtStore"></sivp-auto-complete>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Dados</h3>
+                        </div>
+
+                        <sivp-input-container class="col-sm-12 col-xs-12">
+                            <label> Nome</label>
+                            <input type="text" class="form-control" formControlName="txtName" placeholder="Nome">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12" [errorMessage]="'E-mail invalido'">
+                            <label> E-mail</label>
+                            <input type="text" class="form-control" formControlName="txtEmail" placeholder="E-mail">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12" *ngIf="typeClient == 'Pessoa' || typeClient == 'Arquiteto'">
+                            <label> CPF</label>
+                            <input type="text" class="form-control" formControlName="txtCPF" placeholder="CPF" mask="000.000.000-00">
+                        </sivp-input-container>
+
+
+                        <sivp-input-container class="col-sm-6 col-xs-12" *ngIf="typeClient == 'ClienteJuridico'">
+                            <label> CNPJ</label>
+                            <input type="text" class="form-control" formControlName="txtCPF" placeholder="CNPJ" mask="00.000.000-0000/00">
+                        </sivp-input-container>
+
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Celular</label>
+                            <input type="text" class="form-control" formControlName="txtCel1" placeholder="Celular" mask="(00) 00000-0000">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Celular</label>
+                            <input type="text" class="form-control" formControlName="txtCel2" placeholder="Celular" mask="(00) 00000-0000">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Telefone</label>
+                            <input type="text" class="form-control" formControlName="txtTel1" placeholder="Telefone" mask="(00) 0000-0000">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Telefone</label>
+                            <input type="text" class="form-control" formControlName="txtTel2" placeholder="Telefone" mask="(00) 0000-0000">
+                        </sivp-input-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Endereço</h3>
+                        </div>
+                        <sivp-input-container class="col-sm-12 col-xs-12">
+                            <label> Endereço </label>
+                            <input type="text" class="form-control" formControlName="txtAddress" placeholder="Rua, nº">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Complemento</label>
+                            <input type="text" class="form-control" formControlName="txtComplement" placeholder="Condomínio / Nº Apto">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Cidade</label>
+                            <input type="text" class="form-control" formControlName="txtCity" placeholder="Cidade">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Bairro</label>
+                            <input type="text" class="form-control" formControlName="txtNeighbor" placeholder="Bairro">
+                        </sivp-input-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <a (click)="insertClient()" class="btn btn-success pull-right" [class.disabled]="!clientForm.valid"><i class="fa fa-pencil"></i> Cadastrar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </section>
+</section>

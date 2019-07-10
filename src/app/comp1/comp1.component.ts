@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import {NgxSpinnerService} from 'ngx-spinner';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'sivp-comp1',
@@ -9,12 +10,19 @@ import {NgxSpinnerService} from 'ngx-spinner';
 })
 export class Comp1Component implements OnInit {
 
-  constructor(private spinner: NgxSpinnerService) { }
-
+  constructor(private spinner: NgxSpinnerService, private route: ActivatedRoute) { }
+    id: any;
+    
     showSpinner(){
         this.spinner.show();
     }
   ngOnInit() {
-      //this.spinner.show();
+      this.route.queryParams.subscribe(
+        (queryParams: any) =>{
+            console.log(queryParams);
+            this.id = queryParams.id;
+            console.log(this.id);
+        }
+      );
   } 
 }

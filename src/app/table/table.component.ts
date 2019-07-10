@@ -1,12 +1,15 @@
 import { Component, OnInit, Input, ViewChild, TemplateRef } from '@angular/core';
 import {BudgetNewComponent} from '../budget/budget-new/budget-new.component';
+import {BudgetTableComponent} from '../budget/budget-table/budget-table.component';
 import {BudgetService} from '../budget/budget.service';
 import {BudgetNew} from '../budget/budget-new/budget-new.model';
 import {CheckBox} from '../shared/check/check-box.model';
 import {StartService} from '../start.service';
 import {AppService} from '../app.service';
 import {BudgetItemsComponent} from '../budget/budget-items/budget-items.component';
+import {BudgetEditComponent} from '../budget/budget-edit/budget-edit.component';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+
 import "rxjs/add/operator/map";
 
 @Component({
@@ -24,21 +27,31 @@ export class TableComponent implements OnInit {
     @Input() ids: string[];
     @Input() searchBar: string = "true";
     @Input() bnc: BudgetNewComponent;
+    @Input() btc: BudgetTableComponent;
     @Input() buttonOption: boolean = false;
     @Input() check: string[];
     @Input() enableButton: boolean;
     @Input() comodos: string[];
     @Input() itemButton: boolean = false;
-    check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
-    @ViewChild(TemplateRef) template: TemplateRef<any>;
+    @Input() ipp: number = 10;
+    @Input() showPagination: boolean = true;
     @Input() budgetTable: boolean = false;
     @Input() budgetItem: BudgetItemsComponent;
+    @Input() budgetEdit: BudgetEditComponent;
+    
+    check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
+    @ViewChild(TemplateRef) template: TemplateRef<any>;
+    
     
     orderForm: FormGroup;
     filter: Object;
     p: Object;
     b: BudgetNew;
-
+    
+    openBudget(id: any){
+        this.btc.openBudget(id);
+    }
+    
     addBudgetItem(id: string, item: string, valorUnitario: string){
         var self = this;
         this.bnc.setValue();
@@ -65,10 +78,12 @@ export class TableComponent implements OnInit {
     }
     
     eventRow(i:number){
-        if(this.budgetTable){
+        if(this.bnc){
             this.bnc.clickRow(i);
         }else if(this.itemButton){
             this.budgetItem.clickRow(i);
+        }else if(this.budgetEdit){
+            this.budgetEdit.clickRow(i);
         }
     }
     
@@ -83,6 +98,5 @@ export class TableComponent implements OnInit {
         this.orderForm = this.formBuilder.group({
             checkBoxOption: this.buildComodos()
         })
-        
     }
 }

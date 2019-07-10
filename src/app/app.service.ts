@@ -56,6 +56,52 @@ export class AppService{
         return this.callQuery(`updateItem/${id}/'${description}'/'${value}'`);
     }
     
+    clientInsertion(
+                    clientType: string,
+                    clientNeighbor: string,
+                    clientCel1:string,
+                    clientCel2: string,
+                    clientCity: string,
+                    clientComplement: string,
+                    clientAddress: string,
+                    clientName: string,
+                    clientTel1: string,
+                    clientTel2: string,
+                    clientCpf: string,
+                    clientEmail: string,
+                    clientCnpj: string,
+    ): Observable<Object[]>{
+        return this.callQuery(`clientInsertion/'${clientType}'/'${clientNeighbor}'/'${clientCel1}'/'${clientCel2}'/'${clientCity}'/'${clientComplement}'/'${clientAddress}'/'${clientName}'/'${clientTel1}'/'${clientTel2}'/'${clientCpf}'/'${clientEmail}'/'${clientCnpj}'`);
+    }
+    
+    clientStoreInsertion(
+                    clientNeighbor: string,
+                    clientCel1:string,
+                    clientCel2: string,
+                    clientCity: string,
+                    clientComplement: string,
+                    clientEmail: string,
+                    clientAddress: string,
+                    clientName: string,
+                    clientTel1: string,
+                    clientTel2: string,
+                    storeName: string,
+    ): Observable<Object[]>{
+        return this.callQuery(`clientStoreInsertion/'${clientNeighbor}'/'${clientCel1}'/'${clientCel2}'/'${clientCity}'/'${clientComplement}'/'${clientEmail}'/'${clientAddress}'/'${clientName}'/'${clientTel1}'/'${clientTel2}'/'${storeName}'`);
+    }
+    
+    sellerInsertion(
+                    clientCel1:string,
+                    clientCel2: string,
+                    clientEmail: string,
+                    clientName: string,
+                    clientTel1: string,
+                    clientTel2: string,
+                    storeName: string,
+    ): Observable<Object[]>{
+        return this.callQuery(`sellerInsertion/'${clientCel1}'/'${clientCel2}'/'${clientEmail}'/'${clientName}'/'${clientTel1}'/'${clientTel2}'/'${storeName}'`);
+    }
+    
     budgetInsertion(
                     codes: string, 
                     ambients: string, 
@@ -72,6 +118,10 @@ export class AppService{
     
     budgetInsertionTest(insertion: string){
         return this.callQuery(`budgetInsertionTest/${insertion}`);
+    }
+    
+    budgetEdit(id: number){
+        return this.callQuery(`budgetEdit/${id}`);
     }
     
     converteFloatMoeda(valor: any){

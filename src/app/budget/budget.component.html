@@ -43,7 +43,6 @@
                 <sivp-primary-box [title]="'Data'">
                     <sivp-date-picker formControlName="data"></sivp-date-picker>
                 </sivp-primary-box>
-
                 <sivp-primary-box [title]="'Cliente'">
                     <sivp-auto-complete *ngIf="orderForm.value.tCliente == 'FIS'&&validateCliente" [options]="clientsFisicoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>
                     <sivp-auto-complete *ngIf="orderForm.value.tCliente == 'LOJ'&&validateCliente&&validateTerceiro" [options]="clientsJuridicoObj" formControlName="cliente" [bco]="main" [typeInput]="Client"></sivp-auto-complete>

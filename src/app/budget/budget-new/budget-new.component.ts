@@ -65,7 +65,7 @@ export class BudgetNewComponent implements OnInit {
     modalForm: FormGroup;
     
     items: Object[];
-    formin: {type: "", client: "", vendor: "", thirdy: "", date: ""};
+    formin= {type: "", client: "", vendor: "", thirdy: "", date: ""};
     budgets: BudgetNew[] = [];
     main: BudgetNewComponent = this;
     places: string[] = [""];
@@ -76,7 +76,7 @@ export class BudgetNewComponent implements OnInit {
                               email: "",
                               address: "",
                               id_Thirdy: 0
-                             };
+                        };
     client:  Client = {
                            type: "",
                            name: "",
@@ -87,7 +87,7 @@ export class BudgetNewComponent implements OnInit {
                            id_Client: 0,
                            id_Thirdy: 0,
                            id_vendor: 0
-                          };
+                       };
     
     clientDataObj: Object[];
     thirdyDataObj: Object[];
@@ -386,17 +386,28 @@ export class BudgetNewComponent implements OnInit {
         this.bInsertion.caminho = "";
         this.bInsertion.data = this.formin.date;
         this.bInsertion.desconto = this.discount;
-        this.bInsertion.observacao = ""; //INSERIR CAMPO DE OBSERVAÇÃO NA DOM
+        this.bInsertion.observacao = "";
         this.bInsertion.retificado = 1;
         this.bInsertion.tipoCliente = this.formin.type; //MODIFICAR
         this.bInsertion.valorTotal = this.mainBudget.valorTotal;
         this.bInsertion.arquiteto_id = 0;
-        this.bInsertion.clienteEmpresa_id = this.client.id_Client; //this.clienteEmpresa_id;
+        if(this.formin.type == 'LOJ'){
+            this.bInsertion.clienteEmpresa_id = this.client.id_Client; //this.clienteEmpresa_id;
+        } else{
+            this.bInsertion.clienteEmpresa_id = null; //this.clienteEmpresa_id;
+        }
         this.bInsertion.clienteEmpresaa_id = this.thirdy.id_Thirdy; //this.clienteEmpresaa_id;
-        this.bInsertion.pessoa_id = this.client.id_Client; //this.pessoa_id;
-        this.bInsertion.vendedor_id = this.client.id_vendor;//this.vendedor_id;
+        if(this.formin.type == 'FIS'){
+            this.bInsertion.pessoa_id = this.client.id_Client; //this.pessoa_id;
+        } else{
+            this.bInsertion.pessoa_id = null;
+        }
+        if(this.formin.type == 'LOJ'){
+            this.bInsertion.vendedor_id = this.client.id_vendor;//this.vendedor_id;
+        } else{
+            this.bInsertion.vendedor_id = null;
+        }
     }
-    
     
     convertBudgetToString(): Promise<any>{
         var self = this;
@@ -600,6 +611,7 @@ export class BudgetNewComponent implements OnInit {
       this.route.queryParams.subscribe(
         (queryParams: any) =>{
             this.formin = queryParams;
+            console.log(this.formin);
         }
       );
       
