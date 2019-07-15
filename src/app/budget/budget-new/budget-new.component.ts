@@ -254,6 +254,7 @@ export class BudgetNewComponent implements OnInit {
     
     public clickRow(i: number){
         this.currentItem = i;
+        console.log(this.currentItem);
         console.log(this.budgets[this.currentItem].valorUnitario);
         console.log(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
         this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);

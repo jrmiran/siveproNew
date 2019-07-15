@@ -4,7 +4,8 @@ import {AppService} from "../../app.service";
 import {BudgetNew} from "../budget-new/budget-new.model";
 import {StartService} from '../../start.service';
 import {CheckBox} from '../../shared/check/check-box.model';
-import { ActivatedRoute } from '@angular/router';
+import {KEY_CODE} from '../../shared/key-code/keyCode';
+import { ActivatedRoute, Router } from '@angular/router';
 import {BudgetModel} from '../budget.model'
 import {CreatePdfComponent} from '../../create-pdf/create-pdf.component'
 import "rxjs/add/operator/map";
@@ -25,8 +26,16 @@ import {BudgetNewComponent} from '../budget-new/budget-new.component';
 })
 export class BudgetEditComponent implements OnInit {
 
-constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute, private spinner: NgxSpinnerService) { }
+constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute, private router: Router, private spinner: NgxSpinnerService) { }
     
+      @HostListener('window:keyup', ['$event'])
+      keyEvent(event: KeyboardEvent) {
+        console.log(event);
+
+        if (event.keyCode === KEY_CODE.DELETE) {
+          this.removeItem();
+        }
+      }
     
     
     qtds: number[] = [];
@@ -56,6 +65,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     nameClient: string;
     nameThirdy: string;
     nameVendor: string;
+    typeClient: string;
     numberValidator = /^[\d,.?!]+$/;
     subItems: SubItem[] = [];
     loadPage: boolean = false;
@@ -120,16 +130,20 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                       };
     }
     
+    
     //b = {} as BudgetNew;
     self = this;
     idInput: number;
     loadItems: boolean = false;
     items: Object[];
+    cmds: string[] = [];
     formin= {type: "", client: "", vendor: "", thirdy: "", date: ""};
     budgets: BudgetNew[] = [];
     returnedData: Object[];
-    places: string[] = [""];
-    checks: string[] = [''];
+    //places = {} as string[];
+    //checks = {} as string[];
+    places: string[] = [];
+    checks: string[] = [];
     currentValue: number;
     
     cmd = [{comodos: ""}];
@@ -177,6 +191,10 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.modalForm.get('descricaoSubItem').setValue("");
     }
     
+    setValueCheckBox(i: number){
+            this.orderForm.value.checkBoxOption[i] = !this.orderForm.value.checkBoxOption[i];
+    }
+    
     getSubItems(index: number): SubItem[]{
         var response: SubItem[] = [];
         this.subItems.forEach(function(data){
@@ -185,6 +203,22 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             }
         });
         return response;
+    }
+    
+    public setValue(){
+        let valueCheckBox = Object.assign({}, this.orderForm.value);
+        valueCheckBox = Object.assign(valueCheckBox, {
+        checkBoxOption: valueCheckBox.checkBoxOption
+            .map((v,i) => v ? this.checks[i] : null)
+            .filter(v => v !== null)
+    });
+        this.comods = valueCheckBox.checkBoxOption;
+        //console.log(this.orderForm.value.checkBoxOption);
+        if(this.comods.length > 0){
+            this.enableButton = true;
+        }else{
+            this.enableButton = false;
+        }
     }
 
     sub: any;
@@ -245,6 +279,62 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         
     }
     
+    joinBudget(){
+        var self = this;
+        var count = 0;
+        var flag: boolean = false; 
+        var keepGoing: boolean = true;
+        var self = this;
+        this.budgets.forEach(function(b){
+            count = count + 1;
+            if(self.budgetsAmbient.length > 0){
+                self.budgetsAmbient.forEach(function(value){
+                    console.log(self.budgetsAmbient.length);
+                    if(keepGoing){
+                        if(value.comodo === b.comodo){
+                            flag = true;
+                            value.qtd.push(b.qtd);
+                            value.cod.push(b.cod);
+                            value.item.push(b.item);
+                            value.detalhe.push(b.detalhe);
+                            value.medida.push(b.medida);
+                            value.necessario.push(b.necessario);
+                            value.valor.push(b.valorUnitario);
+                            value.valorTotal.push(b.valorTotal);
+                            value.valorTotalAmbiente = self.appService.converteMoedaFloat(value.valorTotalAmbiente) + self.appService.converteMoedaFloat(b.valorTotal);
+                            keepGoing = false;
+                            console.log(value.valorTotalAmbiente);
+                        }
+                    }
+                }); 
+            }
+            if(!flag){
+                self.newItem.comodo = b.comodo;
+                self.newItem.qtd[0] = b.qtd;
+                self.newItem.cod[0] = b.cod;
+                self.newItem.item[0] = b.item;
+                self.newItem.detalhe[0] = b.detalhe;
+                self.newItem.medida[0] = b.medida;
+                self.newItem.necessario[0] = b.necessario;
+                self.newItem.valor[0] = b.valorUnitario;
+                self.newItem.valorTotal[0] = b.valorTotal; 
+                self.newItem.valorTotalAmbiente = b.valorTotal;
+                self.budgetsAmbient.push(self.newItem);
+                self.newItem = {comodo:"", qtd:[], cod:[], item:[], detalhe:[], medida:[], necessario:[], valor:[], valorTotal: [], valorTotalAmbiente: 0};
+            }
+            flag = false;
+            keepGoing = true;
+        });
+        
+        self.budgetsAmbient.forEach(function(data, index){
+           if(data.qtd.length  == 1){
+               self.budgetsAmbient[index].valorTotalAmbiente = self.appService.converteMoedaFloat(self.budgetsAmbient[index].valorTotalAmbiente);
+           } 
+        });
+
+        console.log(this.budgetsAmbient);
+    }
+    
     public clickRow(i: number){
         console.log("clickRow Edit")
         this.currentItem = i;
@@ -256,20 +346,6 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.orderForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
         this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
         this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario);
-    }
-    
-    fillStringToQuery(list: any[], response: any, id: any): Promise<any>{
-        return new Promise(function (resolve, reject) {
-            list.forEach(function(data, index){
-                if(index == 0){
-                    response = response + id + ',' + "'" + data + "')";
-                } else{
-                    response = response + ",(" + id + ',' + "'" + data + "')";
-                }
-            });
-            console.log(response);
-            resolve(response);   
-        });
     }
     
     editBudget(){
@@ -299,40 +375,136 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.budgets.push(b);
     }
     
-    retifyBudget(){
-        var budgetId: number = 5;
-        var codes: number[] = [100,200,300];
-        var ambients: string[] = ['a','b','c'];
-        var queryCodes = "";
-        var queryAmbients = "";
-        var response: any;
+    addItemBudget(b: BudgetNew){
+        this.budgets.push(b);
+    }
+    
+    convertBudgetToString(): Promise<any>{
         var self = this;
         
+        return new Promise(function(resolve, reject){
+            //self.insertedBudget = data['insertId'];
         
-        self.setBudgetInsertion();
-        console.log(self.bInsertion);
-        
-        this.convertBudgetToString().then(function(data){
-
-            
-
-            console.log(self.convertBInsertionToString());
-            //self.convertBudgetToString();
-            self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
-                console.log(response);
-
+            self.budgets.forEach(function(data){
+                console.log(data.valorUnitario);
+                self.qtds.push(data.qtd);
+                self.cods.push(data.cod);
+                self.itemss.push(data.item);
+                self.detalhes.push(data.detalhe);
+                self.medidas.push(data.medida);
+                self.comodos.push(data.comodo);
+                self.necessarios.push(data.necessario);
+                self.valoresUnitarios.push(self.appService.converteMoedaFloat(data.valorUnitario));
+                self.valoresTotais.push(self.appService.converteMoedaFloat(data.valorTotal));
+                self.descontos.push(data.desconto);
+                self.valoresComDesconto.push(data.valorComDesconto);
             });
-            self.test();
-            console.log(data);
+        
+            self.fillStringToQuery(self.qtds, self.qtdsString, self.mainBudget.number)
+                .then(function(response){
+                        self.qtdsString = response;
+                });
+            self.fillStringToQuery(self.cods, self.codsString, self.mainBudget.number)
+                .then(function(response){
+                        self.codsString = response;
+                });
+            self.fillStringToQuery(self.itemss, self.itemsString, self.mainBudget.number)
+                .then(function(response){
+                        self.itemsString = response;
+                });
+            self.fillStringToQuery(self.detalhes, self.detalhesString, self.mainBudget.number)
+                .then(function(response){
+                        self.detalhesString = response;
+                });
+            self.fillStringToQuery(self.medidas, self.medidasString, self.mainBudget.number)
+                .then(function(response){
+                        self.medidasString = response;
+                });
+            self.fillStringToQuery(self.comodos, self.comodosString, self.mainBudget.number)
+                .then(function(response){
+                        self.comodosString = response;
+                });
+            self.fillStringToQuery(self.necessarios, self.qtdsString, self.mainBudget.number)
+                .then(function(response){
+                        self.necessariosString = response;
+                });
+            self.fillStringToQuery(self.valoresUnitarios, self.valoresUnitariosString, self.mainBudget.number)
+                .then(function(response){
+                        self.valoresUnitariosString = response;
+                });
+            self.fillStringToQuery(self.valoresTotais, self.valoresTotaisString, self.mainBudget.number)
+                .then(function(response){
+                        self.valoresTotaisString = response;
+                });
+            self.fillStringToQuery(self.descontos, self.descontosString, self.mainBudget.number)
+                .then(function(response){
+                        self.descontosString = response;
+                });
+            self.fillStringToQuery(self.valoresComDesconto, self.valoresComDescontoString, self.mainBudget.number)
+                .then(function(response){
+                        self.valoresComDescontoString = response;
+                });
+                resolve("convertBudgetToString executado com sucesso!!");
+        });
+    }
+    
+    fillStringToQuery(list: any[], response: any, id: any): Promise<any>{
+        return new Promise(function (resolve, reject) {
+            list.forEach(function(data, index){
+                if(index == 0){
+                    response = response + id + ',' + "'" + data + "')";
+                } else{
+                    response = response + ",(" + id + ',' + "'" + data + "')";
+                }
+            });
+            console.log(response);
+            resolve(response);   
+        });
+    }
+    
+    
+    
+    // REMOVER UM ITEM DO ARRAY
+    
+    //this.places = this.places.slice(0,i).concat(this.places.slice(i+1,this.places.length));
+    
+    onKeydown(event){
+        alert("APERTOU DELETE");
+    }
+    
+    removeItem(){
+        var i: number;
+        i = this.currentItem;
+        
+        this.mainBudget.valorTotal = parseFloat((this.mainBudget.valorTotal - this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)).toFixed(2));
+        
+        if(this.currentItem >=0){
+            this.budgets = this.budgets.slice(0,i).concat(this.budgets.slice(i+1,this.budgets.length));
+        } else{
+            alert("NÃO HÁ ITEM SELECIONADO");
+        }
+        
+    }
+    
+    retifyBudget(){
+        var self = this;
+        this.spinner.show();
+        this.convertBudgetToString().then(function(data){
+           self.appService.budgetUpdate(self.mainBudget.number, self.mainBudget.discount, self.mainBudget.note, self.mainBudget.rectified, self.mainBudget.valorTotal, self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString).subscribe(function(value){
+               self.joinBudget();
+               self.createPdf.gerarPDF(self.budgetsAmbient, self.mainBudget);
+               console.log(value);
+               self.spinner.hide();
+               self.router.navigate(['budget']);
+               alert("ORÇAMENTO " + self.mainBudget.number + " RETIFICADO");
+           });
         });
     }
     
   ngOnInit() {
+      
       var self = this;
-      
-      console.log(self.budgets);
-      
-      setTimeout(() => this.spinner.show(), 10);
+      setTimeout(() => self.spinner.show(), 10);
       this.orderForm = this.formBuilder.group({
             inputPlace: this.formBuilder.control(''),
             txtQtd: this.formBuilder.control(''),
@@ -359,6 +531,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
       
       this.route.queryParams.subscribe(
         (queryParams: any) =>{
+            self.appService.budgetItems().subscribe(function(budgetItems){
+          self.items = budgetItems;
+          
+     
+            
             self.idInput = queryParams.id;
             self.appService.budgetEdit(self.idInput).subscribe(function(data){
                 self.returnedData = data;
@@ -394,11 +571,12 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                     self.b.medida = self.med[index].medidas;
                     self.b.comodo = self.cmd[index].comodos;
                     self.b.necessario = self.nec[index].necessidades;
-                    self.b.valorUnitario = self.appService.converteFloatMoeda(parseFloat(self.val[index].valores) / parseFloat(self.qtd[index].quantidades));
+                    self.b.valorUnitario = self.appService.converteFloatMoeda(parseFloat(self.val[index].valores.replace(',','.')) / parseFloat(self.qtd[index].quantidades.replace(',','.')));
                     self.b.valorTotal = "R$ " + self.val[index].valores;
                     self.b.desconto = 0;
                     self.b.valorComDesconto = 0;
-                     self.b = {
+                    self.addItem(self.b);
+                    self.b = {
                             qtd: 0,
                             cod: "",
                             item: "",
@@ -409,17 +587,32 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                             valorUnitario: null,
                             valorTotal: null,
                             desconto: 0,
-                            valorComDesconto:0
+                            valorComDesconto: 0
                     }
-                    self.addItem(self.b);
+                    
+                    self.cmds.push(self.cmd[index].comodos);    
                 });
+                
+                self.cmds = self.cmds.filter(function(data,i){
+                   return self.cmds.indexOf(data) === i;
+                });
+                
+                self.cmds.forEach(function(value){
+                   self.addPlace(value); 
+                });
+                //console.log(self.cmds);
+                /*self.cmd.forEach(function(value, index){
+                    if(self.cmds.indexOf(self.cmd[index].comodos) > -1){
+                        self.addPlace(self.cmd[index].comodos);
+                    }
+                    self.cmds.push(self.cmd[index].comodos);
+                    
+                });*/
+                
                 self.spinner.hide();
                 self.loadPage = true;
-                
-                
-                
-                
-                
+                console.log(self.budgets);
+
                 if(self.orc[0].pessoa_id == null){
                     self.setClient("LOJ", self.jur[0].nome, self.jur[0].telefone, self.jur[0].celular, self.jur[0].email, self.jur[0].endereco, self.jur[0].id, self.ter[0].id, self.ven[0].id);
                     self.setThirdy(self.ter[0].nome, self.ter[0].telefone, self.ter[0].celular, self.ter[0].email, self.ter[0].endereco, self.ter[0].id);
@@ -437,10 +630,10 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.mainBudget.client = self.client; 
                 self.mainBudget.date = self.orc[0].data; 
                 self.mainBudget.terceiro = self.thirdy; 
-                self.mainBudget.vendor = "0"; 
+                self.mainBudget.vendor = self.ven[0].nome; 
                 self.mainBudget.valorTotal = self.appService.converteMoedaFloat("R$ " + self.orc[0].valorTotal); 
                 self.mainBudget.discount = self.orc[0].desconto;
-                
+                self.mainBudget.note = self.orc[0].observacao;
                 
                 if(self.orc[0].desconto != null){
                     self.mainBudget.valorComDesconto = self.orc[0].valorTotal - self.orc[0].valorTotal*self.orc[0].desconto; //FAZER CONTA
@@ -451,5 +644,6 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             })
         }
       );
+             });
   }
 }

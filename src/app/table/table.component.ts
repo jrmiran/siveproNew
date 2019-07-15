@@ -38,11 +38,12 @@ export class TableComponent implements OnInit {
     @Input() budgetTable: boolean = false;
     @Input() budgetItem: BudgetItemsComponent;
     @Input() budgetEdit: BudgetEditComponent;
+    @Input() runClickRow: boolean = true;
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
     
-    
+    currentLine: number = -1;
     orderForm: FormGroup;
     filter: Object;
     p: Object;
@@ -54,8 +55,17 @@ export class TableComponent implements OnInit {
     
     addBudgetItem(id: string, item: string, valorUnitario: string){
         var self = this;
-        this.bnc.setValue();
+        console.log("entrou no addbudgeitem");
+        if(self.bnc){
+            console.log("Entrou no if linha 58");
+            self.bnc.setValue();
+        } else if(self.budgetEdit){
+            console.log("Entrou no else if linha 60");
+            self.budgetEdit.setValue();
+        }
+        
         this.comodos.forEach(function(comodo){
+            console.log("entrou no for each");
             self.b = {
             qtd: 1,
             cod: id,
@@ -69,7 +79,13 @@ export class TableComponent implements OnInit {
             desconto: 0,
             valorComDesconto: 0    
         }
-        self.budgetComponent.addItemBudget(self.b, self.bnc);
+        if(self.bnc){
+            console.log("Entrou no if");
+           self.budgetComponent.addItemBudget(self.b, self.bnc);
+        }else if(self.budgetEdit){
+            console.log("Entrou no else if");
+            self.budgetComponent.addItemEditBudget(self.b, self.budgetEdit);
+        }
         });
     }
     
@@ -78,12 +94,18 @@ export class TableComponent implements OnInit {
     }
     
     eventRow(i:number){
-        if(this.bnc){
-            this.bnc.clickRow(i);
-        }else if(this.itemButton){
-            this.budgetItem.clickRow(i);
-        }else if(this.budgetEdit){
-            this.budgetEdit.clickRow(i);
+        if(this.runClickRow){
+            if(this.bnc){
+                console.log("bnc");
+                this.bnc.clickRow(i);
+            }else if(this.itemButton){
+                console.log("itemButton");
+                this.budgetItem.clickRow(i);
+            }else if(this.budgetEdit){
+                console.log("budgetEdit");
+                this.budgetEdit.clickRow(i);
+            }
+            this.currentLine = i;
         }
     }
     

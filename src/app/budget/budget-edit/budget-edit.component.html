@@ -1,12 +1,10 @@
-<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
-    <p> Aguarde </p>
-</ngx-spinner>
-
 <section class="content-header"></section>
 
 <section class="content" *ngIf="loadPage">
     <section class="invoice">
-
+        <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" >
+    <p> Aguarde </p>
+</ngx-spinner>
 
 
         <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
@@ -17,6 +15,10 @@
                         <i class="fa fa-usd"></i> Orçamento
 
                     </h2>
+                    <div class="row">
+                        <label class="col-sm-2"> Orçamento: </label>
+                        <p class="col-sm-10"> {{mainBudget.number}} </p>
+                    </div>
                     <div class="row">
                         <label class="col-sm-2"> Cliente: </label>
                         <p class="col-sm-10"> {{nameClient}} </p>
@@ -36,13 +38,13 @@
                 </div>
             </div>
 
-            <div class="row" *ngIf="loadItems">
+            <div class="row">
                 <div class="col-sm-6 col-xs-12">
                     <div class="box box-primary">
                         <div class="box-header">
                             <h3 class="box-title"><i class="fa fa-pencil"></i> Itens:</h3>
                         </div>
-                        <sivp-table [name]="''" [headers]="['Id', 'Item', 'Valor Unitario']" [datas]="items" [ids]="['id','descricao','valorUnitario']" [bnc]="main" [buttonOption]="true" [check]="checks" [comodos]="comods" [enableButton]="enableButton">
+                        <sivp-table [name]="''" [headers]="['Id', 'Item', 'Valor Unitario']" [datas]="items" [ids]="['id','descricao','valorUnitario']" [budgetEdit]="self" [buttonOption]="true" [check]="checks" [comodos]="comods" [enableButton]="enableButton" [runClickRow]="false">
                         </sivp-table>
                     </div>
                 </div>
@@ -90,7 +92,7 @@
                             <i class="fa fa-pencil"></i>
                             <h3 class="box-title"> Orçamento:</h3>
                         </div>
-                        <sivp-table [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo', 'necessario', 'valorUnitario', 'valorTotal']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [budgetEdit]="self">
+                        <sivp-table (keydown.enter)="onKeydown($event)" [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo', 'necessario', 'valorUnitario', 'valorTotal']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [budgetEdit]="self">
                         </sivp-table>
                         <div class="row">
                             <label class="col-sm-10 col-xs-12 text-right">Valor total: </label>
@@ -192,7 +194,7 @@
                             <a (click)="applyDiscount()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Aplicar Desconto </a>
                         </div>
                         <div class="col-xs-6">
-                            <a (click)="editBudget()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Alterar Orçamento
+                            <a (click)="retifyBudget()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Alterar Orçamento
                             </a>
                         </div>
                     </div>
@@ -207,7 +209,7 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">{{budgets[currentItem].item}}</h4>
+                            <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
                         </div>
                         <div class="modal-body">
                             <div class="row">

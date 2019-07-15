@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core";
 import {BudgetNewComponent} from "./budget-new/budget-new.component";
+import {BudgetEditComponent} from "./budget-edit/budget-edit.component";
 import {BudgetNew} from "./budget-new/budget-new.model";
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 
@@ -10,6 +11,12 @@ export class BudgetService{
     
     addItemBudget(b: BudgetNew, budgetNewComponent: BudgetNewComponent){
         budgetNewComponent.addItemBudget(b);
+        
+    }
+    
+    addItemEditBudget(b: BudgetNew, budgetEditComponent: BudgetEditComponent){
+        console.log("Está no budget Service");
+        budgetEditComponent.addItemBudget(b);
         
     }
     

@@ -116,6 +116,23 @@ export class AppService{
         return this.callQuery(`budgetInsertion/${codes}/${ambients}/${details}/${items}/${measures}/${needings}/${numbers}/${quantitys}/${values}/${insertion}`);
     }
     
+    budgetUpdate(   id: number,
+                    discount: number,
+                    note: string,
+                    retified: number,
+                    amount: number,
+                    codes: string, 
+                    ambients: string, 
+                    details: string,
+                    items: string,
+                    measures: string,
+                    needings: string,
+                    numbers: string,
+                    quantitys: string,
+                    values: string){
+        return this.callQuery(`budgetUpdate/${id}/${discount}/${note}/${retified}/${amount}/${codes}/${ambients}/${details}/${items}/${measures}/${needings}/${numbers}/${quantitys}/${values}`);
+    }
+    
     budgetInsertionTest(insertion: string){
         return this.callQuery(`budgetInsertionTest/${insertion}`);
     }
