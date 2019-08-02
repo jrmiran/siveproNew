@@ -1,9 +1,9 @@
-<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+<!--<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
     <p> Carregando Itens </p>
 </ngx-spinner>
 
 <section class="content">
-    <section class="invoice" >
+    <section class="invoice" *ngIf="loadPage">
 
         <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
             <p style="font-size: 20px; color: white">Loading...</p>
@@ -30,7 +30,7 @@
         </div>
 
         <!----------------------------------- MODAL --------------------------------------------------------------------->
-        <div class="modal fade" id="modal-default" [ngStyle]="{'display': openModal ? 'block' : 'none', 'opacity': 1}">
+        <!--<div class="modal fade" id="modal-default" [ngStyle]="{'display': openModal ? 'block' : 'none', 'opacity': 1}">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -56,7 +56,7 @@
                                     <label> Valor </label>
                                     <input type="text" class="form-control" formControlName="txtValor" value="ddd">
                                 </sivp-input-container>-->
-                            </form>
+                            <!--</form>
                         </div>
                         <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
                             <button type="button" class="btn btn-default pull-left" (click)="openModalFunction(false)">Fechar</button>
@@ -64,12 +64,12 @@
                         </div>
                     </div>
                     <!-- /.modal-content -->
-                </div>
+                <!--</div>
                 <!-- /.modal-dialog -->
-            </div>
+            <!--</div>
         </div>
         <!------------------------------------------ END MODAL ----------------------------------------------------------->
 
-        <a> </a>
+        <!--<a> </a>
     </section>
 </section>
