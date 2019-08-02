@@ -51,7 +51,7 @@ export class BudgetNewComponent implements OnInit {
     valoresTotaisString: string = "(";
     descontosString: string = "(";
     valoresComDescontoString: string = "(";
-    
+    currentValue: number;
     
     listTest: string[] = ['a','b','c','d'];
     listTestString: string = "(";
@@ -223,7 +223,7 @@ export class BudgetNewComponent implements OnInit {
     test(){
         this.mainBudget.number = this.insertedBudget;
         this.mainBudget.note = this.orderForm.get('txtObservacao').value;
-        this.joinBudget();
+        //this.joinBudget();
         
         this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
     }
@@ -253,10 +253,26 @@ export class BudgetNewComponent implements OnInit {
     }
     
     public clickRow(i: number){
-        this.currentItem = i;
+        /*this.currentItem = i;
         console.log(this.currentItem);
         console.log(this.budgets[this.currentItem].valorUnitario);
         console.log(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
+        this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
+        this.orderForm.get('txtNecessario').setValue(this.budgets[this.currentItem].necessario);
+        this.orderForm.get('txtMedida').setValue(this.budgets[this.currentItem].medida);
+        this.orderForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
+        this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);*/
+        
+        console.log("clickRow Edit")
+        this.currentItem = i;
+        setTimeout(()=>{
+            this.orderForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
+        }, 10);
+        console.log(this.budgets[this.currentItem].valorUnitario);
+        console.log(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
+        
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario);
+        console.log(this.currentValue);
         this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
         this.orderForm.get('txtNecessario').setValue(this.budgets[this.currentItem].necessario);
         this.orderForm.get('txtMedida').setValue(this.budgets[this.currentItem].medida);
@@ -265,7 +281,7 @@ export class BudgetNewComponent implements OnInit {
     }
     
     changeItem(){
-        var qtd: number = parseFloat(this.orderForm.get('txtQtd').value.toString().replace(',','.'));
+        /*var qtd: number = parseFloat(this.orderForm.get('txtQtd').value.toString().replace(',','.'));
         var valor: number = parseFloat(this.orderForm.get('txtValor').value.toString().replace(',','.'));
         var medida1: number = parseFloat(this.orderForm.get('txtMedida1').value);
         var medida2: number = parseFloat(this.orderForm.get('txtMedida2').value);
@@ -284,8 +300,43 @@ export class BudgetNewComponent implements OnInit {
         this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
         
         this.pedraOption = false;
+        console.log(this.budgets[this.currentItem].valorUnitario);*/
+        var qtd: number = parseFloat(this.orderForm.get('txtQtd').value.toString().replace(',','.'));
+        var valor: number = parseFloat(this.orderForm.get('txtValor').value.toString().replace(',','.'));
+        var medida1: number = parseFloat(this.orderForm.get('txtMedida1').value);
+        var medida2: number = parseFloat(this.orderForm.get('txtMedida2').value);
+        var valorTotalLocal: number;
+        
+        this.budgets[this.currentItem].qtd = this.orderForm.get('txtQtd').value;
+        this.budgets[this.currentItem].necessario = this.orderForm.get('txtNecessario').value;
+        this.budgets[this.currentItem].detalhe = this.orderForm.get('txtDetalhe').value;
+        this.budgets[this.currentItem].valorUnitario = this.appService.converteFloatMoeda(this.orderForm.get('txtValor').value);
+        
         console.log(this.budgets[this.currentItem].valorUnitario);
         
+        if(this.pedraOption){
+           this.budgets[this.currentItem].valorTotal = (medida1 * medida2 * valor)/ 10000; 
+            this.budgets[this.currentItem].medida = this.orderForm.get('txtMedida1').value + " x " + this.orderForm.get('txtMedida2').value;
+        } else{
+            this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
+            this.budgets[this.currentItem].medida = this.orderForm.get('txtMedida').value;
+        }
+        
+        console.log(this.budgets[this.currentItem].valorTotal);
+        
+        if(isNaN(this.budgets[this.currentItem].valorTotal)){
+            valorTotalLocal = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)
+        } else{
+            valorTotalLocal = this.budgets[this.currentItem].valorTotal
+        }
+        console.log("MB VT: " + this.mainBudget.valorTotal);
+        console.log("VTL: " + valorTotalLocal);
+        console.log("CV: " + this.currentValue);
+        this.mainBudget.valorTotal = parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue;
+        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        this.pedraOption = false;
+        console.log(this.budgets[this.currentItem].valorUnitario);
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario) * this.budgets[this.currentItem].qtd;
     }
     
     public setValue(){
@@ -306,6 +357,7 @@ export class BudgetNewComponent implements OnInit {
     
     addItemBudget(b: BudgetNew){
         this.budgets.push(b);
+        this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.appService.converteMoedaFloat(b.valorTotal);
     }
     
     applyDiscount(){
@@ -537,7 +589,7 @@ export class BudgetNewComponent implements OnInit {
         var response: any;
         var self = this;
         
-        
+        self.joinBudget();
         self.setBudgetInsertion();
         console.log(self.bInsertion);
         

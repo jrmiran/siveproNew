@@ -22,7 +22,8 @@ export class BudgetItemsComponent implements OnInit {
     valor: string;
     modalForm: FormGroup;
     currentItem: number;
-
+    currentValue: number;
+    
     itemsObject: Items[] = [];
     
     openModalFunction(open: boolean, id?: number, descricao?: string, valor?: string){
@@ -53,6 +54,8 @@ export class BudgetItemsComponent implements OnInit {
     }
     
     clickRow(i: number){
+        
+        
         this.currentItem = i;
     }
     

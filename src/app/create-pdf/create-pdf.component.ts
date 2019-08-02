@@ -363,7 +363,7 @@ export class CreatePdfComponent implements OnInit {
         //********************************************************* AMOUNT **********************************************************************
         console.log("AMOUNT");
         //doc.autoTable(columnTotal, [{valor: "Total: " + numberToReal(totalBudget) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
-        doc.autoTable(columnTotal, [{valor: "Total: " + self.appService.converteFloatMoeda(totalBudget) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+        doc.autoTable(columnTotal, [{valor: "Total: " + self.appService.converteFloatMoeda(mainBudget.valorTotal) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
@@ -384,7 +384,7 @@ export class CreatePdfComponent implements OnInit {
             //****************************************************** VALUE WITH DISCOUNT ***************************************************************
             console.log("VALUE WITH DISCOUNT");
             //doc.autoTable(columnTotal, [{valor: "Valor Final: " + numberToReal(mainBudget.valorComDesconto) + "   "}],{margin: {top:0, left: 450, right: 24}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
-            doc.autoTable(columnTotal, [{valor: "Valor Final: " + mainBudget.valorComDesconto + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            doc.autoTable(columnTotal, [{valor: "Valor Final: " + self.appService.converteFloatMoeda(mainBudget.valorComDesconto) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});

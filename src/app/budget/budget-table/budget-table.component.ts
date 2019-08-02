@@ -25,7 +25,6 @@ export class BudgetTableComponent implements OnInit {
     ngOnInit() {
         setTimeout(()=> this.spinner.show(), 10);
         var self = this;
-        console.log(this.appService.converteMoedaFloat("R$ 150.000,94"))
         this.n = 1; 
         this.appService.budgets().subscribe(function(budgets){
             self.buds = budgets;

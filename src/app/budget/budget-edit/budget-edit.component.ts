@@ -37,7 +37,6 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         }
       }
     
-    
     qtds: number[] = [];
     cods: string[] = [];
     itemss: string[] = [];
@@ -130,8 +129,6 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                       };
     }
     
-    
-    //b = {} as BudgetNew;
     self = this;
     idInput: number;
     loadItems: boolean = false;
@@ -140,8 +137,6 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     formin= {type: "", client: "", vendor: "", thirdy: "", date: ""};
     budgets: BudgetNew[] = [];
     returnedData: Object[];
-    //places = {} as string[];
-    //checks = {} as string[];
     places: string[] = [];
     checks: string[] = [];
     currentValue: number;
@@ -175,7 +170,6 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             medida2: this.modalForm.get('medida2SubItem').value + "  ",
             descricao: this.modalForm.get('descricaoSubItem').value,
         });
-        
         
         this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value)/10000).toFixed(2));
         
@@ -260,11 +254,15 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         var valor: number = parseFloat(this.orderForm.get('txtValor').value.toString().replace(',','.'));
         var medida1: number = parseFloat(this.orderForm.get('txtMedida1').value);
         var medida2: number = parseFloat(this.orderForm.get('txtMedida2').value);
+        var valorTotalLocal: number;
         
         this.budgets[this.currentItem].qtd = this.orderForm.get('txtQtd').value;
         this.budgets[this.currentItem].necessario = this.orderForm.get('txtNecessario').value;
         this.budgets[this.currentItem].detalhe = this.orderForm.get('txtDetalhe').value;
         this.budgets[this.currentItem].valorUnitario = this.appService.converteFloatMoeda(this.orderForm.get('txtValor').value);
+        
+        console.log(this.budgets[this.currentItem].valorUnitario);
+        
         if(this.pedraOption){
            this.budgets[this.currentItem].valorTotal = (medida1 * medida2 * valor)/ 10000; 
             this.budgets[this.currentItem].medida = this.orderForm.get('txtMedida1').value + " x " + this.orderForm.get('txtMedida2').value;
@@ -272,8 +270,19 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
             this.budgets[this.currentItem].medida = this.orderForm.get('txtMedida').value;
         }
-        this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal) - this.currentValue;
         
+        console.log(this.budgets[this.currentItem].valorTotal);
+        
+        if(isNaN(this.budgets[this.currentItem].valorTotal)){
+            valorTotalLocal = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)
+        } else{
+            valorTotalLocal = this.budgets[this.currentItem].valorTotal
+        }
+        console.log("MB VT: " + this.mainBudget.valorTotal);
+        console.log("VTL: " + valorTotalLocal);
+        console.log("CV: " + this.currentValue);
+        this.mainBudget.valorTotal = parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue;
+        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
         this.pedraOption = false;
         console.log(this.budgets[this.currentItem].valorUnitario);
         
@@ -285,6 +294,9 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         var flag: boolean = false; 
         var keepGoing: boolean = true;
         var self = this;
+        var valorAmbienteLocal: number;
+        var valorTotalLocal: number;
+        
         this.budgets.forEach(function(b){
             count = count + 1;
             if(self.budgetsAmbient.length > 0){
@@ -301,9 +313,22 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                             value.necessario.push(b.necessario);
                             value.valor.push(b.valorUnitario);
                             value.valorTotal.push(b.valorTotal);
-                            value.valorTotalAmbiente = self.appService.converteMoedaFloat(value.valorTotalAmbiente) + self.appService.converteMoedaFloat(b.valorTotal);
+                            //value.valorTotalAmbiente = self.appService.converteMoedaFloat(value.valorTotalAmbiente) + self.appService.converteMoedaFloat(b.valorTotal);
+                            
+                            if(isNaN(value.valorTotalAmbiente)){
+                               valorAmbienteLocal = parseFloat(self.appService.converteMoedaFloat(value.valorTotalAmbiente).toFixed(2));
+                            } else{
+                                valorAmbienteLocal = parseFloat(value.valorTotalAmbiente.toFixed(2));
+                            }
+                            
+                            if(isNaN(b.valorTotal)){
+                               valorTotalLocal = parseFloat(self.appService.converteMoedaFloat(b.valorTotal).toFixed(2));
+                            } else{
+                                valorTotalLocal = parseFloat(b.valorTotal.toFixed(2));
+                            }
+                            
+                            value.valorTotalAmbiente = valorAmbienteLocal + valorTotalLocal;
                             keepGoing = false;
-                            console.log(value.valorTotalAmbiente);
                         }
                     }
                 }); 
@@ -336,16 +361,22 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     }
     
     public clickRow(i: number){
+        
         console.log("clickRow Edit")
         this.currentItem = i;
+        setTimeout(()=>{
+            this.orderForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
+        }, 10);
         console.log(this.budgets[this.currentItem].valorUnitario);
         console.log(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
+        
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario);
+        console.log(this.currentValue);
         this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
         this.orderForm.get('txtNecessario').setValue(this.budgets[this.currentItem].necessario);
         this.orderForm.get('txtMedida').setValue(this.budgets[this.currentItem].medida);
         this.orderForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
         this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
-        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario);
     }
     
     editBudget(){
@@ -361,7 +392,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     applyDiscount(){
         this.discount = parseFloat(this.orderForm.get('txtDiscount').value);
         this.mainBudget.discount = this.discount;
-        this.mainBudget.valorComDesconto = this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.discount/100);
+        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.discount/100)).toFixed(2));
         console.log(this.mainBudget.valorTotal);
         console.log(this.mainBudget.valorComDesconto);
     }
@@ -377,13 +408,15 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     
     addItemBudget(b: BudgetNew){
         this.budgets.push(b);
+        this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.appService.converteMoedaFloat(b.valorTotal);
+        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        //this.applyDiscount();
     }
     
     convertBudgetToString(): Promise<any>{
         var self = this;
         
         return new Promise(function(resolve, reject){
-            //self.insertedBudget = data['insertId'];
         
             self.budgets.forEach(function(data){
                 console.log(data.valorUnitario);
@@ -402,47 +435,47 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         
             self.fillStringToQuery(self.qtds, self.qtdsString, self.mainBudget.number)
                 .then(function(response){
-                        self.qtdsString = response;
+                        self.qtdsString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.cods, self.codsString, self.mainBudget.number)
                 .then(function(response){
-                        self.codsString = response;
+                        self.codsString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.itemss, self.itemsString, self.mainBudget.number)
                 .then(function(response){
-                        self.itemsString = response;
+                        self.itemsString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.detalhes, self.detalhesString, self.mainBudget.number)
                 .then(function(response){
-                        self.detalhesString = response;
+                        self.detalhesString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.medidas, self.medidasString, self.mainBudget.number)
                 .then(function(response){
-                        self.medidasString = response;
+                        self.medidasString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.comodos, self.comodosString, self.mainBudget.number)
                 .then(function(response){
-                        self.comodosString = response;
+                        self.comodosString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.necessarios, self.qtdsString, self.mainBudget.number)
                 .then(function(response){
-                        self.necessariosString = response;
+                        self.necessariosString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.valoresUnitarios, self.valoresUnitariosString, self.mainBudget.number)
                 .then(function(response){
-                        self.valoresUnitariosString = response;
+                        self.valoresUnitariosString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.valoresTotais, self.valoresTotaisString, self.mainBudget.number)
                 .then(function(response){
-                        self.valoresTotaisString = response;
+                        self.valoresTotaisString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.descontos, self.descontosString, self.mainBudget.number)
                 .then(function(response){
-                        self.descontosString = response;
+                        self.descontosString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.valoresComDesconto, self.valoresComDescontoString, self.mainBudget.number)
                 .then(function(response){
-                        self.valoresComDescontoString = response;
+                        self.valoresComDescontoString = response.replace(/[\/]/g,'%2F');
                 });
                 resolve("convertBudgetToString executado com sucesso!!");
         });
@@ -462,10 +495,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         });
     }
     
-    
-    
     // REMOVER UM ITEM DO ARRAY
-    
     //this.places = this.places.slice(0,i).concat(this.places.slice(i+1,this.places.length));
     
     onKeydown(event){
@@ -490,6 +520,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         var self = this;
         this.spinner.show();
         this.convertBudgetToString().then(function(data){
+           self.removeBarURL();
            self.appService.budgetUpdate(self.mainBudget.number, self.mainBudget.discount, self.mainBudget.note, self.mainBudget.rectified, self.mainBudget.valorTotal, self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString).subscribe(function(value){
                self.joinBudget();
                self.createPdf.gerarPDF(self.budgetsAmbient, self.mainBudget);
@@ -501,10 +532,50 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         });
     }
     
+    removeBarURL(){
+        var self = this;
+        if(self.mainBudget.note){
+            self.mainBudget.note = self.mainBudget.note.replace(/[\/]/g,'%2F');
+        }
+        
+        if(self.codsString){
+            self.codsString = self.codsString.replace(/[\/]/g,'%2F');
+        }
+        
+        if(self.comodosString){
+            self.comodosString = self.comodosString.replace(/[\/]/g,'%2F');
+        }
+        
+        if(self.detalhesString){
+            self.detalhesString = self.detalhesString.replace(/[\/]/g,'%2F');
+        }
+        
+        if(self.itemsString){
+            self.itemsString = self.itemsString.replace(/[\/]/g,'%2F');
+        }
+        
+        if(self.medidasString){
+            self.medidasString = self.medidasString.replace(/[\/]/g,'%2F');
+        }
+        
+        if(self.necessariosString){
+            self.necessariosString = self.necessariosString.replace(/[\/]/g,'%2F');
+        }
+        
+        if(self.qtdsString){
+            self.qtdsString = self.qtdsString.replace(/[\/]/g,'%2F');
+        }
+        
+        if(self.valoresUnitariosString){
+            self.valoresUnitariosString = self.valoresUnitariosString.replace(/[\/]/g,'%2F');
+        }
+    }
+    
   ngOnInit() {
       
       var self = this;
-      setTimeout(() => self.spinner.show(), 10);
+      var valorTotalLocal: number;
+      setTimeout(() => {this.spinner.show()}, 10);
       this.orderForm = this.formBuilder.group({
             inputPlace: this.formBuilder.control(''),
             txtQtd: this.formBuilder.control(''),
@@ -533,9 +604,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         (queryParams: any) =>{
             self.appService.budgetItems().subscribe(function(budgetItems){
           self.items = budgetItems;
-          
-     
-            
+
             self.idInput = queryParams.id;
             self.appService.budgetEdit(self.idInput).subscribe(function(data){
                 self.returnedData = data;
@@ -560,10 +629,9 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.pes = Object.assign(self.pes, self.returnedData[13]);
                 self.ter = Object.assign(self.ter, self.returnedData[14]);
                 self.ven = Object.assign(self.ven, self.returnedData[15]);
-                
-                
+
                 console.log(self.ite);
-                self.cmd.forEach(function(value, index){
+                self.qtd.forEach(function(value, index){
                     self.b.qtd = parseFloat(self.qtd[index].quantidades);
                     self.b.cod = self.cod[index].codigos;
                     self.b.item = self.ite[index].itens;
@@ -571,8 +639,22 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                     self.b.medida = self.med[index].medidas;
                     self.b.comodo = self.cmd[index].comodos;
                     self.b.necessario = self.nec[index].necessidades;
-                    self.b.valorUnitario = self.appService.converteFloatMoeda(parseFloat(self.val[index].valores.replace(',','.')) / parseFloat(self.qtd[index].quantidades.replace(',','.')));
-                    self.b.valorTotal = "R$ " + self.val[index].valores;
+                    console.log(self.appService.converteFloatMoeda(parseFloat(self.val[index].valores.replace(',','.'))));
+                    console.log(parseFloat(self.qtd[index].quantidades.replace(',','.')));
+                    
+                    //self.b.valorUnitario = self.appService.converteFloatMoeda((parseFloat(self.val[index].valores.replace(',','.')) / parseFloat(self.qtd[index].quantidades.replace(',','.'))).toFixed(2));
+                    
+                    self.b.valorUnitario = self.appService.converteFloatMoeda((parseFloat(self.val[index].valores.replace(',','.')).toFixed(2)));
+                    
+                    console.log(self.b.valorUnitario);
+                    
+                    //self.b.valorTotal = "R$ " + self.val[index].valores;
+                    //self.b.valorTotal = self.appService.converteFloatMoeda(self.val[index].valores.replace(',','.'));
+                    self.b.valorTotal= self.appService.converteFloatMoeda((parseFloat(self.val[index].valores.replace(',','.')) * parseFloat(self.qtd[index].quantidades.replace(',','.'))).toFixed(2));
+                    console.log(self.b.valorTotal);
+                    
+                    //b.valorTotal e b.valorUnitario no formato de Moeda.(R$1.000,00)
+                    
                     self.b.desconto = 0;
                     self.b.valorComDesconto = 0;
                     self.addItem(self.b);
@@ -600,16 +682,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.cmds.forEach(function(value){
                    self.addPlace(value); 
                 });
-                //console.log(self.cmds);
-                /*self.cmd.forEach(function(value, index){
-                    if(self.cmds.indexOf(self.cmd[index].comodos) > -1){
-                        self.addPlace(self.cmd[index].comodos);
-                    }
-                    self.cmds.push(self.cmd[index].comodos);
-                    
-                });*/
                 
-                self.spinner.hide();
                 self.loadPage = true;
                 console.log(self.budgets);
 
@@ -623,23 +696,23 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 } else{
                     self.setClient("FIS", self.pes[0].nome, self.pes[0].telefone, self.pes[0].celular, self.pes[0].email, self.pes[0].endereco, self.pes[0].id, null, null);
                 }
-                
-                
+                                
                 self.mainBudget.number = self.orc[0].id; 
                 self.mainBudget.rectified = self.orc[0].retificado + 1;
                 self.mainBudget.client = self.client; 
                 self.mainBudget.date = self.orc[0].data; 
                 self.mainBudget.terceiro = self.thirdy; 
                 self.mainBudget.vendor = self.ven[0].nome; 
-                self.mainBudget.valorTotal = self.appService.converteMoedaFloat("R$ " + self.orc[0].valorTotal); 
+                //mainBudget.valorTotal com decimal separado por ponto (.), formato normal de float
+                self.mainBudget.valorTotal = parseFloat(self.orc[0].valorTotal.replace(',','.')); 
+                console.log(self.orc[0].valorTotal);
+                //self.mainBudget.valorTotal = self.appService.converteMoedaFloat("R$ " + self.orc[0].valorTotal.toFixed(2).replace('.',','));
                 self.mainBudget.discount = self.orc[0].desconto;
                 self.mainBudget.note = self.orc[0].observacao;
+                console.log(self.mainBudget.valorTotal);
+                console.log(self.mainBudget.discount);
+                self.mainBudget.valorComDesconto = parseFloat((self.orc[0].valorTotal - self.orc[0].valorTotal * (self.mainBudget.discount/100)).toFixed(2));
                 
-                if(self.orc[0].desconto != null){
-                    self.mainBudget.valorComDesconto = self.orc[0].valorTotal - self.orc[0].valorTotal*self.orc[0].desconto; //FAZER CONTA
-                   } else{
-                       self.mainBudget.valorComDesconto = self.orc[0].valorTotal;
-                   }
                 self.mainBudget.note = self.orc[0].observacao;
             })
         }
