@@ -450,7 +450,7 @@ export class BudgetNewComponent implements OnInit {
         } else{
             this.bInsertion.clienteEmpresa_id = null; //this.clienteEmpresa_id;
         }
-        this.bInsertion.clienteEmpresaa_id = this.thirdy.id_Thirdy; //this.clienteEmpresaa_id;
+        this.bInsertion.clienteEmpresaa_id = null; //this.clienteEmpresaa_id;
         if(this.formin.type == 'FIS'){
             this.bInsertion.pessoa_id = this.client.id_Client; //this.pessoa_id;
         } else{
