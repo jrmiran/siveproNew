@@ -450,7 +450,7 @@ export class BudgetNewComponent implements OnInit {
         } else{
             this.bInsertion.clienteEmpresa_id = null; //this.clienteEmpresa_id;
         }
-        this.bInsertion.clienteEmpresaa_id = null; //this.clienteEmpresaa_id;
+        this.bInsertion.clienteEmpresaa_id = this.thirdy.id_Thirdy; //this.clienteEmpresaa_id;
         if(this.formin.type == 'FIS'){
             this.bInsertion.pessoa_id = this.client.id_Client; //this.pessoa_id;
         } else{
@@ -575,7 +575,7 @@ export class BudgetNewComponent implements OnInit {
                     this.bInsertion.arquiteto_id + "," +
                     this.bInsertion.clienteEmpresa_id + "," +
                     this.bInsertion.clienteEmpresaa_id + "," +
-                    0 + "," +
+                    null + "," +
                     this.bInsertion.pessoa_id + "," +
                     this.bInsertion.vendedor_id + ")"
     }
