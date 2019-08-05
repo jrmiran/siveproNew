@@ -443,9 +443,10 @@ export class BudgetNewComponent implements OnInit {
         this.bInsertion.retificado = 1;
         this.bInsertion.tipoCliente = this.formin.type; //MODIFICAR
         this.bInsertion.valorTotal = this.mainBudget.valorTotal;
-        this.bInsertion.arquiteto_id = 0;
+        this.bInsertion.arquiteto_id = null;
         if(this.formin.type == 'LOJ'){
-            this.bInsertion.clienteEmpresa_id = this.client.id_Client; //this.clienteEmpresa_id;
+            this.bInsertion.clienteEmpresa_id = this.client.id_Client;
+            this.bInsertion.pessoa_id = null;//this.clienteEmpresa_id;
         } else{
             this.bInsertion.clienteEmpresa_id = null; //this.clienteEmpresa_id;
         }
