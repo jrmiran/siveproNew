@@ -8,7 +8,7 @@ import { AppService } from './app.service'
 })
 export class AppComponent implements OnInit{
   title = 'sivepro';
-    constructor(private appService: AppService){}
+    constructor(public appService: AppService){}
     released: string;
 
     ngOnInit(){
