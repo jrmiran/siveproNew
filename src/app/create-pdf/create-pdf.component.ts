@@ -193,7 +193,8 @@ export class CreatePdfComponent implements OnInit {
         //********************************************************** BUDGET NUMBER AND DATE *******************************************************
         
         //**********************************************************CLIENT DATA*******************************************************
-        if(mainBudget.client.type == "LOJ"){
+        //if(mainBudget.client.type == "LOJ"){
+        if(mainBudget.client.name != "Belartte"){
             //**********************************************************STORE DATA*******************************************************
             console.log("É LOJA!!");
             doc.autoTable(columnsInfo2, [{column1: "Loja: " + mainBudget.client.name, column2: ""},
@@ -236,9 +237,9 @@ export class CreatePdfComponent implements OnInit {
             //**********************************************************PHISIC CLIENT DATA*******************************************************
             console.log("NÃO É LOJA!");
             lineTop()
-            doc.autoTable(columnsInfo2, [{column1: "Nome: " + mainBudget.client.name, column2: ""},
+            doc.autoTable(columnsInfo2, [{column1: "Nome: " + mainBudget.terceiro.name, column2: ""},
                                          {column1: "Vendedor: " + mainBudget.vendor, column2: "Telefone: " + mainBudget.client.tel},
-                                         {column1: "E-mail: " + mainBudget.client.email, column2: "Celular: " + mainBudget.client.cel}],
+                                         {column1: "E-mail: " + mainBudget.terceiro.email, column2: "Celular: " + mainBudget.terceiro.cel}],
                           {theme: 'plain', 
                           columnStyles: {
                                         c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},

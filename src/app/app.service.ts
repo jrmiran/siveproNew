@@ -4,10 +4,13 @@ import { Http } from "@angular/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/operator/map";
 import {BudgetInsertion} from './budget/budget-insertion.model';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Injectable()
 export class AppService{
-    constructor(private http: Http){}
+    constructor(private http: Http, private router: Router){}
+    
+    released: boolean = false;
     
     callQuery(q: string): Observable<Object[]>{
         console.log(`${DATA_API}/` + q);
@@ -45,6 +48,10 @@ export class AppService{
     clientBudget(store: string, vendor: string): Observable<Object[]>{
         console.log(store, vendor);
         return this.callQuery(`budgetVendor/${store}/${vendor}`);
+    }
+    
+    authentication(user: string, password: string): Observable<Object[]>{
+        return this.callQuery(`authentication/'${user}'/'${password}'`);
     }
     
     thirdyBudget(store: string, thirdy: string): Observable<Object[]>{
@@ -194,5 +201,18 @@ export class AppService{
          valor = valor.replace(",",".");
          return parseFloat(valor);
     }
-
+    
+    checkSessionStorage(localStorageName: string): boolean{
+        if(window.sessionStorage.getItem(localStorageName) == "true"){
+            return true;
+        } else{
+            return false;
+        }
+    }
+    
+    loadPage(){
+        if(!this.checkSessionStorage('authenticated')){
+            this.router.navigate(['login']);
+        }
+    }
 }

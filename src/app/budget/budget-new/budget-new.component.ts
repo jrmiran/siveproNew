@@ -471,6 +471,7 @@ export class BudgetNewComponent implements OnInit {
             self.insertedBudget = data['insertId'];
         
             self.budgets.forEach(function(data){
+                console.log(data.qtd);
                 self.qtds.push(data.qtd);
                 self.cods.push(data.cod);
                 self.itemss.push(data.item);

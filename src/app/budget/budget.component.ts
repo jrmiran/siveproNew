@@ -171,7 +171,9 @@ export class BudgetComponent implements OnInit, OnChanges{
         this.budgetService.nextLevelBudget(this.bnc, this.orderForm.value.data, this.orderForm.value.cliente, this.orderForm.value.terceiro, this.orderForm.value.vendedor);
     }
     
-    ngOnInit() {                    
+    ngOnInit() {   
+        this.appService.loadPage();
+        console.log(window.localStorage.getItem('authenticated'));
         var self = this;
         this.main = this;
         //this.showSpinner(true);

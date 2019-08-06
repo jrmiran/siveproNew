@@ -1,11 +1,11 @@
-<sivp-header></sivp-header>
-<sivp-menu></sivp-menu>
-<div class="content-wrapper">
+<sivp-header [class.hide]="!appService.checkSessionStorage('authenticated')"></sivp-header>
+<sivp-menu [class.hide]="!appService.checkSessionStorage('authenticated')"></sivp-menu>
+<div [class.content-wrapper]="appService.checkSessionStorage('authenticated')">
 
   <!-- Main content -->
   <section class="content">
       <router-outlet></router-outlet>  
   </section>
 </div>
-<sivp-settings></sivp-settings>
-<sivp-footer></sivp-footer>
+<sivp-settings [class.hide]="!appService.checkSessionStorage('authenticated')"></sivp-settings>
+<sivp-footer [class.hide]="!appService.checkSessionStorage('authenticated')"></sivp-footer>

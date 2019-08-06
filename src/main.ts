@@ -10,3 +10,8 @@ if (environment.production) {
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.log(err));
+
+window.onunload = function() {
+    alert('Valeu, falow.');
+    //Seu código aqui
+}

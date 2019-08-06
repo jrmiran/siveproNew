@@ -9,7 +9,10 @@ export class MenuComponent implements OnInit {
 
   constructor() { }
 
+    userName: string;
+    
   ngOnInit() {
+    this.userName = window.sessionStorage.getItem('user');  
   }
 
 }
