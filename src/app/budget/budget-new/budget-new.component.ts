@@ -112,7 +112,8 @@ export class BudgetNewComponent implements OnInit {
     };
     
     addSubItem(index: number){
-        
+        var self = this;
+        var valorTotalLocal: number;
         if(this.getSubItems(index).length == 0){
             this.budgets[this.currentItem].qtd = 0;
         }
@@ -127,11 +128,16 @@ export class BudgetNewComponent implements OnInit {
         });
         
         
-        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value)/10000).toFixed(2));
+        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value *  this.modalForm.get('qtdSubItem').value)/10000).toFixed(2));
         
         this.budgets[this.currentItem].detalhe = this.budgets[this.currentItem].detalhe + "\n*" +  this.modalForm.get('qtdSubItem').value + " " + this.modalForm.get('unidadeSubItem').value + " " + this.modalForm.get('medida1SubItem').value + "x" + this.modalForm.get('medida2SubItem').value + " " + this.modalForm.get('descricaoSubItem').value;
         this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
         
+        if(isNaN(this.budgets[this.currentItem].valorTotal)){
+            valorTotalLocal = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)
+        } else{
+            valorTotalLocal = this.budgets[this.currentItem].valorTotal
+        }
         
         console.log(this.budgets[this.currentItem].valorUnitario);
         this.modalForm.get('qtdSubItem').setValue("");
@@ -139,6 +145,14 @@ export class BudgetNewComponent implements OnInit {
         this.modalForm.get('medida1SubItem').setValue("");
         this.modalForm.get('medida2SubItem').setValue("");
         this.modalForm.get('descricaoSubItem').setValue("");
+        
+        
+        
+        this.mainBudget.valorTotal = parseFloat((parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue).toFixed(2));
+        console.log(this.mainBudget.valorTotal);
+        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
+        console.log(this.currentValue);
     }
     
     getSubItems(index: number): SubItem[]{
@@ -271,7 +285,7 @@ export class BudgetNewComponent implements OnInit {
         console.log(this.budgets[this.currentItem].valorUnitario);
         console.log(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
         
-        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario);
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
         console.log(this.currentValue);
         this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
         this.orderForm.get('txtNecessario').setValue(this.budgets[this.currentItem].necessario);

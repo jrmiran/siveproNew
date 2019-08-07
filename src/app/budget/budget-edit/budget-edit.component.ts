@@ -157,7 +157,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     
     
     addSubItem(index: number){
-        
+        var self = this;
+        var valorTotalLocal: number;
         if(this.getSubItems(index).length == 0){
             this.budgets[this.currentItem].qtd = 0;
         }
@@ -171,11 +172,16 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             descricao: this.modalForm.get('descricaoSubItem').value,
         });
         
-        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value)/10000).toFixed(2));
+        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value * this.modalForm.get('qtdSubItem').value)/10000).toFixed(2));
         
         this.budgets[this.currentItem].detalhe = this.budgets[this.currentItem].detalhe + "\n*" +  this.modalForm.get('qtdSubItem').value + " " + this.modalForm.get('unidadeSubItem').value + " " + this.modalForm.get('medida1SubItem').value + "x" + this.modalForm.get('medida2SubItem').value + " " + this.modalForm.get('descricaoSubItem').value;
         this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
         
+        if(isNaN(this.budgets[this.currentItem].valorTotal)){
+            valorTotalLocal = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)
+        } else{
+            valorTotalLocal = this.budgets[this.currentItem].valorTotal
+        }
         
         console.log(this.budgets[this.currentItem].valorUnitario);
         this.modalForm.get('qtdSubItem').setValue("");
@@ -183,6 +189,15 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.modalForm.get('medida1SubItem').setValue("");
         this.modalForm.get('medida2SubItem').setValue("");
         this.modalForm.get('descricaoSubItem').setValue("");
+        
+        this.orderForm.patchValue({
+            txtQtd: self.modalForm.get('qtdSubitem').value
+        });
+        
+        this.mainBudget.valorTotal = parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue;
+        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        
+        //this.changeItem();
     }
     
     setValueCheckBox(i: number){
