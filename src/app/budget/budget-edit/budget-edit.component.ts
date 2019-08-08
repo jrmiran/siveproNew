@@ -728,8 +728,10 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.mainBudget.note = self.orc[0].observacao;
                 console.log(self.mainBudget.valorTotal);
                 console.log(self.mainBudget.discount);
-                self.mainBudget.valorComDesconto = parseFloat((self.orc[0].valorTotal - self.orc[0].valorTotal * (self.mainBudget.discount/100)).toFixed(2));
-                
+                console.log("VALOR TOTAL: " + self.orc[0].valorTotal);
+                console.log("DESCONTO: " + self.mainBudget.discount);
+                self.mainBudget.valorComDesconto = parseFloat((self.orc[0].valorTotal.replace(',','.') - self.orc[0].valorTotal.replace(',','.') * (self.mainBudget.discount/100)).toFixed(2));
+                console.log(self.mainBudget.valorComDesconto);
                 self.mainBudget.note = self.orc[0].observacao;
             })
         }
