@@ -148,6 +148,10 @@ export class AppService{
         return this.callQuery(`budgetEdit/${id}`);
     }
     
+    searchAllPeople(): Observable<Object[]>{
+        return this.callQuery('searchAllPeople');
+    }
+    
     converteFloatMoeda(valor: any){
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();
@@ -193,6 +197,8 @@ export class AppService{
       return valor;
 
    }
+    
+    
     
     converteMoedaFloat(value: any): number{
          var valor = value.toString();

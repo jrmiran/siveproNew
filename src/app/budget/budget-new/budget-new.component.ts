@@ -4,7 +4,7 @@ import {AppService} from "../../app.service";
 import {BudgetNew} from "./budget-new.model";
 import {StartService} from '../../start.service';
 import {CheckBox} from '../../shared/check/check-box.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {BudgetModel} from '../budget.model'
 import {CreatePdfComponent} from '../../create-pdf/create-pdf.component'
 import "rxjs/add/operator/map";
@@ -24,7 +24,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 })
 export class BudgetNewComponent implements OnInit {
     
-  constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute, private spinner: NgxSpinnerService) { }
+  constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private router: ActivatedRoute, private spinner: NgxSpinnerService, private route: Router) { }
     
     
     
@@ -153,6 +153,9 @@ export class BudgetNewComponent implements OnInit {
         this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
         this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
         console.log(this.currentValue);
+        
+        this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
+        this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
     }
     
     getSubItems(index: number): SubItem[]{
@@ -605,6 +608,7 @@ export class BudgetNewComponent implements OnInit {
         var response: any;
         var self = this;
         
+        this.spinner.show();
         self.joinBudget();
         self.setBudgetInsertion();
         console.log(self.bInsertion);
@@ -621,6 +625,9 @@ export class BudgetNewComponent implements OnInit {
             });
             self.test();
             console.log(data);
+            self.spinner.hide();
+            self.route.navigate(['budget']);
+            alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
         });
     }
     
@@ -677,7 +684,7 @@ export class BudgetNewComponent implements OnInit {
       
       this.cbo = (this.orderForm.get('checkBoxOption') as FormArray);
       
-      this.route.queryParams.subscribe(
+      this.router.queryParams.subscribe(
         (queryParams: any) =>{
             this.formin = queryParams;
             console.log(this.formin);

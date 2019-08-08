@@ -54,7 +54,6 @@ export class BudgetComponent implements OnInit, OnChanges{
     
     validateField(){
         var self = this;
-        
         if(this.orderForm.value.tCliente == 'LOJ'){
             if(!this.clientsJuridicoObj){
                 self.showSpinner(true, "spinnerCliente");

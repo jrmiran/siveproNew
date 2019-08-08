@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AppService } from '../app.service'
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../shared/user/user-model';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'sivp-login',
@@ -12,12 +13,13 @@ import { User } from '../shared/user/user-model';
 export class LoginComponent implements OnInit {
 
     loginForm: FormGroup
-  constructor(private fb: FormBuilder, private appService: AppService, private router: Router) { }
+  constructor(private fb: FormBuilder, private appService: AppService, private router: Router, private spinner: NgxSpinnerService) { }
     user: Object[] = [];
     userName= {nome:""};
     
     registerUser(){
         var self = this;
+        setTimeout(()=> this.spinner.show(), 10);
         this.appService.authentication(this.loginForm.get('email').value, this.loginForm.get('password').value).subscribe(function(data){
             console.log(data);
             self.user = data;
@@ -31,7 +33,7 @@ export class LoginComponent implements OnInit {
                 console.log("else");
                 alert("Usuário e/ou senha inválido");
             }
-            
+            self.spinner.hide();
         });
         
     }

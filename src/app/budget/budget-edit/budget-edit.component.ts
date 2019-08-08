@@ -190,12 +190,14 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.modalForm.get('medida2SubItem').setValue("");
         this.modalForm.get('descricaoSubItem').setValue("");
         
-        this.orderForm.patchValue({
-            txtQtd: self.modalForm.get('qtdSubitem').value
-        });
-        
         this.mainBudget.valorTotal = parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue;
         this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
+        console.log(this.currentValue);
+        
+        this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
+        this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
         
         //this.changeItem();
     }
@@ -701,16 +703,16 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.loadPage = true;
                 console.log(self.budgets);
 
-                if(self.orc[0].pessoa_id == null){
+                //if(self.orc[0].pessoa_id == null){
                     self.setClient("LOJ", self.jur[0].nome, self.jur[0].telefone, self.jur[0].celular, self.jur[0].email, self.jur[0].endereco, self.jur[0].id, self.ter[0].id, self.ven[0].id);
                     self.setThirdy(self.ter[0].nome, self.ter[0].telefone, self.ter[0].celular, self.ter[0].email, self.ter[0].endereco, self.ter[0].id);
                     self.typeClient = "LOJ";
                     self.nameClient = self.jur[0].nome;
                     self.nameThirdy = self.ter[0].nome;
                     self.nameVendor = self.ven[0].nome;
-                } else{
-                    self.setClient("FIS", self.pes[0].nome, self.pes[0].telefone, self.pes[0].celular, self.pes[0].email, self.pes[0].endereco, self.pes[0].id, null, null);
-                }
+                //} //else{
+                //    self.setClient("FIS", self.pes[0].nome, self.pes[0].telefone, self.pes[0].celular, self.pes[0].email, //self.pes[0].endereco, self.pes[0].id, null, null);
+                //}
                                 
                 self.mainBudget.number = self.orc[0].id; 
                 self.mainBudget.rectified = self.orc[0].retificado + 1;

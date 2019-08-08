@@ -1,14 +1,12 @@
-<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
-    <p> Aguarde </p>
-</ngx-spinner>
-
 <section class="content-header"></section>
 
 <section class="content" *ngIf="loadPage">
     <section class="invoice">
 
 
-
+        <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+            <p> Aguarde </p>
+        </ngx-spinner>
         <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
         <form [formGroup]="orderForm" novalidate>
             <div class="row">
@@ -20,13 +18,13 @@
                     <div class="row">
                         <label class="col-xs-1"> Cliente: </label>
                         <p class="col-xs-11"> {{formin.client}} </p>
-                        
+
                         <label class="col-xs-1" *ngIf="formin.type == 'LOJ'"> Terceiro: </label>
                         <p class="col-xs-11" *ngIf="formin.type == 'LOJ'"> {{formin.thirdy}} </p>
-                        
+
                         <label class="col-xs-1" *ngIf="formin.type == 'LOJ'"> Vendedor: </label>
                         <p class="col-xs-11" *ngIf="formin.type == 'LOJ'"> {{formin.vendor}} </p>
-                        
+
                         <label class="col-xs-1"> Data: </label>
                         <p class="col-xs-11"> {{formin.date}} </p>
                     </div>
@@ -102,7 +100,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row">
                 <div class="col-sm-12 col-xs-12" *ngIf="currentItem >= 0">
                     <div class="box box-primary">

@@ -238,7 +238,7 @@ export class CreatePdfComponent implements OnInit {
             console.log("NÃO É LOJA!");
             lineTop()
             doc.autoTable(columnsInfo2, [{column1: "Nome: " + mainBudget.terceiro.name, column2: ""},
-                                         {column1: "Vendedor: " + mainBudget.vendor, column2: "Telefone: " + mainBudget.client.tel},
+                                         {column1: "Vendedor: " + mainBudget.vendor, column2: "Telefone: " + mainBudget.terceiro.tel},
                                          {column1: "E-mail: " + mainBudget.terceiro.email, column2: "Celular: " + mainBudget.terceiro.cel}],
                           {theme: 'plain', 
                           columnStyles: {
