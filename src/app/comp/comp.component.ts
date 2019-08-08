@@ -19,7 +19,7 @@ export class CompComponent implements OnInit{
     
     
     ngOnInit() {
-            var self = this;
+            /*var self = this;
            this.appService.searchAllPeople().subscribe(function(data){
                 console.log(data);
                 data.forEach(function(value){
@@ -44,6 +44,6 @@ export class CompComponent implements OnInit{
                      console.log(data); 
                   });
                });
-           });
+           });*/
     }
 }
