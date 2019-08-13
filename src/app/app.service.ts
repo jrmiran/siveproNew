@@ -63,6 +63,10 @@ export class AppService{
         return this.callQuery(`updateItem/${id}/'${description}'/'${value}'`);
     }
     
+    createBudgetItem(id: number, description: string, value:string): Observable<Object[]>{
+        return this.callQuery(`createItem/${id}/'${description}'/'${value}'`);
+    }
+    
     clientInsertion(
                     clientType: string,
                     clientNeighbor: string,

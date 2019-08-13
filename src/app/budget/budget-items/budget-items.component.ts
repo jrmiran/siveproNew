@@ -17,12 +17,14 @@ export class BudgetItemsComponent implements OnInit {
     loadPage: boolean = false;
     self = this;
     openModal: boolean = false;
+    openModalC: boolean = false;
     id: number;
     descricao: string;
     valor: string;
     modalForm: FormGroup;
     currentItem: number;
     currentValue: number;
+    validantionNumber =  /^[0-9]+$/;
     
     itemsObject: Items[] = [];
     
@@ -41,6 +43,10 @@ export class BudgetItemsComponent implements OnInit {
         }
     }
     
+    openModalCreate(open: boolean, id?: number, descricao?: string, valor?: string){
+        this.openModalC = open;
+    }
+    
     updateBudgetItem(){
         var self = this;
         
@@ -50,6 +56,20 @@ export class BudgetItemsComponent implements OnInit {
             
             self.itemsObject[self.findIndex(self.id)].descricao = self.modalForm.get('txtDescricao').value;
             self.itemsObject[self.findIndex(self.id)].valorUnitario = self.appService.converteFloatMoeda(self.modalForm.get('txtValor').value);
+        })
+    }
+    
+    createBudgetItem(){
+        var self = this;
+        
+        this.spinner.show();
+        this.appService.createBudgetItem(this.modalForm.get('txtId').value, this.modalForm.get('txtDescricao').value, this.appService.converteFloatMoeda(this.modalForm.get('txtValor').value)).subscribe(function(data){
+            console.log(data);
+            self.openModalFunction(false);
+            self.spinner.hide();
+            alert(self.modalForm.get('txtDescricao').value + " CRIADO COM ID " + self.modalForm.get('txtId').value);
+            self.openModalCreate(false);
+            
         })
     }
     
@@ -89,6 +109,7 @@ export class BudgetItemsComponent implements OnInit {
       });
       
       this.modalForm = this.formBuilder.group({
+            txtId: this.formBuilder.control('', [Validators.required, Validators.pattern(self.validantionNumber)]),
             txtValor: this.formBuilder.control('', [Validators.required]),
             txtDescricao: this.formBuilder.control('', [Validators.required]),
       })
