@@ -39,6 +39,7 @@ export class TableComponent implements OnInit {
     @Input() budgetItem: BudgetItemsComponent;
     @Input() budgetEdit: BudgetEditComponent;
     @Input() runClickRow: boolean = true;
+    @Input() dropdownButton: boolean = false;
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
@@ -51,6 +52,11 @@ export class TableComponent implements OnInit {
     
     openBudget(id: any){
         this.btc.openBudget(id);
+    }
+    
+    changeBudgetStatus(id: number, status: boolean){
+        console.log(id);
+        this.budgetComponent.changeBudgetStatus(id, status, this.btc);
     }
     
     addBudgetItem(id: string, item: string, valorUnitario: string){

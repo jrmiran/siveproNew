@@ -18,6 +18,7 @@ import {Observable} from "rxjs/Observable";
 import {SubItem} from "../budget-new/sub-item.model";
 import {NgxSpinnerService} from 'ngx-spinner';
 import {BudgetNewComponent} from '../budget-new/budget-new.component';
+import {BudgetService} from '../budget.service'
 
 @Component({
   selector: 'sivp-budget-edit',
@@ -26,7 +27,7 @@ import {BudgetNewComponent} from '../budget-new/budget-new.component';
 })
 export class BudgetEditComponent implements OnInit {
 
-constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute, private router: Router, private spinner: NgxSpinnerService) { }
+constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute, private router: Router, private spinner: NgxSpinnerService, private budgetService: BudgetService) { }
     
       @HostListener('window:keyup', ['$event'])
       keyEvent(event: KeyboardEvent) {
@@ -71,6 +72,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     orderForm: FormGroup;
     modalForm: FormGroup;
     mainBudget = {} as BudgetModel;
+    
+    insertedBudget: any;
     
     b: BudgetNew = {
         qtd: 0,
@@ -129,6 +132,23 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                       };
     }
     
+    bInsertion: BudgetInsertion = {
+        aprovado: false,
+        caminho: "",
+        data: "",
+        desconto: 0,
+        observacao: "", //INSERIR CAMPO DE OBSERVAÇÃO NA DOM
+        retificado: 1,
+        tipoCliente: "", //MODIFICAR
+        valorTotal: 0,
+        arquiteto_id: 0,
+        clienteEmpresa_id: 0, //this.clienteEmpresa_id;
+        clienteEmpresaa_id: 0, //this.clienteEmpresaa_id;
+        clienteJuridico_id: 0,
+        pessoa_id: 0, //this.pessoa_id;
+        vendedor_id: 0//this.vendedor_id;
+    };
+    
     self = this;
     idInput: number;
     loadItems: boolean = false;
@@ -140,6 +160,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     places: string[] = [];
     checks: string[] = [];
     currentValue: number;
+    approved: boolean;
     
     cmd = [{comodos: ""}];
     qtd = [{quantidades: ""}];
@@ -305,6 +326,12 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         
     }
     
+    createNewPdf(){
+    
+        this.joinBudget();
+        this.testGenerate();
+    }
+    
     joinBudget(){
         var self = this;
         var count = 0;
@@ -430,6 +457,77 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         //this.applyDiscount();
     }
     
+    convertDuplicateBudgetToString(): Promise<any>{
+        var self = this;
+        
+        return new Promise(function(resolve, reject){
+            self.appService.budgetInsertionTest(self.convertBInsertionToString()).subscribe(function(data){
+            self.insertedBudget = data['insertId'];
+        
+            self.budgets.forEach(function(data){
+                console.log(data.qtd);
+                self.qtds.push(data.qtd);
+                self.cods.push(data.cod);
+                self.itemss.push(data.item);
+                self.detalhes.push(data.detalhe);
+                self.medidas.push(data.medida);
+                self.comodos.push(data.comodo);
+                self.necessarios.push(data.necessario);
+                self.valoresUnitarios.push(self.appService.converteMoedaFloat(data.valorUnitario));
+                self.valoresTotais.push(self.appService.converteMoedaFloat(data.valorTotal));
+                self.descontos.push(data.desconto);
+                self.valoresComDesconto.push(data.valorComDesconto);
+            });
+        
+            self.fillStringToQuery(self.qtds, self.qtdsString, self.insertedBudget)
+                .then(function(response){
+                        self.qtdsString = response;
+                });
+            self.fillStringToQuery(self.cods, self.codsString, self.insertedBudget)
+                .then(function(response){
+                        self.codsString = response;
+                });
+            self.fillStringToQuery(self.itemss, self.itemsString, self.insertedBudget)
+                .then(function(response){
+                        self.itemsString = response;
+                });
+            self.fillStringToQuery(self.detalhes, self.detalhesString, self.insertedBudget)
+                .then(function(response){
+                        self.detalhesString = response;
+                });
+            self.fillStringToQuery(self.medidas, self.medidasString, self.insertedBudget)
+                .then(function(response){
+                        self.medidasString = response;
+                });
+            self.fillStringToQuery(self.comodos, self.comodosString, self.insertedBudget)
+                .then(function(response){
+                        self.comodosString = response;
+                });
+            self.fillStringToQuery(self.necessarios, self.qtdsString, self.insertedBudget)
+                .then(function(response){
+                        self.necessariosString = response;
+                });
+            self.fillStringToQuery(self.valoresUnitarios, self.valoresUnitariosString, self.insertedBudget)
+                .then(function(response){
+                        self.valoresUnitariosString = response;
+                });
+            self.fillStringToQuery(self.valoresTotais, self.valoresTotaisString, self.insertedBudget)
+                .then(function(response){
+                        self.valoresTotaisString = response;
+                });
+            self.fillStringToQuery(self.descontos, self.descontosString, self.insertedBudget)
+                .then(function(response){
+                        self.descontosString = response;
+                });
+            self.fillStringToQuery(self.valoresComDesconto, self.valoresComDescontoString, self.insertedBudget)
+                .then(function(response){
+                        self.valoresComDescontoString = response;
+                });
+                resolve("convertBudgetToString executado com sucesso!!");
+            });
+        });
+    }
+    
     convertBudgetToString(): Promise<any>{
         var self = this;
         
@@ -549,6 +647,134 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         });
     }
     
+    
+    budgetInsertionTest(){
+        var budgetId: number = 5;
+        var codes: number[] = [100,200,300];
+        var ambients: string[] = ['a','b','c'];
+        var queryCodes = "";
+        var queryAmbients = "";
+        var response: any;
+        var self = this;
+        
+        this.spinner.show();
+        self.joinBudget();
+        self.setBudgetInsertion();
+        console.log(self.bInsertion);
+        
+        this.convertDuplicateBudgetToString().then(function(data){
+
+            
+
+            console.log(self.convertBInsertionToString());
+            //self.convertBudgetToString();
+            self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
+                console.log(response);
+
+            });
+            self.test();
+            console.log(data);
+            self.spinner.hide();
+            self.router.navigate(['budget']);
+            alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
+        });
+    }
+    
+    testGenerate(){
+        this.mainBudget.number = this.idInput;
+        //this.joinBudget();
+        
+        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
+    }
+    
+    test(){
+        this.mainBudget.number = this.insertedBudget;
+        this.mainBudget.note = this.orderForm.get('txtObservacao').value;
+        //this.joinBudget();
+        
+        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
+    }
+    
+    setBudgetInsertion(){    
+        this.bInsertion.aprovado = false;
+        this.bInsertion.caminho = "";
+        this.bInsertion.data = this.formin.date;
+        this.bInsertion.desconto = this.discount;
+        this.bInsertion.observacao = "";
+        this.bInsertion.retificado = 1;
+        this.bInsertion.tipoCliente = this.formin.type; //MODIFICAR
+        this.bInsertion.valorTotal = this.mainBudget.valorTotal;
+        this.bInsertion.arquiteto_id = null;
+        if(this.formin.type == 'LOJ'){
+            console.log("ENTROU EM LOJ")
+            this.bInsertion.clienteEmpresa_id = this.client.id_Client;
+            this.bInsertion.pessoa_id = null;//this.clienteEmpresa_id;
+        } else{
+            console.log("ENTROU EM ELSE")
+            this.bInsertion.clienteEmpresa_id = null; //this.clienteEmpresa_id;
+        }
+        this.bInsertion.clienteEmpresaa_id = this.thirdy.id_Thirdy; //this.clienteEmpresaa_id;
+        if(this.formin.type == 'FIS'){
+            this.bInsertion.pessoa_id = this.client.id_Client; //this.pessoa_id;
+        } else{
+            this.bInsertion.pessoa_id = null;
+        }
+        if(this.formin.type == 'LOJ'){
+            this.bInsertion.vendedor_id = this.client.id_vendor;//this.vendedor_id;
+        } else{
+            this.bInsertion.vendedor_id = null;
+        }
+    }
+    
+    convertBInsertionToString(): string{
+        
+        var aprovado: number = 0;
+        var caminho: string = "0";
+        var observacao: string = "0";
+        var retificado: number = 1;
+        var tipoCliente: string;
+        var data: string;
+        
+        data = this.bInsertion.data.replace('/','%2F');
+        data = data.replace('/','%2F');
+        
+        if(this.bInsertion.aprovado){
+            aprovado = 1;
+        } 
+        if(this.bInsertion.caminho != ""){
+           caminho = this.bInsertion.caminho;
+        }
+        if(this.bInsertion.observacao != ""){
+           observacao = this.bInsertion.observacao;
+        }
+        if(this.bInsertion.retificado != 1){
+           retificado = this.bInsertion.retificado;
+        }
+        if(this.bInsertion.tipoCliente == "LOJ"){
+           tipoCliente = "Empresa";
+        } else{
+            tipoCliente = "Físico";
+        }
+        
+        console.log(this.bInsertion.valorTotal);
+        return "(" + aprovado + "," +
+                    "'" + caminho + "'" + "," +
+                    "'" + data + "'" + "," +
+                    this.bInsertion.desconto + "," +
+                    observacao + "," +
+                    retificado + "," +
+                    "'" + tipoCliente + "'" + "," +
+                    this.bInsertion.valorTotal + "," +
+                    this.bInsertion.arquiteto_id + "," +
+                    this.bInsertion.clienteEmpresa_id + "," +
+                    this.bInsertion.clienteEmpresaa_id + "," +
+                    null + "," +
+                    this.bInsertion.pessoa_id + "," +
+                    this.bInsertion.vendedor_id + ")"
+    }
+    
+    
+    
     removeBarURL(){
         var self = this;
         if(self.mainBudget.note){
@@ -588,9 +814,24 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         }
     }
     
+    changeBudgetStatus(status: boolean){
+        this.spinner.show();
+        var self = this;
+        this.appService.editBudgetStatus(this.idInput, status).subscribe(function(data){
+            self.approved = status;
+            if(status){
+                alert("Orçamento aprovado");
+            }else{
+                alert("Orçamento Rejeitado");
+            }
+            self.spinner.hide();
+        });
+    }
+    
   ngOnInit() {
       
       var self = this;
+      self.formin.type = "LOJ";
       var valorTotalLocal: number;
       setTimeout(() => {this.spinner.show()}, 10);
       this.orderForm = this.formBuilder.group({
@@ -713,11 +954,22 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 //} //else{
                 //    self.setClient("FIS", self.pes[0].nome, self.pes[0].telefone, self.pes[0].celular, self.pes[0].email, //self.pes[0].endereco, self.pes[0].id, null, null);
                 //}
-                                
+                
+                if(self.orc[0].aprovado['data'][0] == '1'){
+                    self.approved = true;
+                }else{
+                   self.approved = false;
+                }
+                console.log(self.orc[0].aprovado['data'][0]);
                 self.mainBudget.number = self.orc[0].id; 
                 self.mainBudget.rectified = self.orc[0].retificado + 1;
                 self.mainBudget.client = self.client; 
+                console.log(self.client);
                 self.mainBudget.date = self.orc[0].data; 
+                self.formin.date = self.orc[0].data;
+                //self.formin.type = self.orc[0].tipoCliente;
+                
+                console.log(self.orc[0].data);
                 self.mainBudget.terceiro = self.thirdy; 
                 self.mainBudget.vendor = self.ven[0].nome; 
                 //mainBudget.valorTotal com decimal separado por ponto (.), formato normal de float
@@ -725,6 +977,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 console.log(self.orc[0].valorTotal);
                 //self.mainBudget.valorTotal = self.appService.converteMoedaFloat("R$ " + self.orc[0].valorTotal.toFixed(2).replace('.',','));
                 self.mainBudget.discount = self.orc[0].desconto;
+                self.discount = self.orc[0].desconto;
+                
                 self.mainBudget.note = self.orc[0].observacao;
                 console.log(self.mainBudget.valorTotal);
                 console.log(self.mainBudget.discount);

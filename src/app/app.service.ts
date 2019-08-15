@@ -156,6 +156,10 @@ export class AppService{
         return this.callQuery('searchAllPeople');
     }
     
+    editBudgetStatus(id: any, status:  boolean): Observable<Object[]>{
+        return this.callQuery(`statusBudget/${id}/${status}`);
+    }
+    
     converteFloatMoeda(valor: any){
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();

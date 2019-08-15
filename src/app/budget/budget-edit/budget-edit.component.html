@@ -3,8 +3,8 @@
 <section class="content" *ngIf="loadPage">
     <section class="invoice">
         <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
-    <p style="color:white;"> Aguarde </p>
-</ngx-spinner>
+            <p style="color:white;"> Aguarde </p>
+        </ngx-spinner>
 
 
         <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
@@ -14,7 +14,24 @@
                     <h2 class="page-header">
                         <i class="fa fa-usd"></i> Orçamento
 
+                        <div class="btn-group pull-right" style="margin-bottom: 5px">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="btn pull-left" (click)="createNewPdf()"><i class="fa fa-file-pdf-o pull-left" style="color: red"></i>Gerar PDF</a></li>
+                                <li><a class="btn pull-left" (click)="budgetInsertionTest()"><i class="fa fa-copy" style="color: darkblue"></i>Duplicar</a></li>
+                                <li><a class="btn pull-left" (click)="changeBudgetStatus(true)"><i class="fa fa-check" style="color: green"></i>Aprovar</a></li>
+                                <li><a class="btn pull-left" (click)="changeBudgetStatus(false)"><i class="fa fa-close" style="color: red"></i>Rejeitar</a></li>
+                            </ul>
+                        </div>
+
+                        <!--<a class="btn pull-right" (click)="budgetInsertionTest()"><i class="fa fa-copy"></i> Duplicar Orçamento</a>-->
+
                     </h2>
+
+
                     <div class="row">
                         <label class="col-sm-2"> Orçamento: </label>
                         <p class="col-sm-10"> {{mainBudget.number}} </p>
@@ -34,6 +51,10 @@
                     <div class="row">
                         <label class="col-sm-2"> Data: </label>
                         <p class="col-sm-10"> {{mainBudget.date}} </p>
+                    </div>
+                    <div class="row">
+                        <p class="col-sm-10" *ngIf="approved"><i class = "fa fa-check" style="color: green"></i> Aprovado </p>
+                        <p class="col-sm-10" *ngIf="!approved"><i class = "fa fa-close" style="color: red"></i> Rejeitado </p>
                     </div>
                 </div>
             </div>

@@ -11,7 +11,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 })
 export class BudgetTableComponent implements OnInit {
 
-  constructor(private appService: AppService, private spinner: NgxSpinnerService) { }
+  constructor(private appService: AppService, public spinner: NgxSpinnerService) { }
 
     buds: Object[];
     flag: boolean = true;
@@ -22,12 +22,22 @@ export class BudgetTableComponent implements OnInit {
     openBudget(id: any){
         alert("Open Budget " + id);
     }
+    
+    searchBudgetIndex(id: any){
+        this.buds.forEach(function(data){
+            
+        });
+    }
+    
     ngOnInit() {
         setTimeout(()=> this.spinner.show(), 10);
         var self = this;
         this.n = 1; 
         this.appService.budgets().subscribe(function(budgets){
             self.buds = budgets;
+            self.buds.forEach(function(data){
+               data['approved'] =  data['approved']['data'][0];
+            });
             self.spinner.hide();
         });
         
@@ -39,6 +49,4 @@ export class BudgetTableComponent implements OnInit {
         );
         console.log(this.n);
     }
-    
-    
 }
