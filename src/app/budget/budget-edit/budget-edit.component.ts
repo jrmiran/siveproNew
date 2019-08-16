@@ -300,7 +300,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.budgets[this.currentItem].valorUnitario = this.appService.converteFloatMoeda(this.orderForm.get('txtValor').value);
         
         console.log(this.budgets[this.currentItem].valorUnitario);
-        
+        console.log(this.currentValue);
         if(this.pedraOption){
            this.budgets[this.currentItem].valorTotal = (medida1 * medida2 * valor)/ 10000; 
             this.budgets[this.currentItem].medida = this.orderForm.get('txtMedida1').value + " x " + this.orderForm.get('txtMedida2').value;
@@ -312,17 +312,19 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         console.log(this.budgets[this.currentItem].valorTotal);
         
         if(isNaN(this.budgets[this.currentItem].valorTotal)){
-            valorTotalLocal = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)
+            valorTotalLocal = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
         } else{
-            valorTotalLocal = this.budgets[this.currentItem].valorTotal
+            valorTotalLocal = this.budgets[this.currentItem].valorTotal;
         }
         console.log("MB VT: " + this.mainBudget.valorTotal);
         console.log("VTL: " + valorTotalLocal);
         console.log("CV: " + this.currentValue);
-        this.mainBudget.valorTotal = parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue;
+        this.mainBudget.valorTotal = parseFloat((parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue).toFixed(2));
         this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
         this.pedraOption = false;
+        console.log("MB VT: " + this.mainBudget.valorTotal);
         console.log(this.budgets[this.currentItem].valorUnitario);
+        this.currentValue = this.mainBudget.valorTotal;
         
     }
     
