@@ -1,0 +1,85 @@
+<section class="content-header"></section>
+
+<section class="content">
+    <section class="invoice">
+        <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
+            <p style="color:white;"> Aguarde </p>
+        </ngx-spinner>
+
+
+        <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
+        <form [formGroup]="soForm" novalidate>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header">
+                        <i class="fa fa-wrench"></i> Ordem de Serviço
+                        <a class="btn pull-right" data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus"></i> Adicionar OS</a>
+                    </h2>
+
+
+
+                    <div class="row">
+                        <label class="col-sm-2"> Orçamento: </label>
+                        <p class="col-sm-10"> {{formin.budgetId}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"> Cliente: </label>
+                        <p class="col-sm-10"> {{formin.store}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-2"> Terceiro: </label>
+                        <p class="col-xs-10"> {{formin.thirdy}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-2"> Vendedor: </label>
+                        <p class="col-xs-10"> {{formin.seller}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"> Data: </label>
+                        <p class="col-sm-10"> {{formin.date}} </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-pencil"></i>
+                            <h3 class="box-title"> Ordens de Serviço:</h3>
+                            <a class="btn pull-right"><i class="fa fa-print"></i> Imprimir </a>
+                        </div>
+                        <sivp-table [name]="''" [headers]="['ID', 'Loja', 'Cliente', 'Item', 'Medida', 'Ambiente', 'Previsão Entrega', 'Data Término', 'Empreita', 'Mármore/Granito']" [searchBar]="false" [datas]="serviceOrders" [ids]="['id','loja', 'cliente', 'item', 'medida', 'comodo', 'dataPrevisaoTermino', 'dataTermino', 'empreita', 'pedra']" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection] = "true">
+                        </sivp-table>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <!----------------------------------- MODAL --------------------------------------------------------------------->
+            <div class="modal fade" id="modal-default">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
+                        </div>
+                        <div class="modal-body">
+                            <sivp-table (keydown.enter)="onKeydown($event)" [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Ambiente']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection] = "true" [selectionButton]="true">
+                            </sivp-table>
+                        </div>
+                        <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="generateServiceOrder()">Gerar OS</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!------------------------------------------ END MODAL ----------------------------------------------------------->
+
+        </form>
+    </section>
+</section>

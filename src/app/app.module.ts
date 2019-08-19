@@ -56,6 +56,8 @@ import { ClientSearchComponent } from './clients/client-search/client-search.com
 import { SellerRegisterComponent } from './seller-register/seller-register.component';
 import { SellerSearchComponent } from './seller-search/seller-search.component';
 import { BudgetEditComponent } from './budget/budget-edit/budget-edit.component';
+import { ServiceOrderComponent } from './service-order/service-order.component';
+import { ParameterService } from './shared/parameter.service';
 
 @NgModule({
   declarations: [
@@ -91,6 +93,7 @@ import { BudgetEditComponent } from './budget/budget-edit/budget-edit.component'
     SellerRegisterComponent,
     SellerSearchComponent,
     BudgetEditComponent,
+    ServiceOrderComponent,
   ],
   imports: [
     BrowserModule,
@@ -118,6 +121,7 @@ import { BudgetEditComponent } from './budget/budget-edit/budget-edit.component'
       StartService,
       BudgetService,
       SpinnerService,
+      ParameterService,
       {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
   ],
   bootstrap: [AppComponent]

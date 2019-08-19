@@ -19,6 +19,8 @@ import {SubItem} from "../budget-new/sub-item.model";
 import {NgxSpinnerService} from 'ngx-spinner';
 import {BudgetNewComponent} from '../budget-new/budget-new.component';
 import {BudgetService} from '../budget.service'
+import {formin} from '../../service-order/forminSO';
+import {ParameterService} from '../../shared/parameter.service';
 
 @Component({
   selector: 'sivp-budget-edit',
@@ -27,7 +29,7 @@ import {BudgetService} from '../budget.service'
 })
 export class BudgetEditComponent implements OnInit {
 
-constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute, private router: Router, private spinner: NgxSpinnerService, private budgetService: BudgetService) { }
+constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private route: ActivatedRoute, private router: Router, private spinner: NgxSpinnerService, private budgetService: BudgetService, private parameterService: ParameterService) { }
     
       @HostListener('window:keyup', ['$event'])
       keyEvent(event: KeyboardEvent) {
@@ -72,7 +74,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     orderForm: FormGroup;
     modalForm: FormGroup;
     mainBudget = {} as BudgetModel;
-    
+    //formout = {budgetId: 0, store: "", thirdy: "", seller: "", date: "", budgets: []};
+    formout = {} as formin;
     insertedBudget: any;
     
     b: BudgetNew = {
@@ -816,6 +819,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         }
     }
     
+    getBudgets(): BudgetNew[]{
+        let auxBudgets: BudgetNew[] = this.budgets;
+        return auxBudgets;
+    }
+    
     changeBudgetStatus(status: boolean){
         this.spinner.show();
         var self = this;
@@ -870,6 +878,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.returnedData = data;
                 console.log(data);
                 
+                
+                
                 self.cmd = Object.assign(self.cmd, self.returnedData[1]);
                 self.qtd = Object.assign(self.qtd, self.returnedData[8]);
                 self.cod = Object.assign(self.cod, self.returnedData[2]);
@@ -899,6 +909,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                     self.b.medida = self.med[index].medidas;
                     self.b.comodo = self.cmd[index].comodos;
                     self.b.necessario = self.nec[index].necessidades;
+
                     console.log(self.appService.converteFloatMoeda(parseFloat(self.val[index].valores.replace(',','.'))));
                     console.log(parseFloat(self.qtd[index].quantidades.replace(',','.')));
                     
@@ -914,9 +925,10 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                     console.log(self.b.valorTotal);
                     
                     //b.valorTotal e b.valorUnitario no formato de Moeda.(R$1.000,00)
-                    
-                    self.b.desconto = 0;
-                    self.b.valorComDesconto = 0;
+                    self.b.valorComDesconto = parseFloat((self.appService.converteMoedaFloat(self.b.valorTotal.replace(',','.')) - self.appService.converteMoedaFloat(self.b.valorTotal.replace(',','.')) * (self.orc[0].desconto/100)).toFixed(2));
+                    console.log(self.b.valorComDesconto);
+                    self.b.desconto = parseFloat(self.orc[0].desconto);
+                    //self.b.valorComDesconto = 0;
                     self.addItem(self.b);
                     self.b = {
                             qtd: 0,
@@ -989,6 +1001,13 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.mainBudget.valorComDesconto = parseFloat((self.orc[0].valorTotal.replace(',','.') - self.orc[0].valorTotal.replace(',','.') * (self.mainBudget.discount/100)).toFixed(2));
                 console.log(self.mainBudget.valorComDesconto);
                 self.mainBudget.note = self.orc[0].observacao;
+                
+                self.formout.budgetId = self.mainBudget.number;
+                self.formout.store = self.nameClient;
+                self.formout.thirdy = self.mainBudget.terceiro.name;
+                self.formout.seller = self.mainBudget.vendor;
+                self.formout.date = self.mainBudget.date;
+                self.parameterService.setBudgets(self.budgets);
             })
         }
       );

@@ -160,6 +160,18 @@ export class AppService{
         return this.callQuery(`statusBudget/${id}/${status}`);
     }
     
+    budget(id: any): Observable<Object[]>{
+        return this.callQuery(`budget/${id}`);
+    }
+    
+    serviceOrder(budgetId: any): Observable<Object[]>{
+        return this.callQuery(`serviceOrder/${budgetId}`);
+    }
+    
+    serviceOrderInsertion(client: string, detail: string, ambient: string, item: string, store: string, measure: string, note: string, value: number, seller: string, budgetId: number, stone: boolean): Observable<Object[]>{
+        return this.callQuery(`serviceOrderInsertion/'${client}'/'${detail}'/'${ambient}'/'${item}'/'${store}'/'${measure}'/'${note}'/${value}/'${seller}'/${budgetId}/${stone}`);
+    }
+    
     converteFloatMoeda(valor: any){
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();

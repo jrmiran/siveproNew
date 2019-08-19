@@ -20,10 +20,11 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
+                                <li><a class="btn pull-left" [routerLink]="['/serviceOrder']" [queryParams]="formout" [class.disabled]="!approved"><i class="fa fa-wrench" style="color: black"></i>Ordem de Serviço</a></li>
                                 <li><a class="btn pull-left" (click)="createNewPdf()"><i class="fa fa-file-pdf-o pull-left" style="color: red"></i>Gerar PDF</a></li>
                                 <li><a class="btn pull-left" (click)="budgetInsertionTest()"><i class="fa fa-copy" style="color: darkblue"></i>Duplicar</a></li>
-                                <li><a class="btn pull-left" (click)="changeBudgetStatus(true)"><i class="fa fa-check" style="color: green"></i>Aprovar</a></li>
-                                <li><a class="btn pull-left" (click)="changeBudgetStatus(false)"><i class="fa fa-close" style="color: red"></i>Rejeitar</a></li>
+                                <li *ngIf="!approved"><a class="btn pull-left" (click)="changeBudgetStatus(true)"><i class="fa fa-check" style="color: green"></i>Aprovar</a></li>
+                                <li *ngIf="approved"><a class="btn pull-left" (click)="changeBudgetStatus(false)"><i class="fa fa-close" style="color: red"></i>Rejeitar</a></li>
                             </ul>
                         </div>
 
