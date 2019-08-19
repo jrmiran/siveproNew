@@ -8,6 +8,7 @@ import { ServiceOrderModel } from './serviceOrder.model';
 import { BudgetNew } from '../budget/budget-new/budget-new.model';
 import { formin } from './forminSO';
 import { ParameterService } from '../shared/parameter.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'sivp-service-order',
@@ -16,7 +17,7 @@ import { ParameterService } from '../shared/parameter.service';
 })
 export class ServiceOrderComponent implements OnInit {
 
-    constructor(private router: ActivatedRoute, private appService: AppService, private formBuilder: FormBuilder, private parameterService: ParameterService) { }
+    constructor(private router: ActivatedRoute, private appService: AppService, private formBuilder: FormBuilder, private parameterService: ParameterService, private spinner: NgxSpinnerService) { }
     
     mainBudget:  BudgetModel;
     serviceOrders: Object[];
@@ -28,7 +29,7 @@ export class ServiceOrderComponent implements OnInit {
     date: string;
     formin: formin;
     budgets: BudgetNew[] = [];
-    currentItems: number[];
+    currentItems: number[] = [];
     self: any;
     
     clickRow(ids: number[]){
@@ -37,22 +38,31 @@ export class ServiceOrderComponent implements OnInit {
     }
     
     generateServiceOrder(){
+        
         var self = this;
-        this.currentItems.forEach(function(currentItem){
+        var count = 0;
+        var size = this.currentItems.length;
+        this.spinner.show();
+        self.currentItems.forEach(function(currentItem){
             self.appService.serviceOrderInsertion(self.formin.thirdy.replace(/[\/]/g,'%2F'),
-                                                  self.budgets[currentItem].detalhe.replace(/[\/]/g,'%2F'),
-                                                  self.budgets[currentItem].comodo.replace(/[\/]/g,'%2F'),
-                                                  self.budgets[currentItem].item.replace(/[\/]/g,'%2F'),
-                                                  self.formin.store.replace(/[\/]/g,'%2F'),
-                                                  self.budgets[currentItem].medida.replace(/[\/]/g,'%2F'),
-                                                  "",
-                                                  self.budgets[currentItem].valorComDesconto,
-                                                  self.formin.seller.replace(/[\/]/g,'%2F'),
-                                                  self.formin.budgetId,
-                                                  false).subscribe(function(data){
-                console.log(currentItem);
+                                                    self.budgets[currentItem].detalhe.replace(/[\/]/g,'%2F'),
+                                                    self.budgets[currentItem].comodo.replace(/[\/]/g,'%2F'),
+                                                    self.budgets[currentItem].item.replace(/[\/]/g,'%2F'),
+                                                    self.formin.store.replace(/[\/]/g,'%2F'),
+                                                    self.budgets[currentItem].medida.replace(/[\/]/g,'%2F'),
+                                                    "",
+                                                    self.budgets[currentItem].valorComDesconto,
+                                                    self.formin.seller.replace(/[\/]/g,'%2F'),
+                                                    self.formin.budgetId,
+                                                    false).subscribe(function(data){
+                count = count + 1;
+                if(count == size){
+                    self.spinner.hide();
+                    alert("Ordens de serviço criadas");
+                }
+                    console.log(currentItem);
             });    
-        })
+        });
     }
     
     ngOnInit() {
