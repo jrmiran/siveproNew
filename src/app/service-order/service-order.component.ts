@@ -72,9 +72,9 @@ export class ServiceOrderComponent implements OnInit {
         this.router.queryParams.subscribe(
             (queryParams: any) =>{
                 self.formin = queryParams;
-                /*this.appService.serviceOrder(queryParams['budgetId']).subscribe(function(data){
+                this.appService.serviceOrder(queryParams['budgetId']).subscribe(function(data){
                     self.serviceOrders = data;
-                });*/
+                });
             }
         );
         
