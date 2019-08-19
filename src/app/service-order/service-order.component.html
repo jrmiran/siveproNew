@@ -71,7 +71,7 @@
                             </sivp-table>
                         </div>
                         <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="serviceOrderPromise()" [class.disabled]="!currentItems.length > 0">Gerar OS</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="generateServiceOrder()" [class.disabled]="!(currentItems.length > 0)">Gerar OS</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
