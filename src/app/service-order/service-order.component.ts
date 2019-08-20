@@ -69,6 +69,7 @@ export class ServiceOrderComponent implements OnInit {
         this.self = this;
         var self = this;
         this.budgets = this.parameterService.getBudgets();
+        console.log(this.budgets);
         this.router.queryParams.subscribe(
             (queryParams: any) =>{
                 self.formin = queryParams;
