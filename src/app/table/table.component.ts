@@ -10,6 +10,7 @@ import {BudgetItemsComponent} from '../budget/budget-items/budget-items.componen
 import {BudgetEditComponent} from '../budget/budget-edit/budget-edit.component';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {ServiceOrderComponent} from '../service-order/service-order.component';
+import {ServiceOrderTableComponent} from '../service-order/service-order-table/service-order-table.component';
 
 import "rxjs/add/operator/map";
 
@@ -42,8 +43,10 @@ export class TableComponent implements OnInit {
     @Input() runClickRow: boolean = true;
     @Input() dropdownButton: boolean = false;
     @Input() soc: ServiceOrderComponent;
+    @Input() sotc: ServiceOrderTableComponent;
     @Input() multipleRowsSelection: boolean = false;
     @Input() selectionButton: boolean = false;
+    
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
@@ -70,6 +73,10 @@ export class TableComponent implements OnInit {
                 }
             });
         }
+    }
+    
+    showServiceOrderModal(){
+        console.log("Service Order Modal");
     }
     
     openBudget(id: any){
@@ -119,6 +126,10 @@ export class TableComponent implements OnInit {
     
     openModalItem(id: number, descricao: string, valorUnitario: string){
         this.budgetItem.openModalFunction(true, id, descricao, valorUnitario);
+    }
+    
+    openModalServiceOrder(id: number){
+        this.sotc.openModalFunction(true, id);
     }
     
     selectRow(i: number): Boolean{

@@ -17,12 +17,16 @@
                         <a [routerLink]="['/budgetEdit']" [queryParams]="{id: data[id]}" class="btn"> {{data[id]}} </a>
                         <!--<a class="btn" (click)="openBudget(data[id])">{{data[id]}}</a>-->
                     </span>
-                    <span *ngIf="id != 'budgetId'">
+                    <span *ngIf="sotc && id =='id'">
+                        <a (click) = "openModalServiceOrder(data['id'])" class="btn"> {{data[id]}} </a>
+                        <!--<a class="btn" (click)="openBudget(data[id])">{{data[id]}}</a>-->
+                    </span>
+                    <span *ngIf="id != 'budgetId' && !(sotc && id == 'id') && id != 'approved' && id != 'empreita' && id != 'pedra'">
                         {{data[id]}}
                     </span>
                 </span>
                 
-                <span *ngIf="id == 'approved'">
+                <span *ngIf="id == 'approved' || id=='empreita' || id =='pedra'">
                     <i *ngIf="data[id] == 1" class="fa fa-check" style="color: green"></i>
                     <i *ngIf="data[id] == 0" class="fa fa-close" style="color: red"></i>
                 </span>

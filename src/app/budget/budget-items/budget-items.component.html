@@ -1,10 +1,11 @@
-<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
-    <p> Carregando Itens </p>
-</ngx-spinner>
+
 
 <section class="content">
     <section class="invoice" *ngIf="loadPage">
 
+        <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+    <p> Carregando Itens </p>
+</ngx-spinner>
        <!-- <ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-scale-multiple">
             <p style="font-size: 20px; color: white">Loading...</p>
         </ngx-spinner>-->
@@ -32,7 +33,7 @@
 
         <!----------------------------------- MODAL CHANGE --------------------------------------------------------------------->
         <div class="modal fade" id="modal-default" [ngStyle]="{'display': openModal ? 'block' : 'none', 'opacity': 1}">
-            <div class="modal-dialog">
+            <div class="modal-dialog" [ngStyle]="{'top':'10%'}">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" (click)="openModalFunction(false)" aria-label="Close">
@@ -73,7 +74,7 @@
 
         <!----------------------------------- MODAL CREATE --------------------------------------------------------------------->
         <div class="modal fade" id="modal-create" [ngStyle]="{'display': openModalC ? 'block' : 'none', 'opacity': 1}">
-            <div class="modal-dialog">
+            <div class="modal-dialog" [ngStyle]="{'top':'10%'}">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" (click)="openModalCreate(false)" aria-label="Close">

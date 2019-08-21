@@ -486,47 +486,47 @@ export class BudgetNewComponent implements OnInit {
         
             self.fillStringToQuery(self.qtds, self.qtdsString, self.insertedBudget)
                 .then(function(response){
-                        self.qtdsString = response;
+                        self.qtdsString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.cods, self.codsString, self.insertedBudget)
                 .then(function(response){
-                        self.codsString = response;
+                        self.codsString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.itemss, self.itemsString, self.insertedBudget)
                 .then(function(response){
-                        self.itemsString = response;
+                        self.itemsString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.detalhes, self.detalhesString, self.insertedBudget)
                 .then(function(response){
-                        self.detalhesString = response;
+                        self.detalhesString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.medidas, self.medidasString, self.insertedBudget)
                 .then(function(response){
-                        self.medidasString = response;
+                        self.medidasString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.comodos, self.comodosString, self.insertedBudget)
                 .then(function(response){
-                        self.comodosString = response;
+                        self.comodosString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.necessarios, self.qtdsString, self.insertedBudget)
                 .then(function(response){
-                        self.necessariosString = response;
+                        self.necessariosString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.valoresUnitarios, self.valoresUnitariosString, self.insertedBudget)
                 .then(function(response){
-                        self.valoresUnitariosString = response;
+                        self.valoresUnitariosString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.valoresTotais, self.valoresTotaisString, self.insertedBudget)
                 .then(function(response){
-                        self.valoresTotaisString = response;
+                        self.valoresTotaisString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.descontos, self.descontosString, self.insertedBudget)
                 .then(function(response){
-                        self.descontosString = response;
+                        self.descontosString = response.replace(/[\/]/g,'%2F');
                 });
             self.fillStringToQuery(self.valoresComDesconto, self.valoresComDescontoString, self.insertedBudget)
                 .then(function(response){
-                        self.valoresComDescontoString = response;
+                        self.valoresComDescontoString = response.replace(/[\/]/g,'%2F');
                 });
                 resolve("convertBudgetToString executado com sucesso!!");
             });
@@ -579,7 +579,6 @@ export class BudgetNewComponent implements OnInit {
                     this.bInsertion.pessoa_id + "," +
                     this.bInsertion.vendedor_id + ")"
     }
-
     
     budgetInsertionTest(){
         var budgetId: number = 5;

@@ -925,8 +925,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                     console.log(self.b.valorTotal);
                     
                     //b.valorTotal e b.valorUnitario no formato de Moeda.(R$1.000,00)
-                    //self.b.valorComDesconto = parseFloat((self.appService.converteMoedaFloat(self.b.valorTotal.replace(',','.')) - self.appService.converteMoedaFloat(self.b.valorTotal.replace(',','.')) * (self.orc[0].desconto/100)).toFixed(2));
-                    self.b.valorComDesconto = parseFloat((self.appService.converteMoedaFloat(self.b.valorTotal) - self.appService.converteMoedaFloat(self.b.valorTotal) * (self.orc[0].desconto/100)).toFixed(2));
+                    console.log(self.orc[0].desconto);
+                    if(!self.orc[0].desconto){
+                        self.orc[0].desconto = "0";
+                    }
+                    self.b.valorComDesconto = parseFloat((self.appService.converteMoedaFloat(self.b.valorTotal) - self.appService.converteMoedaFloat(self.b.valorTotal) * (self.orc[0].desconto.replace(',','.')/100)).toFixed(2));
                     console.log(self.b.valorComDesconto);
                     self.b.desconto = parseFloat(self.orc[0].desconto);
                     //self.b.valorComDesconto = 0;

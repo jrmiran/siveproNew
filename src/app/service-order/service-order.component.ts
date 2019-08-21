@@ -57,8 +57,15 @@ export class ServiceOrderComponent implements OnInit {
                                                     false).subscribe(function(data){
                 count = count + 1;
                 if(count == size){
-                    self.spinner.hide();
                     alert("Ordens de serviço criadas");
+                    self.appService.serviceOrder(self.formin['budgetId']).subscribe(function(data){
+                        self.serviceOrders = data;
+                        self.serviceOrders.forEach(function(value){
+                            value['empreita'] =  value['empreita']['data'][0];
+                            value['pedra'] =  value['pedra']['data'][0];
+                        });
+                    });
+                    self.spinner.hide();
                 }
                     console.log(currentItem);
             });    

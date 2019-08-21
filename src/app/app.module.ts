@@ -58,6 +58,8 @@ import { SellerSearchComponent } from './seller-search/seller-search.component';
 import { BudgetEditComponent } from './budget/budget-edit/budget-edit.component';
 import { ServiceOrderComponent } from './service-order/service-order.component';
 import { ParameterService } from './shared/parameter.service';
+import { ServiceOrderTableComponent } from './service-order/service-order-table/service-order-table.component';
+import { ServiceOrderEditComponent } from './service-order/service-order-edit/service-order-edit.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +96,8 @@ import { ParameterService } from './shared/parameter.service';
     SellerSearchComponent,
     BudgetEditComponent,
     ServiceOrderComponent,
+    ServiceOrderTableComponent,
+    ServiceOrderEditComponent,
   ],
   imports: [
     BrowserModule,

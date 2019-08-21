@@ -12,7 +12,9 @@ import { ClientSearchComponent } from './clients/client-search/client-search.com
 import { SellerRegisterComponent } from './seller-register/seller-register.component';
 import { SellerSearchComponent } from './seller-search/seller-search.component';
 import { BudgetEditComponent } from './budget/budget-edit/budget-edit.component';
-import { ServiceOrderComponent } from './service-order/service-order.component'
+import { ServiceOrderComponent } from './service-order/service-order.component';
+import { ServiceOrderTableComponent } from './service-order/service-order-table/service-order-table.component';
+import { ServiceOrderEditComponent } from './service-order/service-order-edit/service-order-edit.component';
 
 export const ROUTES: Routes = [
     {path: '', component: LoginComponent},
@@ -29,5 +31,7 @@ export const ROUTES: Routes = [
     {path: 'sellerRegister', component: SellerRegisterComponent},
     {path: 'sellerSearch', component: SellerSearchComponent},
     {path: 'budgetEdit', component: BudgetEditComponent},
-    {path: 'serviceOrder', component: ServiceOrderComponent}
+    {path: 'serviceOrder', component: ServiceOrderComponent},
+    {path: 'serviceOrderTable', component: ServiceOrderTableComponent},
+    {path: 'serviceOrderEdit', component: ServiceOrderEditComponent}
 ]

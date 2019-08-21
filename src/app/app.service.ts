@@ -172,6 +172,10 @@ export class AppService{
         return this.callQuery(`serviceOrderInsertion/'${client}'/'${detail}'/'${ambient}'/'${item}'/'${store}'/'${measure}'/'${note}'/${value}/'${seller}'/${budgetId}/${stone}`);
     }
     
+    searchAllServiceOrders(): Observable<Object[]>{
+        return this.callQuery(`searchAllServiceOrder`);
+    }
+    
     converteFloatMoeda(valor: any){
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();
