@@ -7,9 +7,11 @@
     </ngx-spinner>
     <section class="invoice">
 
-        <sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente', 'Vendedor','Previsão Entrega', 'Data Inicio', 'Data Termino', 'Item', 'Detalhe', 'Ambiente', 'Medida', 'Valor', 'Empreita', 'Pedra']" [datas]="serviceOrders" [ids]="['id','orcamento_id','loja' ,'cliente', 'vendedor', 'dataPrevisaoTermino','dataInicio','dataTermino','item','detalhe','comodo','medida','valor','empreita','pedra']" [runClickRow]="false" [sotc]="self">
-        </sivp-table>
+        <!--<sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente', 'Vendedor','Previsão Entrega', 'Data Inicio', 'Data Termino', 'Item', 'Detalhe', 'Ambiente', 'Medida', 'Valor', 'Empreita', 'Pedra']" [datas]="serviceOrders" [ids]="['id','orcamento_id','loja' ,'cliente', 'vendedor', 'dataPrevisaoTermino','dataInicio','dataTermino','item','detalhe','comodo','medida','valor','empreita','pedra']" [runClickRow]="false" [sotc]="self">
+        </sivp-table>-->
 
+        <sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente','Previsão Entrega', 'Item', 'Detalhe', 'Ambiente', 'Medida', 'Valor']" [datas]="serviceOrders" [ids]="['id','orcamento_id','loja' ,'cliente', 'dataPrevisaoTermino','item','detalhe','comodo','medida','valor']" [runClickRow]="false" [sotc]="self">
+        </sivp-table>
 
         <!----------------------------------- MODAL CHANGE --------------------------------------------------------------------->
         <div class="modal fade" id="modal-default" [ngStyle]="{'display': openModal ? 'block' : 'none', 'opacity': 1}">
@@ -21,48 +23,46 @@
                         <h4 class="modal-title">OS {{id}}</h4>
                     </div>
                     <div class="modal-body">
+                        <form [formGroup]="modalForm" novalidate>
+                            <div class="row">
+                                <sivp-primary-box [title]="'Data'">
+                                    <sivp-date-picker formControlName="txtDate"></sivp-date-picker>
+                                </sivp-primary-box>
 
-                        <!--<div class="row">
-                            <div class="form-group col-xs-6 bootstrap-datepicker">
-                                <label>Hora</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control timepicker" name="hora" />
-                                    <div class="input-group-addon">
-                                        <i class="fa fa-clock-o"></i>
+                                <sivp-primary-box [title]="'Funcionário'">
+
+                                    <div *ngFor="let item of cbo.controls; let i = index" class="checkbox" formArrayName="checkBoxOption">
+                                        <div class="row" [formGroupName]="i">
+                                            <div class="col-xs-6">
+                                                <label>
+                                                    <input (click)="setValueCheckBox(i)" type="checkbox" [formControlName]="'employeeName'" checked="false"> {{checks[i]}}
+                                                </label>
+                                            </div>
+
+                                            <div class="col-xs-6">
+                                                <input [class.hide]="!showTextBox(checks[i])" (keyup)="eventInput(i, value)" type="text" class="form-control input-sm pull-right" placeholder="%" [formControlName]="'employeeShare'">
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                </sivp-primary-box>
                             </div>
-                        </div>-->
-
-                        <div class="input-group date" data-provide="datepicker" data-date-format="dd/mm/yyyy">
-                            <input type="text" class="form-control">
-                            <div class="input-group-addon">
-                                <span class="glyphicon glyphicon-th"></span>
+                            <div class="row">
+                                <sivp-primary-box [title]="'Complemento'" class="col-xs-12">
+                                    <label>
+                                        <input (click)="showStatus('Empreita')" type="checkbox" formControlName="cbEmpreita" checked="false"> Empreita
+                                    </label>
+                                    <br>
+                                    <label>
+                                        <input (click)="showStatus('Stone')" type="checkbox" formControlName="cbStone" checked="false"> Mármore / Granito
+                                    </label>
+                                    {{modalForm.valid}}
+                                </sivp-primary-box>
                             </div>
-                        </div>
-
-                        <!--<div class="row">
-                            <sivp-primary-box [title]="'Data de Término'">
-                                <sivp-date-picker style="z-index: 99999"></sivp-date-picker>
-                            </sivp-primary-box>
-                        </div>-->
-
-                        <!--<div class="row">
-                            <div *ngFor="let item of cbo.controls; let i = index" class="checkbox" formArrayName="checkBoxOption" (click)="setValue()">
-                                <label>
-                                    <input (click)="setValueCheckBox(i)" type="checkbox" [formControlName]="i"> {{checks[i]}}
-                                </label>
-
-                                <a *ngIf="i > 0" class="btn text-right" (click)="removePlace2(i)">
-                                    <i class="fa fa-trash"></i> Remover
-                                </a>
+                            <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                                <button type="button" class="btn btn-default pull-left" (click)="openModalFunction(false)">Fechar</button>
+                                <button [class.disabled]="!(validateSum() && modalForm.valid)" type="button" class="btn btn-primary" (click)="buildQuery()">OK</button>
                             </div>
-                        </div>-->
-
-                        <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
-                            <button type="button" class="btn btn-default pull-left" (click)="openModalFunction(false)">Fechar</button>
-                            <button type="button" class="btn btn-primary" (click)="openModalFunction(false)">OK</button>
-                        </div>
+                        </form>
                     </div>
                     <!-- /.modal-content -->
                 </div>

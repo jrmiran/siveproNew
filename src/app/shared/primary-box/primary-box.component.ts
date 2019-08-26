@@ -9,7 +9,7 @@ export class PrimaryBoxComponent implements OnInit {
 
   constructor() { }
     @Input() title: string;
-
+    @Input() size: string = "6";
   ngOnInit() {
   }
 

@@ -128,8 +128,8 @@ export class TableComponent implements OnInit {
         this.budgetItem.openModalFunction(true, id, descricao, valorUnitario);
     }
     
-    openModalServiceOrder(id: number){
-        this.sotc.openModalFunction(true, id);
+    openModalServiceOrder(id: number, value: string){
+        this.sotc.openModalFunction(true, id, value);
     }
     
     selectRow(i: number): Boolean{

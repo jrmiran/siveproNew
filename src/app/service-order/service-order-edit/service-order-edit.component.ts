@@ -13,6 +13,10 @@ export class ServiceOrderEditComponent implements OnInit {
 
      serviceOrderForm: FormGroup;
     
+    genericFunction(){
+        console.log("Click");
+    }
+    
   ngOnInit() {
   }
 

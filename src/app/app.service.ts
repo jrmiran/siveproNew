@@ -176,6 +176,10 @@ export class AppService{
         return this.callQuery(`searchAllServiceOrder`);
     }
     
+    insertSOExecution(id: number, date: string, stone: boolean, empreita: boolean, stoneValue: string, employees: string, shares: string): Observable<Object[]>{
+        return this.callQuery(`soExecution/${id}/'${date}'/${stone}/${empreita}/${stoneValue}/${employees}/${shares}`);
+    }
+    
     converteFloatMoeda(valor: any){
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();
@@ -221,6 +225,7 @@ export class AppService{
       return valor;
 
    }
+    
     
     
     

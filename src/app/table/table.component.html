@@ -18,7 +18,7 @@
                         <!--<a class="btn" (click)="openBudget(data[id])">{{data[id]}}</a>-->
                     </span>
                     <span *ngIf="sotc && id =='id'">
-                        <a (click) = "openModalServiceOrder(data['id'])" class="btn"> {{data[id]}} </a>
+                        <a (click) = "openModalServiceOrder(data['id'], data['valor'])" class="btn"> {{data[id]}} </a>
                         <!--<a class="btn" (click)="openBudget(data[id])">{{data[id]}}</a>-->
                     </span>
                     <span *ngIf="id != 'budgetId' && !(sotc && id == 'id') && id != 'approved' && id != 'empreita' && id != 'pedra'">

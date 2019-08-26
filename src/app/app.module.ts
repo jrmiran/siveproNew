@@ -60,6 +60,7 @@ import { ServiceOrderComponent } from './service-order/service-order.component';
 import { ParameterService } from './shared/parameter.service';
 import { ServiceOrderTableComponent } from './service-order/service-order-table/service-order-table.component';
 import { ServiceOrderEditComponent } from './service-order/service-order-edit/service-order-edit.component';
+import { InfoBoxComponent } from './shared/info-box/info-box.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +99,7 @@ import { ServiceOrderEditComponent } from './service-order/service-order-edit/se
     ServiceOrderComponent,
     ServiceOrderTableComponent,
     ServiceOrderEditComponent,
+    InfoBoxComponent,
   ],
   imports: [
     BrowserModule,
