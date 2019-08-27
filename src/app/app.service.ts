@@ -180,6 +180,10 @@ export class AppService{
         return this.callQuery(`soExecution/${id}/'${date}'/${stone}/${empreita}/${stoneValue}/${employees}/${shares}`);
     }
     
+    searchAllEmployees(): Observable<Object[]>{
+        return this.callQuery(`searchAllEmployees`);
+    }
+    
     converteFloatMoeda(valor: any){
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();

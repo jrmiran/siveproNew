@@ -13,22 +13,22 @@
         <sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente','Previsão Entrega', 'Item', 'Detalhe', 'Ambiente', 'Medida', 'Valor']" [datas]="serviceOrders" [ids]="['id','orcamento_id','loja' ,'cliente', 'dataPrevisaoTermino','item','detalhe','comodo','medida','valor']" [runClickRow]="false" [sotc]="self">
         </sivp-table>
 
+        <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modal-default">Open Modal</button>
+        
         <!----------------------------------- MODAL CHANGE --------------------------------------------------------------------->
-        <div class="modal fade" id="modal-default" [ngStyle]="{'display': openModal ? 'block' : 'none', 'opacity': 1}">
-            <div class="modal-dialog" [ngStyle]="{'top':'10%'}">
+        <div class="modal fade" id="modal-default"  role="dialog" data-backdrop="static">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" (click)="openModalFunction(false)" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">OS {{id}}</h4>
+                        <h4 class="modal-title">OS {{id}} <br> Valor: R$ {{soValue}}</h4>
                     </div>
                     <div class="modal-body">
                         <form [formGroup]="modalForm" novalidate>
                             <div class="row">
-                                <sivp-primary-box [title]="'Data'">
-                                    <sivp-date-picker formControlName="txtDate"></sivp-date-picker>
-                                </sivp-primary-box>
-
+                                
+                                
                                 <sivp-primary-box [title]="'Funcionário'">
 
                                     <div *ngFor="let item of cbo.controls; let i = index" class="checkbox" formArrayName="checkBoxOption">
@@ -39,24 +39,48 @@
                                                 </label>
                                             </div>
 
-                                            <div class="col-xs-6">
-                                                <input [class.hide]="!showTextBox(checks[i])" (keyup)="eventInput(i, value)" type="text" class="form-control input-sm pull-right" placeholder="%" [formControlName]="'employeeShare'">
+                                            <div [class.hide]="!showTextBox(checks[i])" class="col-xs-6">
+                                                <input (keyup)="eventInput(i, value)" type="text" class="form-control input-sm pull-right" placeholder="%" [formControlName]="'employeeShare'">
                                             </div>
                                         </div>
                                     </div>
                                 </sivp-primary-box>
-                            </div>
-                            <div class="row">
-                                <sivp-primary-box [title]="'Complemento'" class="col-xs-12">
+
+                                <sivp-primary-box [title]="'Data Término'">
+                                    <sivp-date-picker formControlName="txtDate"></sivp-date-picker>
+                                </sivp-primary-box>
+                                
+                                <sivp-primary-box [title]="'Complemento'">
                                     <label>
-                                        <input (click)="showStatus('Empreita')" type="checkbox" formControlName="cbEmpreita" checked="false"> Empreita
+                                        <input (click)="showStatus('Empreita')" type="checkbox" formControlName="cbEmpreita"> Empreita
                                     </label>
                                     <br>
                                     <label>
-                                        <input (click)="showStatus('Stone')" type="checkbox" formControlName="cbStone" checked="false"> Mármore / Granito
+                                        <input (click)="showStatus('Stone')" type="checkbox" formControlName="cbStone"> Mármore / Granito
                                     </label>
-                                    {{modalForm.valid}}
                                 </sivp-primary-box>
+                                
+
+
+                                <div *ngIf="modalForm.get('cbEmpreita').value || modalForm.get('cbStone').value" class="col-sm-12 col-xs-12">
+                                    <div class="box box-primary">
+                                        <div class="box-header">
+                                            <h3 class="box-title"><i class="fa fa-pencil"></i> Empreita | Mármore/Granito </h3>
+                                        </div>
+                                        <div *ngIf="modalForm.get('cbEmpreita').value" class="col-sm-6 col-xs-12">
+                                            <label> Valor Empreita </label>
+                                            <input class="form-control input-sm" type="text" formControlName="txtEmpreitaValue" placeholder="Valor Empreita" currencyMask  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ','}">
+                                            <!--<label> Data Pagamento Empreita </label><br>
+                                            <sivp-date-picker formControlName="txtEmpreitaDate"></sivp-date-picker>-->
+                                        </div>
+                                        
+                                        <div *ngIf="modalForm.get('cbStone').value" class="col-sm-6 col-xs-12">
+                                            <label> Valor Mármore/Granito </label>
+                                            <input class="form-control input-sm" type="text" formControlName="txtStoneValue" placeholder="Valor Mármore/Granito" currencyMask  [options]="{ prefix: 'R$ ', thousands: '.', decimal: ','}">
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
                                 <button type="button" class="btn btn-default pull-left" (click)="openModalFunction(false)">Fechar</button>
