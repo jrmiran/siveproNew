@@ -31,6 +31,7 @@ export class ServiceOrderComponent implements OnInit {
     budgets: BudgetNew[] = [];
     currentItems: number[] = [];
     self: any;
+    empty: boolean = false;
     
     clickRow(ids: number[]){
         this.currentItems = ids;
@@ -65,6 +66,7 @@ export class ServiceOrderComponent implements OnInit {
                             value['pedra'] =  value['pedra']['data'][0];
                         });
                     });
+                    self.empty = false;
                     self.spinner.hide();
                 }
                     console.log(currentItem);
@@ -82,6 +84,9 @@ export class ServiceOrderComponent implements OnInit {
                 self.formin = queryParams;
                 this.appService.serviceOrder(queryParams['budgetId']).subscribe(function(data){
                     self.serviceOrders = data;
+                    if(self.serviceOrders.length < 1){
+                        self.empty = true;
+                    }
                 });
             }
         );

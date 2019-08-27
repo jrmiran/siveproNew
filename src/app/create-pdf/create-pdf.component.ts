@@ -413,7 +413,7 @@ export class CreatePdfComponent implements OnInit {
         }
         //**********************************************************BUDGET NOTE*******************************************************
         
-        doc.save('table.pdf');
+        doc.save('Orçamento '+ mainBudget.number + ' Ed '+ mainBudget.rectified + ' ' + mainBudget.client.name + ' ('+  mainBudget.terceiro.name +').pdf'.replace(/[\/]/g,'%2F'));
         
     }
     

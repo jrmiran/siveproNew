@@ -49,8 +49,10 @@
                             <h3 class="box-title"> Ordens de Serviço:</h3>
                             <a class="btn pull-right"><i class="fa fa-print"></i> Imprimir </a>
                         </div>
-                        <sivp-table [name]="''" [headers]="['ID', 'Loja', 'Cliente', 'Item', 'Medida', 'Ambiente', 'Previsão Entrega', 'Data Término', 'Empreita', 'Mármore/Granito']" [searchBar]="false" [datas]="serviceOrders" [ids]="['id','loja', 'cliente', 'item', 'medida', 'comodo', 'dataPrevisaoTermino', 'dataTermino', 'empreita', 'pedra']" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection] = "true">
+                        <sivp-table *ngIf="!empty" [name]="''" [headers]="['ID', 'Loja', 'Cliente', 'Item', 'Medida', 'Ambiente', 'Previsão Entrega', 'Data Término', 'Empreita', 'Mármore/Granito']" [searchBar]="false" [datas]="serviceOrders" [ids]="['id','loja', 'cliente', 'item', 'medida', 'comodo', 'dataPrevisaoTermino', 'dataTermino', 'empreita', 'pedra']" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection] = "true">
                         </sivp-table>
+                        
+                        <label *ngIf="empty"> Não há ordens de serviço geradas para este orçamento </label>
                     </div>
                 </div>
             </div>
