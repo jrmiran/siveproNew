@@ -10,6 +10,15 @@ export class ParameterService{
     constructor(){}
     
     budgets: BudgetNew[];
+    idOs: number;
+    
+    getIdOs(){
+        return this.idOs;
+    }
+    
+    setIdOs(id: number){
+        this.idOs = id;    
+    }
     
     setBudgets(budgets: BudgetNew[]){
         this.budgets = budgets;

@@ -11,6 +11,8 @@ import {BudgetEditComponent} from '../budget/budget-edit/budget-edit.component';
 import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {ServiceOrderComponent} from '../service-order/service-order.component';
 import {ServiceOrderTableComponent} from '../service-order/service-order-table/service-order-table.component';
+import {UploadComponent} from '../upload/upload.component';
+import {ParameterService} from '../shared/parameter.service';
 
 import "rxjs/add/operator/map";
 
@@ -21,7 +23,7 @@ import "rxjs/add/operator/map";
 })
 export class TableComponent implements OnInit {
 
-  constructor(private budgetComponent: BudgetService, private start: StartService, private formBuilder: FormBuilder) { }
+  constructor(private budgetComponent: BudgetService, private start: StartService, private formBuilder: FormBuilder, public uploadService: UploadComponent, private parameterService: ParameterService) { }
 
     @Input() name: string;
     @Input() headers: string[];
@@ -57,6 +59,9 @@ export class TableComponent implements OnInit {
     p: Object;
     b: BudgetNew;
     selectedRows: number[] = [];
+    count: number = 0;
+    flag: boolean = true;
+    
     
     selectAll(){    
         var self = this;
@@ -75,6 +80,9 @@ export class TableComponent implements OnInit {
         }
     }
     
+    getTextTooltip(id: any): string{
+        return "Este é um retorno" + id;
+    }
     showServiceOrderModal(){
         console.log("Service Order Modal");
     }
@@ -176,6 +184,15 @@ export class TableComponent implements OnInit {
         
 
                 
+    }
+    
+    setUploadId(id: number){
+        this.count = this.count + 1;
+        if(this.flag){
+            alert(this.count + " - " + id);
+            this.parameterService.setIdOs(id);
+        }
+        this.flag = !this.flag;
     }
     
     buildComodos(){

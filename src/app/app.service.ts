@@ -67,6 +67,10 @@ export class AppService{
         return this.callQuery(`createItem/${id}/'${description}'/'${value}'`);
     }
     
+    insertImageSO(id:number, imageUrl: string): Observable<Object[]>{
+        return this.callQuery(`insertImageSO/${id}/'${imageUrl}'`);
+    }
+    
     clientInsertion(
                     clientType: string,
                     clientNeighbor: string,

@@ -4,6 +4,7 @@ import { AppService } from '../app.service'
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../shared/user/user-model';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {LoginService} from './login.service';
 
 @Component({
   selector: 'sivp-login',
@@ -13,7 +14,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 export class LoginComponent implements OnInit {
 
     loginForm: FormGroup
-  constructor(private fb: FormBuilder, private appService: AppService, private router: Router, private spinner: NgxSpinnerService) { }
+  constructor(private fb: FormBuilder, private appService: AppService, private router: Router, private spinner: NgxSpinnerService, private loginService: LoginService) { }
     user: Object[] = [];
     userName= {nome:""};
     
@@ -21,6 +22,7 @@ export class LoginComponent implements OnInit {
         var self = this;
         setTimeout(()=> this.spinner.show(), 10);
         this.appService.authentication(this.loginForm.get('email').value, this.loginForm.get('password').value).subscribe(function(data){
+            self.loginService.user = data;
             console.log(data);
             self.user = data;
             if(self.user.length > 0){

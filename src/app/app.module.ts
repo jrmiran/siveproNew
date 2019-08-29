@@ -61,6 +61,10 @@ import { ParameterService } from './shared/parameter.service';
 import { ServiceOrderTableComponent } from './service-order/service-order-table/service-order-table.component';
 import { ServiceOrderEditComponent } from './service-order/service-order-edit/service-order-edit.component';
 import { InfoBoxComponent } from './shared/info-box/info-box.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {LoginService}  from './login/login.service';
+import { CreatePdfSOComponent } from './create-pdf-so/create-pdf-so.component';
+import { UploadComponent } from './upload/upload.component';
 
 @NgModule({
   declarations: [
@@ -100,6 +104,8 @@ import { InfoBoxComponent } from './shared/info-box/info-box.component';
     ServiceOrderTableComponent,
     ServiceOrderEditComponent,
     InfoBoxComponent,
+    CreatePdfSOComponent,
+    UploadComponent,
   ],
   imports: [
     BrowserModule,
@@ -120,7 +126,8 @@ import { InfoBoxComponent } from './shared/info-box/info-box.component';
     NgxMaskModule.forRoot(),
     TextMaskModule,
     CurrencyMaskModule,
-    NgxSpinnerModule
+    NgxSpinnerModule,
+    MatTooltipModule
   ],
   providers: [
       AppService,
@@ -128,6 +135,8 @@ import { InfoBoxComponent } from './shared/info-box/info-box.component';
       BudgetService,
       SpinnerService,
       ParameterService,
+      LoginService,
+      UploadComponent,
       {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
   ],
   bootstrap: [AppComponent]

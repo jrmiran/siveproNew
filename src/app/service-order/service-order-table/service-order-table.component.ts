@@ -123,7 +123,7 @@ export class ServiceOrderTableComponent implements OnInit {
                     self.queryShares = self.queryShares + "(" + self.id + "," + self.sharesEmployees[index] + "),";
                 }
             });
-            this.appService.insertSOExecution(this.id, this.modalForm.get('txtDate').value.replace(/[\/]/g,'%2F'), this.modalForm.get('cbStone').value, this.modalForm.get('cbEmpreita').value, this.modalForm.get('txtstoneValue').value.toString().replace('.',','), this.queryEmployees.replace(/[\/]/g,'%2F'), this.queryShares).subscribe(function(data){
+            this.appService.insertSOExecution(this.id, this.modalForm.get('txtDate').value.replace(/[\/]/g,'%2F'), this.modalForm.get('cbStone').value, this.modalForm.get('cbEmpreita').value, this.modalForm.get('txtStoneValue').value.toString().replace('.',','), this.queryEmployees.replace(/[\/]/g,'%2F'), this.queryShares).subscribe(function(data){
                 self.openModalFunction(false);
                 alert("Ordem de Serviço Lançada!");
                 self.spinner.hide();
@@ -180,10 +180,19 @@ export class ServiceOrderTableComponent implements OnInit {
 
         this.appService.searchAllServiceOrders().subscribe(function(data){
             self.serviceOrders = data;
-            self.serviceOrders.forEach(function(data){
+            self.serviceOrders.map(function(value){
+                value['empreita'] = value['empreita']['data'][0];
+                value['pedra'] =  value['pedra']['data'][0];
+                if(value['dataTermino']){
+                    value['terminado'] = 1;
+                }else{
+                    value['terminado'] = 0;
+                }
+            });
+            /*self.serviceOrders.forEach(function(data){
                 data['empreita'] =  data['empreita']['data'][0];
                 data['pedra'] =  data['pedra']['data'][0];
-            });
+            });*/
 
             self.spinner.hide();
         });
