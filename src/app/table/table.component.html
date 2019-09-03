@@ -32,9 +32,22 @@
                 </span>
 
             </td>
-            <div (click)="setUploadId(data['id'])">
+            <div >
                 <td *ngIf="sotc">
-                    <sivp-upload [title]="'Adicionar Imagem'"></sivp-upload>
+                    <!--<sivp-upload [title]="'Adicionar Imagem'"></sivp-upload>-->
+                    <div class="btn-group pull-right" style="margin-bottom: 5px">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="btn pull-left" [routerLink]="['/serviceOrder']" [queryParams]="formout" [class.disabled]="!approved"><i class="fa fa-paper-plane-o" style="color: black"></i>Lançar</a></li>
+                            <li><a class="btn pull-left" (click)="exportPdfSo(data['id'])"><i class="fa fa-file-pdf-o pull-left" style="color: red"></i>Gerar PDF</a></li>
+                            <li (click)="setUploadId(data['id'])">
+                                <sivp-upload [title]="'Adicionar Imagem'"></sivp-upload>
+                            </li>
+                        </ul>
+                    </div>
                 </td>
             </div>
 

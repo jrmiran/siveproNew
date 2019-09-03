@@ -16,6 +16,7 @@ import {BudgetInsertion} from '../budget-insertion.model';
 import {Observable} from "rxjs/Observable";
 import {SubItem} from "./sub-item.model";
 import {NgxSpinnerService} from 'ngx-spinner';
+import {KEY_CODE} from '../../shared/key-code/keyCode';
 
 @Component({
   selector: 'sivp-budget-new',
@@ -26,7 +27,28 @@ export class BudgetNewComponent implements OnInit {
     
   constructor(private formBuilder: FormBuilder, private appService: AppService, private start: StartService, private router: ActivatedRoute, private spinner: NgxSpinnerService, private route: Router) { }
     
-    
+    @HostListener('window:keyup', ['$event'])
+      keyEvent(event: KeyboardEvent) {
+        console.log(event);
+
+        if (event.keyCode === KEY_CODE.DELETE) {
+          this.removeItem();
+        }
+      }
+
+    removeItem(){
+        var i: number;
+        i = this.currentItem;
+        
+        this.mainBudget.valorTotal = parseFloat((this.mainBudget.valorTotal - this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)).toFixed(2));
+        
+        if(this.currentItem >=0){
+            this.budgets = this.budgets.slice(0,i).concat(this.budgets.slice(i+1,this.budgets.length));
+        } else{
+            alert("NÃO HÁ ITEM SELECIONADO");
+        }
+        
+    }
     
     qtds: number[] = [];
     cods: string[] = [];

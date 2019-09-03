@@ -626,9 +626,10 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         var i: number;
         i = this.currentItem;
         
-        this.mainBudget.valorTotal = parseFloat((this.mainBudget.valorTotal - this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)).toFixed(2));
+        //this.mainBudget.valorTotal = parseFloat((this.mainBudget.valorTotal - this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)).toFixed(2));
         
         if(this.currentItem >=0){
+            this.mainBudget.valorTotal = parseFloat((this.mainBudget.valorTotal - this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)).toFixed(2));
             this.budgets = this.budgets.slice(0,i).concat(this.budgets.slice(i+1,this.budgets.length));
         } else{
             alert("NÃO HÁ ITEM SELECIONADO");
@@ -641,6 +642,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.spinner.show();
         this.convertBudgetToString().then(function(data){
            self.removeBarURL();
+            console.log(self.itemsString);
            self.appService.budgetUpdate(self.mainBudget.number, self.mainBudget.discount, self.mainBudget.note, self.mainBudget.rectified, self.mainBudget.valorTotal, self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString).subscribe(function(value){
                self.joinBudget();
                self.createPdf.gerarPDF(self.budgetsAmbient, self.mainBudget);
@@ -997,14 +999,18 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.mainBudget.discount = self.orc[0].desconto;
                 self.discount = self.orc[0].desconto;
                 
-                self.mainBudget.note = self.orc[0].observacao;
+                if(self.orc[0].observacao){
+                   self.mainBudget.note = self.orc[0].observacao + " ";
+                } else{
+                    self.mainBudget.note = " ";
+                }
+                
                 console.log(self.mainBudget.valorTotal);
                 console.log(self.mainBudget.discount);
                 console.log("VALOR TOTAL: " + self.orc[0].valorTotal);
                 console.log("DESCONTO: " + self.mainBudget.discount);
                 self.mainBudget.valorComDesconto = parseFloat((self.orc[0].valorTotal.replace(',','.') - self.orc[0].valorTotal.replace(',','.') * (self.mainBudget.discount/100)).toFixed(2));
                 console.log(self.mainBudget.valorComDesconto);
-                self.mainBudget.note = self.orc[0].observacao;
                 
                 self.formout.budgetId = self.mainBudget.number;
                 self.formout.store = self.nameClient;

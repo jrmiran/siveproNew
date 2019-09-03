@@ -80,6 +80,10 @@ export class TableComponent implements OnInit {
         }
     }
     
+    exportPdfSo(id: number){
+        this.sotc.exportPdf(id);    
+    }
+    
     getTextTooltip(id: any): string{
         return "Este é um retorno" + id;
     }

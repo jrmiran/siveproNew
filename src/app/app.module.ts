@@ -137,6 +137,7 @@ import { UploadComponent } from './upload/upload.component';
       ParameterService,
       LoginService,
       UploadComponent,
+      CreatePdfSOComponent,
       {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
   ],
   bootstrap: [AppComponent]

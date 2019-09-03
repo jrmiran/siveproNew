@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {DATA_API} from "./app.api";
-import { Http } from "@angular/http";
+import { Http, RequestOptions, Headers } from "@angular/http";
+import { HttpHeaders, HttpClient } from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/operator/map";
 import {BudgetInsertion} from './budget/budget-insertion.model';
@@ -15,6 +16,17 @@ export class AppService{
     callQuery(q: string): Observable<Object[]>{
         console.log(`${DATA_API}/` + q);
         return this.http.get(`${DATA_API}/` + q).map(response => response.json());
+    }
+    
+    callPost(q: string, obj: any): Observable<Object[]>{
+        /*const headers = new HttpHeaders()
+          .set('Authorization', 'my-auth-token')
+          .set('Content-Type', 'application/json');*/
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        console.log(`${DATA_API}/` + q);
+        console.log(obj);
+        return this.http.post(`${DATA_API}/` + q, obj, {headers: headers}).map(response => response.json());
     }
     
     budgets(): Observable<Object[]>{
@@ -68,6 +80,10 @@ export class AppService{
     }
     
     insertImageSO(id:number, imageUrl: string): Observable<Object[]>{
+        return this.callQuery(`insertImageSO/${id}/'${imageUrl}'`);
+    }
+    
+    insertImageSO2(id:number, imageUrl: any): Observable<Object[]>{
         return this.callQuery(`insertImageSO/${id}/'${imageUrl}'`);
     }
     
@@ -172,6 +188,10 @@ export class AppService{
         return this.callQuery(`serviceOrder/${budgetId}`);
     }
     
+     serviceOrderId(soId: any): Observable<Object[]>{
+        return this.callQuery(`serviceOrderId/${soId}`);
+    }
+    
     serviceOrderInsertion(client: string, detail: string, ambient: string, item: string, store: string, measure: string, note: string, value: number, seller: string, budgetId: number, stone: boolean): Observable<Object[]>{
         return this.callQuery(`serviceOrderInsertion/'${client}'/'${detail}'/'${ambient}'/'${item}'/'${store}'/'${measure}'/'${note}'/${value}/'${seller}'/${budgetId}/${stone}`);
     }
@@ -186,6 +206,14 @@ export class AppService{
     
     searchAllEmployees(): Observable<Object[]>{
         return this.callQuery(`searchAllEmployees`);
+    }
+    
+    serviceOrderBudget(idSO: number): Observable<Object[]>{
+        return this.callQuery(`serviceOrderBudget/${idSO}`);
+    }
+    
+    postTest(obj: any): Observable<Object[]>{
+        return this.callPost(`postTest`, obj);
     }
     
     converteFloatMoeda(valor: any){

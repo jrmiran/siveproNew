@@ -24,6 +24,15 @@ export class Comp1Component implements OnInit {
         this.createPdf.gerarPDF();
     }
     
+    objTest = {name: "Test1", number: "12", attribute3: "At3", attribute4: "at4"};
+    postTest(){
+        var json = JSON.stringify(this.objTest);
+        console.log(JSON.stringify(this.objTest));
+        this.appService.postTest(JSON.stringify({texto: "jefferson"})).subscribe(function(data){
+           console.log(data);
+        });    
+    }
+    
   ngOnInit() {
       this.route.queryParams.subscribe(
         (queryParams: any) =>{
@@ -32,5 +41,5 @@ export class Comp1Component implements OnInit {
             console.log(this.id);
         }
       );
-  } 
+  }
 }

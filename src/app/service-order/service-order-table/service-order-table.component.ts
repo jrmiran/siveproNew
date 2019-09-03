@@ -5,6 +5,8 @@ import { map } from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {FormGroup, FormBuilder, Validators, FormControl, FormArray} from '@angular/forms';
 import {soExecution} from '../so-execution.model';
+import {CreatePdfSOComponent} from '../../create-pdf-so/create-pdf-so.component';
+import {SoPdfModel} from '../../create-pdf-so/so-pdf.model';
 
 @Component({
   selector: 'sivp-service-order-table',
@@ -13,7 +15,7 @@ import {soExecution} from '../so-execution.model';
 })
 export class ServiceOrderTableComponent implements OnInit {
 
-  constructor(private appService: AppService, public spinner: NgxSpinnerService, private formBuilder: FormBuilder) { }
+  constructor(private appService: AppService, public spinner: NgxSpinnerService, private formBuilder: FormBuilder, private createPdf: CreatePdfSOComponent) { }
 
     self = this;
     serviceOrders: Object[];
@@ -34,6 +36,7 @@ export class ServiceOrderTableComponent implements OnInit {
     searchEmployees: Object[];
     soValue: string;
     os: any;
+    soPdfModel ={} as SoPdfModel;
     
     openModalFunction(open: boolean, id?: number, valor?: string){
         //this.openModal = open;
@@ -138,8 +141,7 @@ export class ServiceOrderTableComponent implements OnInit {
             return false;  
         }   
     }
-    
-    
+
     showStatus(value: string){
         if(value == "Empreita"){
             this.modalForm.get('cbEmpreita').setValue(!this.modalForm.get('cbEmpreita').value);
@@ -151,6 +153,39 @@ export class ServiceOrderTableComponent implements OnInit {
                this.modalForm.get('txtStoneValue').setValue(0);
             }
         }
+    }
+    
+    blobToBase64(blob){
+        var self = this;
+        var reader = new FileReader();
+        var result;
+        reader.onload = function(event) {
+            console.log(event.target['result']);
+            var dataUrl = reader.result;
+            var base64 = dataUrl.split(',')[1];
+            
+        };
+        reader.readAsDataURL(blob);
+    }
+    
+    exportPdf(idSO: number){
+        var self = this;
+        this.appService.serviceOrderId(idSO).subscribe(function(data){
+            console.log(data);
+            self.soPdfModel.id = data[0]['id'];
+            self.soPdfModel.limitDate = data[0]['dataPrevisaoTermino'];
+            self.soPdfModel.store = data[0]['loja'];
+            self.soPdfModel.client = data[0]['cliente'];
+            self.soPdfModel.material = "Material";
+            self.soPdfModel.location = "9";
+            self.soPdfModel.ambient = data[0]['comodo'];
+            self.soPdfModel.item = data[0]['item'];
+            self.soPdfModel.note = data[0]['observacao'];
+            self.soPdfModel.image = data[0]['imagem'];
+            console.log(self.soPdfModel);
+        });
+        
+        //this.createPdf.gerarPDF();
     }
     
     ngOnInit() {
@@ -176,6 +211,7 @@ export class ServiceOrderTableComponent implements OnInit {
             self.buildCbEmployee();
         });
         
+        
         this.cbo = (this.modalForm.get('checkBoxOption') as FormArray);
 
         this.appService.searchAllServiceOrders().subscribe(function(data){
@@ -188,7 +224,12 @@ export class ServiceOrderTableComponent implements OnInit {
                 }else{
                     value['terminado'] = 0;
                 }
+                
             });
+            console.log(data[7]['imagem']);
+            let blob = new Blob([data[6]['image']['data']], {type: 'image/png'});
+            console.log(blob);
+            self.blobToBase64(blob);
             /*self.serviceOrders.forEach(function(data){
                 data['empreita'] =  data['empreita']['data'][0];
                 data['pedra'] =  data['pedra']['data'][0];

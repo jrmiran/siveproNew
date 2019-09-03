@@ -38,9 +38,17 @@ export class UploadComponent implements OnInit {
         this.imageSrc = reader.result;
         //console.log(this.imageSrc);
         //console.log(this.base64toBlob(this.imageSrc));
-        this.blobToBase64(this.base64toBlob(this.imageSrc));
+        //console.log(this.blobToBase64(this.base64toBlob(this.imageSrc)));
+        var blob = this.base64toBlob(this.imageSrc);
+        console.log(blob);
         //console.log(this.imageBlob);
-        this.appService.insertImageSO(this.parameterService.getIdOs(), this.imageSrc).subscribe(function(data){
+        console.log(this.imageSrc);
+        var param = {idOs: this.parameterService.getIdOs(), image: this.imageSrc};
+        /*this.appService.insertImageSO2(this.parameterService.getIdOs(), this.base64toBlob(this.imageSrc)).subscribe(function(data){
+            console.log(data);
+            alert ("Imagem inserida!");
+        });*/
+        this.appService.postTest(param).subscribe(function(data){
             console.log(data);
             alert ("Imagem inserida!");
         });
@@ -60,10 +68,11 @@ export class UploadComponent implements OnInit {
             for (var i = 0; i < byteString.length; i++) {
                 ia[i] = byteString.charCodeAt(i);
             }
+        
         console.log(ia);
         var response = new Blob([ia], {type:mimeString});
-        
-            return new Blob([ia], {type:mimeString});
+        return ia;
+            //return new Blob([ia], {type:mimeString});
     }
     
     blobToBase64(blob){
@@ -72,7 +81,7 @@ export class UploadComponent implements OnInit {
         var result;
         reader.onload = function(event) {
             self.imageBlob = event.target['result'];
-            console.log(self.imageBlob);
+            //console.log(self.imageBlob);
             var dataUrl = reader.result;
             var base64 = dataUrl.split(',')[1];
             
