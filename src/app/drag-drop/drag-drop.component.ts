@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FileHandle } from '../shared/dragDrop';
-import { DndDropEvent } from 'ngx-drag-drop';
-import {DATA_API} from '../app.api';
+//import { FileHandle } from '../shared/dragDrop';
+//import { DndDropEvent } from 'ngx-drag-drop';
+//import {DATA_API} from '../app.api';
 
 
 @Component({
@@ -11,7 +11,7 @@ import {DATA_API} from '../app.api';
 })
 export class DragDropComponent implements OnInit{
     
-    @ViewChild('fileSelector') fileSelector;
+    /*@ViewChild('fileSelector') fileSelector;
     
     afuConfig = {
     multiple: false,
@@ -31,11 +31,11 @@ export class DragDropComponent implements OnInit{
     
     DocUpload(e){
         console.log(e);
-    }
+    }*/
     
    ngOnInit(){
        console.log("On Init");
-       console.log(this.fileSelector.selectedFiles)
+       //console.log(this.fileSelector.selectedFiles)
    }
 
 }
