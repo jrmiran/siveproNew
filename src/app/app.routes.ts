@@ -15,6 +15,10 @@ import { BudgetEditComponent } from './budget/budget-edit/budget-edit.component'
 import { ServiceOrderComponent } from './service-order/service-order.component';
 import { ServiceOrderTableComponent } from './service-order/service-order-table/service-order-table.component';
 import { ServiceOrderEditComponent } from './service-order/service-order-edit/service-order-edit.component';
+import {DragDropComponent} from './drag-drop/drag-drop.component';
+import {FileUploadComponent} from './file-upload/file-upload.component';
+import {FileDropComponent} from './file-drop/file-drop.component';
+import {MaterialComponent} from './material/material.component';
 
 export const ROUTES: Routes = [
     {path: '', component: LoginComponent},
@@ -33,5 +37,7 @@ export const ROUTES: Routes = [
     {path: 'budgetEdit', component: BudgetEditComponent},
     {path: 'serviceOrder', component: ServiceOrderComponent},
     {path: 'serviceOrderTable', component: ServiceOrderTableComponent},
-    {path: 'serviceOrderEdit', component: ServiceOrderEditComponent}
+    {path: 'serviceOrderEdit', component: ServiceOrderEditComponent},
+    {path: 'dragDrop', component: FileDropComponent},
+    {path: 'materials', component: MaterialComponent}
 ]

@@ -36,18 +36,10 @@ export class UploadComponent implements OnInit {
     _handleReaderLoaded(e, callback) {
         let reader = e.target;
         this.imageSrc = reader.result;
-        //console.log(this.imageSrc);
-        //console.log(this.base64toBlob(this.imageSrc));
-        //console.log(this.blobToBase64(this.base64toBlob(this.imageSrc)));
         var blob = this.base64toBlob(this.imageSrc);
         console.log(blob);
-        //console.log(this.imageBlob);
         console.log(this.imageSrc);
         var param = {idOs: this.parameterService.getIdOs(), image: this.imageSrc};
-        /*this.appService.insertImageSO2(this.parameterService.getIdOs(), this.base64toBlob(this.imageSrc)).subscribe(function(data){
-            console.log(data);
-            alert ("Imagem inserida!");
-        });*/
         this.appService.postTest(param).subscribe(function(data){
             console.log(data);
             alert ("Imagem inserida!");

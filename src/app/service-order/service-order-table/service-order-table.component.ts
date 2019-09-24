@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {AppService} from "../../app.service";
 import { interval } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import {FormGroup, FormBuilder, Validators, FormControl, FormArray} from '@angul
 import {soExecution} from '../so-execution.model';
 import {CreatePdfSOComponent} from '../../create-pdf-so/create-pdf-so.component';
 import {SoPdfModel} from '../../create-pdf-so/so-pdf.model';
+import {DatePickerComponent} from '../../shared/date-picker/date-picker.component';
 
 @Component({
   selector: 'sivp-service-order-table',
@@ -37,6 +38,8 @@ export class ServiceOrderTableComponent implements OnInit {
     soValue: string;
     os: any;
     soPdfModel ={} as SoPdfModel;
+    @ViewChild('dPicker') dPicker: DatePickerComponent;
+    @ViewChild('iptCb') iptCb: any;
     
     openModalFunction(open: boolean, id?: number, valor?: string){
         //this.openModal = open;
@@ -91,6 +94,8 @@ export class ServiceOrderTableComponent implements OnInit {
    buildCbEmployee(){
        var self = this;
        
+       //self.checkBoxFormArray = new FormArray([]);
+       
         this.checks.forEach(function(data, index){
            self.checkBoxFormArray.push(new FormGroup({
                employeeName: new FormControl(false,[]),
@@ -109,6 +114,7 @@ export class ServiceOrderTableComponent implements OnInit {
         this.modalForm.get('txtEmpreitaValue').setValue(0);
         this.modalForm.get('txtEmpreitaDate').setValue('');
         this.modalForm.get('txtStoneValue').setValue(0);
+        this.dPicker.clearField();
     }
     
     buildQuery(){
@@ -126,7 +132,7 @@ export class ServiceOrderTableComponent implements OnInit {
                     self.queryShares = self.queryShares + "(" + self.id + "," + self.sharesEmployees[index] + "),";
                 }
             });
-            this.appService.insertSOExecution(this.id, this.modalForm.get('txtDate').value.replace(/[\/]/g,'%2F'), this.modalForm.get('cbStone').value, this.modalForm.get('cbEmpreita').value, this.modalForm.get('txtStoneValue').value.toString().replace('.',','), this.queryEmployees.replace(/[\/]/g,'%2F'), this.queryShares).subscribe(function(data){
+            this.appService.insertSOExecution(this.id, this.modalForm.get('txtDate').value.replace(/[\/]/g,'%2F'), this.modalForm.get('cbStone').value, this.modalForm.get('cbEmpreita').value, this.modalForm.get('txtStoneValue').value.toString().replace('.',','), this.queryEmployees.replace(/[\/]/g,'%2F'), this.queryShares, this.modalForm.get('txtEmpreitaValue').value.toString().replace('.',',')).subscribe(function(data){
                 self.openModalFunction(false);
                 alert("Ordem de Serviço Lançada!");
                 self.spinner.hide();
@@ -171,18 +177,18 @@ export class ServiceOrderTableComponent implements OnInit {
     exportPdf(idSO: number){
         var self = this;
         this.appService.serviceOrderId(idSO).subscribe(function(data){
-            console.log(data);
+            
             self.soPdfModel.id = data[0]['id'];
             self.soPdfModel.limitDate = data[0]['dataPrevisaoTermino'];
             self.soPdfModel.store = data[0]['loja'];
             self.soPdfModel.client = data[0]['cliente'];
             self.soPdfModel.material = "Material";
-            self.soPdfModel.location = "9";
+            self.soPdfModel.location = "";
             self.soPdfModel.ambient = data[0]['comodo'];
             self.soPdfModel.item = data[0]['item'];
             self.soPdfModel.note = data[0]['observacao'];
             self.soPdfModel.image = data[0]['imagem'];
-            console.log(self.soPdfModel);
+            self.createPdf.gerarPDF(self.soPdfModel);
         });
         
         //this.createPdf.gerarPDF();
@@ -191,6 +197,8 @@ export class ServiceOrderTableComponent implements OnInit {
     ngOnInit() {
         setTimeout(()=> this.spinner.show(), 10);
         var self = this;
+        
+        //this.dPicker.functionTest();
         
          this.modalForm = this.formBuilder.group({
             txtDate: this.formBuilder.control('',[Validators.required]), 
@@ -226,9 +234,9 @@ export class ServiceOrderTableComponent implements OnInit {
                 }
                 
             });
-            console.log(data[7]['imagem']);
+            //console.log(data[7]['imagem']);
             let blob = new Blob([data[6]['image']['data']], {type: 'image/png'});
-            console.log(blob);
+            //console.log(blob);
             self.blobToBase64(blob);
             /*self.serviceOrders.forEach(function(data){
                 data['empreita'] =  data['empreita']['data'][0];

@@ -65,6 +65,15 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {LoginService}  from './login/login.service';
 import { CreatePdfSOComponent } from './create-pdf-so/create-pdf-so.component';
 import { UploadComponent } from './upload/upload.component';
+import { DragDropComponent } from './drag-drop/drag-drop.component';
+import { DndModule } from 'ngx-drag-drop';
+import { AngularFileUploaderModule } from "angular-file-uploader";
+import { FileUploadComponent } from './file-upload/file-upload.component';
+import { FileUploadModule } from 'ng2-file-upload';
+import { FileDropComponent } from './file-drop/file-drop.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
+import { CreatePdfProjectComponent } from './create-pdf-project/create-pdf-project.component';
+import { MaterialComponent } from './material/material.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +115,11 @@ import { UploadComponent } from './upload/upload.component';
     InfoBoxComponent,
     CreatePdfSOComponent,
     UploadComponent,
+    DragDropComponent,
+    FileUploadComponent,
+    FileDropComponent,
+    CreatePdfProjectComponent,
+    MaterialComponent,
   ],
   imports: [
     BrowserModule,
@@ -127,7 +141,11 @@ import { UploadComponent } from './upload/upload.component';
     TextMaskModule,
     CurrencyMaskModule,
     NgxSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    DndModule,
+    AngularFileUploaderModule,
+    FileUploadModule,
+    NgxFileDropModule
   ],
   providers: [
       AppService,
@@ -138,6 +156,7 @@ import { UploadComponent } from './upload/upload.component';
       LoginService,
       UploadComponent,
       CreatePdfSOComponent,
+      CreatePdfProjectComponent,
       {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
   ],
   bootstrap: [AppComponent]

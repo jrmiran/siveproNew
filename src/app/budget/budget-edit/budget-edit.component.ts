@@ -21,6 +21,7 @@ import {BudgetNewComponent} from '../budget-new/budget-new.component';
 import {BudgetService} from '../budget.service'
 import {formin} from '../../service-order/forminSO';
 import {ParameterService} from '../../shared/parameter.service';
+import {BudgetItem} from '../budget-item.model';
 
 @Component({
   selector: 'sivp-budget-edit',
@@ -36,7 +37,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         console.log(event);
 
         if (event.keyCode === KEY_CODE.DELETE) {
-          this.removeItem();
+          //this.removeItem();
         }
       }
     
@@ -77,6 +78,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     //formout = {budgetId: 0, store: "", thirdy: "", seller: "", date: "", budgets: []};
     formout = {} as formin;
     insertedBudget: any;
+    budgetItems: BudgetItem[] = [];
+    newBudgetItems: BudgetItem[] = [];
+    removeItems: number[] = []
+    params = {query: ""};
+    insertedItem: number = -1000;
     
     b: BudgetNew = {
         qtd: 0,
@@ -319,6 +325,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         } else{
             valorTotalLocal = this.budgets[this.currentItem].valorTotal;
         }
+        
         console.log("MB VT: " + this.mainBudget.valorTotal);
         console.log("VTL: " + valorTotalLocal);
         console.log("CV: " + this.currentValue);
@@ -329,12 +336,73 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         console.log(this.budgets[this.currentItem].valorUnitario);
         this.currentValue = this.mainBudget.valorTotal;
         
+        
+        
+        //------------------------------------- NEW BUDGET ITEMS -------------------------------------------//
+        this.budgetItems[this.currentItem].qtd = this.orderForm.get('txtQtd').value;
+        this.budgetItems[this.currentItem].necessary = this.orderForm.get('txtNecessario').value;
+        this.budgetItems[this.currentItem].detail = this.orderForm.get('txtDetalhe').value;
+        //this.budgetItems[this.currentItem].unitValue = this.appService.converteFloatMoeda(this.orderForm.get('txtValor').value);
+        this.budgetItems[this.currentItem].unitValue = this.orderForm.get('txtValor').value;
+        
+        if(this.pedraOption){
+            this.budgetItems[this.currentItem].totalValue = ((medida1 * medida2 * valor)/ 10000).toString(); 
+            this.budgetItems[this.currentItem].measure = this.orderForm.get('txtMedida1').value + " x " + this.orderForm.get('txtMedida2').value;
+        } else{
+            //this.budgetItems[this.currentItem].totalValue = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgetItems[this.currentItem].unitValue)).toFixed(2)));
+            this.budgetItems[this.currentItem].totalValue = parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgetItems[this.currentItem].unitValue)).toFixed(2)).toString();
+            this.budgetItems[this.currentItem].measure = this.orderForm.get('txtMedida').value;
+        }
+        //------------------------------------- END NEW BUDGET ITEMS -------------------------------------------//
+        console.log(this.budgetItems[this.currentItem]);
     }
     
     createNewPdf(){
     
         this.joinBudget();
         this.testGenerate();
+    }
+    
+    transformBudgets(){
+        var self = this;
+        this.budgets.forEach(function(data){
+             var b = {} as BudgetItem;
+            b.qtd = data.qtd;
+            b.cod = data.cod;
+            b.item = data.item;
+            b.detail = data.detalhe;
+            b.measure = data.medida;
+            b.ambient = data.comodo;
+            b.necessary = data.necessario;
+            b.unitValue = self.appService.converteMoedaFloat(data.valorUnitario).toString();
+            b.totalValue = self.appService.converteMoedaFloat(data.valorTotal).toString();
+            b.discount = self.discount.toString();
+            b.discountValue = b.discountValue = ((parseFloat(b.totalValue) - (parseFloat(b.totalValue) * parseFloat(b.discount) / 100)).toFixed(2)); //modificar;
+            b.budget = self.insertedBudget;
+            b.number = 0;
+            self.budgetItems.push(b);
+        });
+        
+        console.log(self.budgetItems);
+        self.params.query = self.convertToQuery(self.budgetItems);
+        self.appService.postInsertBudgetItems(self.params).subscribe(function(value){
+            console.log("DONE!");
+            console.log(value);
+        });
+        
+    }
+    
+    convertToQuery(budgetItems: BudgetItem[]): string{
+        var self = this;
+        var response: string = "";
+        budgetItems.forEach(function(data, index){
+            if(index != 0){
+                response = response + ",(" + self.idInput + ",'" + data.qtd + "'," + data.cod + ",'" + data.item + "','" + data.detail + "','" + data.measure + "','" + data.ambient + "','" + data.necessary + "','" + data.unitValue + "','" + data.totalValue + "','" + data.discount + "','" + data.discountValue + "'," + data.number + ")";
+            } else{
+                response = response + "(" + self.idInput + ",'" + data.qtd + "'," + data.cod + ",'" + data.item + "','" + data.detail + "','" + data.measure + "','" + data.ambient + "','" + data.necessary + "','" + data.unitValue + "','" + data.totalValue + "','" + data.discount + "','" + data.discountValue + "'," + data.number + ")";
+            }
+        });
+        return response;
     }
     
     joinBudget(){
@@ -409,9 +477,10 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         console.log(this.budgetsAmbient);
     }
     
+    
     public clickRow(i: number){
         
-        console.log("clickRow Edit")
+        console.log("clickRow Edit");
         this.currentItem = i;
         setTimeout(()=>{
             this.orderForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
@@ -439,9 +508,13 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     }
     
     applyDiscount(){
+        var self = this;
         this.discount = parseFloat(this.orderForm.get('txtDiscount').value);
         this.mainBudget.discount = this.discount;
         this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.discount/100)).toFixed(2));
+        this.budgetItems.forEach(function(data){
+            data.discount = self.orderForm.get('txtDiscount').value
+        })
         console.log(this.mainBudget.valorTotal);
         console.log(this.mainBudget.valorComDesconto);
     }
@@ -452,11 +525,33 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     }
     
     addItem(b: BudgetNew){
+        console.log("AddItem");
         this.budgets.push(b);
     }
     
     addItemBudget(b: BudgetNew){
+        console.log("AddItemBudget");
+        var self = this;
         this.budgets.push(b);
+        
+        var bi = {} as BudgetItem;
+            bi.id = this.insertedItem;
+            bi.qtd = b.qtd;
+            bi.cod = b.cod;
+            bi.item = b.item;
+            bi.detail = b.detalhe;
+            bi.measure = b.medida;
+            bi.ambient = b.comodo;
+            bi.necessary = b.necessario;
+            bi.unitValue = self.appService.converteMoedaFloat(b.valorUnitario).toString();
+            bi.totalValue = self.appService.converteMoedaFloat(b.valorTotal).toString();
+            bi.discount = this.mainBudget.discount.toString();
+            bi.discountValue = ((parseFloat(bi.totalValue) - (parseFloat(bi.totalValue) * parseFloat(bi.discount) / 100)).toFixed(2)); //modificar;
+            bi.budget = self.idInput;
+            bi.number = 0;
+            self.budgetItems.push(bi);
+        
+        this.insertedItem = this.insertedItem + 1;
         this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.appService.converteMoedaFloat(b.valorTotal);
         this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
         //this.applyDiscount();
@@ -622,19 +717,25 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         alert("APERTOU DELETE");
     }
     
-    removeItem(){
-        var i: number;
-        i = this.currentItem;
+    removeItem(i: number){
+        //var i: number;
+        //i = this.currentItem;
         
         //this.mainBudget.valorTotal = parseFloat((this.mainBudget.valorTotal - this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)).toFixed(2));
-        
+        console.log(this.currentItem);
+        console.log(this.budgetItems);
         if(this.currentItem >=0){
             this.mainBudget.valorTotal = parseFloat((this.mainBudget.valorTotal - this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)).toFixed(2));
             this.budgets = this.budgets.slice(0,i).concat(this.budgets.slice(i+1,this.budgets.length));
+            
+            if(this.budgetItems[this.currentItem].id > 0){
+                this.removeItems.push(this.budgetItems[this.currentItem].id);
+                this.budgetItems.splice(this.budgetItems.indexOf(this.budgetItems.find(v => v['id'] == this.budgetItems[this.currentItem]['id'])), 1);
+            }
+            
         } else{
             alert("NÃO HÁ ITEM SELECIONADO");
         }
-        
     }
     
     retifyBudget(){
@@ -649,10 +750,101 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                console.log(value);
                self.spinner.hide();
                self.router.navigate(['budget']);
+               self.updateBudgetItems();
                alert("ORÇAMENTO " + self.mainBudget.number + " RETIFICADO");
            });
         });
     }
+    
+    updateBudgetItems(){
+        var self = this;
+        var oldBudgetItems: BudgetItem[] = [];
+        var newBudgetItems: BudgetItem[] = [];
+        var remove: string = "";
+        
+        
+        if(this.removeItems.length > 0){
+            this.removeItems.forEach(function(data, index){
+                
+                //self.budgetItems.splice(self.budgetItems.indexOf(self.budgetItems.find(v => v['id'] == data)), 1);
+                
+                if(index != 0){
+                    remove = remove + "," + data;
+                }else{
+                    remove = remove + data;
+                }
+            });
+            
+            console.log(self.budgetItems);
+            
+            console.log(remove);
+            this.appService.deleteBudgetItem(remove).subscribe(function(data){
+                console.log(data);
+                console.log("Itens Excluídos");
+                
+                
+                
+                
+                self.budgetItems.forEach(function(data){
+                    if(data.id > 0){
+                        oldBudgetItems.push(data);
+                    } else{
+                        newBudgetItems.push(data);
+                    }
+                });
+        
+                if(oldBudgetItems.length > 0){
+                    console.log("OLD BUDGET");
+                    oldBudgetItems.forEach(function(data){
+                        console.log(data);
+                        self.appService.postUpdateBudgetItem(data).subscribe(function(value){
+                            console.log(value); 
+                        });
+                    });
+                }
+        
+                if(newBudgetItems.length > 0){
+                    console.log("NEW BUDGET")
+                    var params = {query: self.convertToQuery(newBudgetItems)};
+                    self.appService.postInsertBudgetItems(params).subscribe(function(data){
+                        console.log(data);
+                    });
+                }
+                
+                console.log(newBudgetItems);
+                console.log(oldBudgetItems);
+            });
+        } else{
+            self.budgetItems.forEach(function(data){
+                    if(data.id > 0){
+                        oldBudgetItems.push(data);
+                    } else{
+                        newBudgetItems.push(data);
+                    }
+                });
+        
+                if(oldBudgetItems.length > 0){
+                    console.log("OLD BUDGET");
+                    oldBudgetItems.forEach(function(data){
+                        console.log(data);
+                        self.appService.postUpdateBudgetItem(data).subscribe(function(value){
+                            console.log(value); 
+                        });
+                    });
+                }
+        
+                if(newBudgetItems.length > 0){
+                    console.log("NEW BUDGET")
+                    var params = {query: this.convertToQuery(newBudgetItems)};
+                    self.appService.postInsertBudgetItems(params).subscribe(function(data){
+                        console.log(data);
+                    });
+                }
+
+        }
+        
+    }
+    
     
     
     budgetInsertionTest(){
@@ -674,10 +866,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             
 
             console.log(self.convertBInsertionToString());
-            //self.convertBudgetToString();
             self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
                 console.log(response);
-
             });
             self.test();
             console.log(data);
@@ -696,9 +886,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     
     test(){
         this.mainBudget.number = this.insertedBudget;
-        this.mainBudget.note = this.orderForm.get('txtObservacao').value;
-        //this.joinBudget();
-        
+        this.mainBudget.note = this.orderForm.get('txtObservacao').value;        
         this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
     }
     
@@ -873,7 +1061,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
       this.route.queryParams.subscribe(
         (queryParams: any) =>{
             self.appService.budgetItems().subscribe(function(budgetItems){
-          self.items = budgetItems;
+            self.items = budgetItems;
 
             self.idInput = queryParams.id;
             self.appService.budgetEdit(self.idInput).subscribe(function(data){
@@ -1018,6 +1206,31 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.formout.seller = self.mainBudget.vendor;
                 self.formout.date = self.mainBudget.date;
                 self.parameterService.setBudgets(self.budgets);
+                var objs: Object[] = [];
+                console.log(self.idInput);
+                self.appService.findBudgetItems(self.idInput).subscribe(function(data){
+                    console.log(data);
+                    objs = Object.assign(objs, data);
+                    objs.forEach(function(value){
+                        let b = {} as BudgetItem;
+                        b.id = value['id'];
+                        b.ambient = value['comodo'];
+                        b.budget = self.idInput;
+                        b.cod = value['codigo'];
+                        b.detail = value['detalhe'];
+                        b.discount = value['desconto'];
+                        b.discountValue = value['valorComDesconto'];
+                        b.item = value['item'];
+                        b.measure = value['medida'];
+                        b.necessary = value['necessario'];
+                        b.number = value['numero'];
+                        b.qtd = value['quantidade'];
+                        b.totalValue = value['valorTotal'];
+                        b.unitValue = value['valorUnitario'];
+                        self.budgetItems.push(b);
+                    });
+                    console.log(self.budgetItems);
+                });
             })
         }
       );

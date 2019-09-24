@@ -114,7 +114,7 @@
                             <i class="fa fa-pencil"></i>
                             <h3 class="box-title"> Orçamento:</h3>
                         </div>
-                        <sivp-table (keydown.enter)="onKeydown($event)" [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo', 'necessario', 'valorUnitario', 'valorTotal']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [budgetEdit]="self">
+                        <sivp-table (keydown.enter)="onKeydown($event)" [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo', 'necessario', 'valorUnitario', 'valorTotal']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [budgetEdit]="self" [removeItemOption]="true">
                         </sivp-table>
                         <div class="row">
                             <label class="col-sm-10 col-xs-12 text-right">Valor total: </label>

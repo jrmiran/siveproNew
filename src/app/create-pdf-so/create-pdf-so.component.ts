@@ -24,7 +24,7 @@ export class CreatePdfSOComponent implements OnInit {
     
     rows: BudgetPdf[] = [];
     
-    public gerarPDF() {
+    public gerarPDF(so: SoPdfModel) {
         var self = this;
         var doc = new jsPDF('l', 'pt', 'a4');
         
@@ -88,7 +88,7 @@ export class CreatePdfSOComponent implements OnInit {
         
         //********************************************************** SO DATA *******************************************************
         lineTop();
-        doc.autoTable(columnsInfo1, [{c2: "Loja: Belartte", c3: "Cliente: João Macedo", c1:"", c4:"", c5:"Entrega: ____/____", c6:""}, {c2: "Material: Gotham Wind 60x60", c3: "Corredor: 7", c1:"", c4:"", c5:"OS: ________", c6:""}], {theme: 'plain', 
+        doc.autoTable(columnsInfo1, [{c2: "Loja: " + so.store, c3: "Cliente: " + so.client, c1:"", c4:"", c5:"Entrega: ____/____", c6:""}, {c2: "Material: " + so.material, c3: "Corredor: " + so.location, c1:"", c4:"", c5:"OS: " + so.id, c6:""}], {theme: 'plain', 
             columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c2: {cellWidth: 200, fontStyle: 'bold', halign: "left"},
@@ -106,7 +106,7 @@ export class CreatePdfSOComponent implements OnInit {
         //********************************************************** SO DATA *******************************************************
         
         //********************************************************** FINISHING *******************************************************
-        doc.autoTable([{title: "", key:"c1"}, {title: "", key:"c2"}, {title: "", key:"c3"}], [{c2:"LAVATÓRIO COM CUBA MONTADA NO PORCELANATO - BHO CASAL", c1:"", c3:""}], {theme: 'plain', 
+        doc.autoTable([{title: "", key:"c1"}, {title: "", key:"c2"}, {title: "", key:"c3"}], [{c2: so.item + " - " + so.ambient, c1:"", c3:""}], {theme: 'plain', 
             columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c2: {cellWidth: 483, halign: "center"},
@@ -126,7 +126,7 @@ export class CreatePdfSOComponent implements OnInit {
                 if (data.section === 'body' && data.column.index === 1) {
                     var base64Img = this.projectDraw;
         
-                    doc.addImage(base64Img, 'PNG', data.cell.x, data.cell.y);
+                    doc.addImage(so.image, 'PNG', data.cell.x + 20, data.cell.y + 10);
                 }
             },
             rowStyles: {
@@ -163,7 +163,7 @@ export class CreatePdfSOComponent implements OnInit {
         lineBottom();
         //********************************************************** NOTE *******************************************************
         
-        doc.save('document.pdf');
+        doc.save('OS ' + so.id + ' ' + so.store + ' (' + so.client + ') ' + so.item + '_' + so.ambient +'.pdf');
         
     }
     

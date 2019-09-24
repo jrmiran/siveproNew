@@ -13,8 +13,9 @@ import {ServiceOrderComponent} from '../service-order/service-order.component';
 import {ServiceOrderTableComponent} from '../service-order/service-order-table/service-order-table.component';
 import {UploadComponent} from '../upload/upload.component';
 import {ParameterService} from '../shared/parameter.service';
-
 import "rxjs/add/operator/map";
+import {FileDropComponent} from '../file-drop/file-drop.component';
+import {MaterialComponent} from '../material/material.component';
 
 @Component({
   selector: 'sivp-table',
@@ -48,7 +49,10 @@ export class TableComponent implements OnInit {
     @Input() sotc: ServiceOrderTableComponent;
     @Input() multipleRowsSelection: boolean = false;
     @Input() selectionButton: boolean = false;
-    
+    @Input() fdc: FileDropComponent;
+    @Input() mc: MaterialComponent;
+    @Input() fdcMaterial: boolean = false;
+    @Input() removeItemOption: boolean = false;
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
@@ -61,7 +65,7 @@ export class TableComponent implements OnInit {
     selectedRows: number[] = [];
     count: number = 0;
     flag: boolean = true;
-    
+    selectedRow: number = -1;
     
     selectAll(){    
         var self = this;
@@ -152,8 +156,19 @@ export class TableComponent implements OnInit {
         }
     }
     
+    removeItem(i: number){
+        if(this.budgetEdit){
+            this.budgetEdit.removeItem(i);
+        }else if(this.bnc){
+            this.bnc.removeItem(i);
+        }
+        
+    }
+    
+    
     eventRow(i:number){
         if(this.runClickRow){
+            this.selectedRow = i;
             if(!this.multipleRowsSelection){
                 console.log("1");
                 this.selectedRows = [];
@@ -178,12 +193,18 @@ export class TableComponent implements OnInit {
                 this.budgetEdit.clickRow(i);
             }else if(this.soc){
                 this.soc.clickRow(this.selectedRows);
-            } 
+            }else if(this.fdc){
+                console.log("FDC");
+                if(!this.fdcMaterial){
+                    this.fdc.clickRow(i);
+                } else{
+                    this.fdc.clickRowMaterial(i);
+                }
+            }else if(this.mc){
+                console.log("MC");
+                this.mc.clickRow(i);
+            }
             this.currentLine = i;
-        
-        
-        
-        
         }
         
 

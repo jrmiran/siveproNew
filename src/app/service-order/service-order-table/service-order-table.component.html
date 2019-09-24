@@ -35,7 +35,7 @@
                                         <div class="row" [formGroupName]="i">
                                             <div class="col-xs-6">
                                                 <label>
-                                                    <input (click)="setValueCheckBox(i)" type="checkbox" [formControlName]="'employeeName'" checked="false"> {{checks[i]}}
+                                                    <input (click)="setValueCheckBox(i)" type="checkbox" [formControlName]="'employeeName'" #iptCb> {{checks[i]}}
                                                 </label>
                                             </div>
 
@@ -47,7 +47,7 @@
                                 </sivp-primary-box>
 
                                 <sivp-primary-box [title]="'Data Término'">
-                                    <sivp-date-picker formControlName="txtDate"></sivp-date-picker>
+                                    <sivp-date-picker formControlName="txtDate" #dPicker></sivp-date-picker>
                                 </sivp-primary-box>
                                 
                                 <sivp-primary-box [title]="'Complemento'">

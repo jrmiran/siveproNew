@@ -87,6 +87,10 @@ export class AppService{
         return this.callQuery(`insertImageSO/${id}/'${imageUrl}'`);
     }
     
+    
+    materials(): Observable<Object[]>{
+        return this.callQuery("materials");
+    }
     clientInsertion(
                     clientType: string,
                     clientNeighbor: string,
@@ -172,6 +176,10 @@ export class AppService{
         return this.callQuery(`budgetEdit/${id}`);
     }
     
+    budgetExplosion(): Observable<Object[]>{
+        return this.callQuery("budgetExplosion");
+    }
+    
     searchAllPeople(): Observable<Object[]>{
         return this.callQuery('searchAllPeople');
     }
@@ -200,8 +208,8 @@ export class AppService{
         return this.callQuery(`searchAllServiceOrder`);
     }
     
-    insertSOExecution(id: number, date: string, stone: boolean, empreita: boolean, stoneValue: string, employees: string, shares: string): Observable<Object[]>{
-        return this.callQuery(`soExecution/${id}/'${date}'/${stone}/${empreita}/${stoneValue}/${employees}/${shares}`);
+    insertSOExecution(id: number, date: string, stone: boolean, empreita: boolean, stoneValue: string, employees: string, shares: string, empreitaValue: string): Observable<Object[]>{
+        return this.callQuery(`soExecution/${id}/'${date}'/${stone}/${empreita}/${stoneValue}/${employees}/${shares}/${empreitaValue}`);
     }
     
     searchAllEmployees(): Observable<Object[]>{
@@ -212,10 +220,38 @@ export class AppService{
         return this.callQuery(`serviceOrderBudget/${idSO}`);
     }
     
+    findBudgetItems(budgetId: number): Observable<Object[]>{
+        return this.callQuery(`findBudgetItems/${budgetId}`);
+    }
+    
     postTest(obj: any): Observable<Object[]>{
         return this.callPost(`postTest`, obj);
     }
     
+    postInsertBudgetItems(obj: any): Observable<Object[]>{
+        return this.callPost(`postInsertBudgetItems`, obj);
+    }
+    
+    insertMaterial(obj: any): Observable<Object[]>{
+        return this.callPost(`postInsertMaterial`, obj);
+    }
+    
+    postUpdateBudgetItem(obj: any): Observable<Object[]>{
+        return this.callPost(`postUpdateBudgetItem`, obj);
+    }
+    
+    
+    draw(budgetId: number): Observable<Object[]>{
+        return this.callQuery(`draw/${budgetId}`);
+    }
+    
+    deleteBudgetItem(itemId: any): Observable<Object[]>{
+        return this.callQuery(`deleteBudgetItem/${itemId}`);
+    }
+    
+    insertDraw(obj: any): Observable<Object[]>{
+        return this.callPost(`postInsertDraw`, obj);
+    }
     converteFloatMoeda(valor: any){
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();
@@ -261,10 +297,7 @@ export class AppService{
       return valor;
 
    }
-    
-    
-    
-    
+
     converteMoedaFloat(value: any): number{
          var valor = value.toString();
          valor = valor.replace("R$ ","");

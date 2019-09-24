@@ -1,0 +1,124 @@
+<section class="content-header">
+</section>
+
+
+<section class="content">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p style=""> Aguarde </p>
+    </ngx-spinner>
+    <section class="invoice">
+
+        <form [formGroup]="projectForm">
+
+
+            <!-- DRAG AND DROP CONTAINER-->
+            <div class="row">
+                <div class="center">
+                    <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+                        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                            Arraste a imagem que deseja apresentar no projeto
+                            <button type="button" (click)="openFileSelector()">Ou clique aqui</button>
+                        </ng-template>
+                    </ngx-file-drop>
+                    <div class="upload-table">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody class="upload-name-style">
+                                <tr *ngFor="let item of files; let i=index">
+                                    <td><strong>{{ item.relativePath }}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-12 col-xs-12">
+                        <img *ngIf="imageSrc" src={{imageSrc}}>
+                    </div>
+                </div>
+                <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modal-default">Open Modal</button>
+                <button id="openModalMaterial" [hidden]="true" data-toggle="modal" data-target="#modal-default-material">Open Modal</button>
+            </div>
+
+            <!-- END OF DRAG AND DROP CONTAINER-->
+
+            <!--FORM DATA INSERTION-->
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Dados </h3>
+                        </div>
+
+                        <sivp-input-container class="col-sm-4 col-xs-12">
+                            <label> Orçamento</label>
+                            <input type="text" class="form-control" formControlName="txtBudget" placeholder="Orçamento Nº">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Material</label>
+                            <input type="text" class="form-control" formControlName="txtMaterial" placeholder="Material">
+                        </sivp-input-container>
+
+                        <div class="col-sm-2 col-xs-12">
+                            <a class="btn" (click)="openModalMaterial()"><i class="fa fa-plus"></i> Material</a>
+                        </div>
+
+
+                        <a class="btn btn-success pull-right" [class.disabled]="!projectForm.valid" (click)="runDraw()"> <i class="fa fa-check"></i>Gerar Desenho </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!--END OF FORM DATA INSERTION-->
+
+        <!----------------------------------- MODAL ORC--------------------------------------------------------------------->
+        <div class="modal fade" id="modal-default">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
+                    </div>
+                    <div class="modal-body">
+                        <sivp-table [name]="''" [headers]="['Id','Cód', 'Item', 'Detalhe', 'Medida', 'Ambiente']" [searchBar]="false" [datas]="budgetItems" [ids]="['id','cod', 'item', 'detail', 'measure', 'ambient']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [fdc]="self" [selectionButton]="true">
+                        </sivp-table>
+                    </div>
+                    <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="exportPdf()" [class.disabled]="!currentItem">Gerar Desenho</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!------------------------------------------ END MODAL ORC ----------------------------------------------------------->
+
+        <!----------------------------------- MODAL MATERIAL--------------------------------------------------------------------->
+        <div class="modal fade" id="modal-default-material">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
+                    </div>
+                    <div class="modal-body">
+                        <sivp-table [headers]="['Id', 'Nome', 'Tamanho Comercial', 'Tamanho Real']" [datas]="materials" [ids]="['id','nome','tamanhoComercial','tamanhoReal']" [fdc]="self" [fdcMaterial]="true" [runClickRow]="true">
+                        </sivp-table>
+                    </div>
+                    <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="setMaterial()" [class.disabled]="currentItemMaterial < 0">OK</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!------------------------------------------ END MODAL MATERIAL ----------------------------------------------------------->
+
+    </section>
+</section>

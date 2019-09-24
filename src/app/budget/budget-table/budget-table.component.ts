@@ -48,5 +48,6 @@ export class BudgetTableComponent implements OnInit {
             })
         );
         console.log(this.n);
+        
     }
 }

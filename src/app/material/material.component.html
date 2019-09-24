@@ -1,0 +1,52 @@
+<section class="content-header">
+</section>
+
+<section class="content">
+    <form [formGroup]="formMaterial">
+        <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+            <p> Caregando Materiais </p>
+        </ngx-spinner>
+        <section class="invoice">
+            <a class="btn btn-primary pull-right" (click)="openModalAddMaterial()"> <i class="fa fa-plus"></i> Adicionar Material</a>
+            <sivp-table [name]="'Material'" [headers]="['Id', 'Nome', 'Tamanho Comercial', 'Tamanho Real']" [datas]="materials" [ids]="['id','nome','tamanhoComercial','tamanhoReal']" [mc]="self" [runClickRow]="true">
+            </sivp-table>
+        </section>
+
+        <!----------------------------------- MODAL --------------------------------------------------------------------->
+        <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modal-default">Open Modal</button>
+        <div class="modal fade" id="modal-default">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
+                    </div>
+                    <div class="modal-body">
+                        <sivp-input-container class="col-sm-12 col-xs-12">
+                            <label> Nome</label>
+                            <input type="text" class="form-control" formControlName="txtName" placeholder="Nome">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Tamanho Comercial </label>
+                            <input type="text" class="form-control" formControlName="txtComercialSize" placeholder="Tamanho Comercial">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="col-sm-6 col-xs-12">
+                            <label> Tamanho Real </label>
+                            <input type="text" class="form-control" formControlName="txtRealSize" placeholder="Tamanho Real">
+                        </sivp-input-container>
+
+                    </div>
+                    <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="insertMaterial()" [class.disabled]="!formMaterial.valid">Gerar Desenho</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!------------------------------------------ END MODAL ----------------------------------------------------------->
+    </form>
+</section>

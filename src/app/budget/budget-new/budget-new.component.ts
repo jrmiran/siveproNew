@@ -17,6 +17,7 @@ import {Observable} from "rxjs/Observable";
 import {SubItem} from "./sub-item.model";
 import {NgxSpinnerService} from 'ngx-spinner';
 import {KEY_CODE} from '../../shared/key-code/keyCode';
+import {BudgetItem} from '../budget-item.model';
 
 @Component({
   selector: 'sivp-budget-new',
@@ -32,13 +33,13 @@ export class BudgetNewComponent implements OnInit {
         console.log(event);
 
         if (event.keyCode === KEY_CODE.DELETE) {
-          this.removeItem();
+          //this.removeItem();
         }
       }
 
-    removeItem(){
-        var i: number;
-        i = this.currentItem;
+    removeItem(i: number){
+        //var i: number;
+        //i = this.currentItem;
         
         this.mainBudget.valorTotal = parseFloat((this.mainBudget.valorTotal - this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal)).toFixed(2));
         
@@ -47,7 +48,6 @@ export class BudgetNewComponent implements OnInit {
         } else{
             alert("NÃO HÁ ITEM SELECIONADO");
         }
-        
     }
     
     qtds: number[] = [];
@@ -110,7 +110,7 @@ export class BudgetNewComponent implements OnInit {
                            id_Thirdy: 0,
                            id_vendor: 0
                        };
-    
+    params = {query:""};
     clientDataObj: Object[];
     thirdyDataObj: Object[];
     mainBudget: BudgetModel;
@@ -132,6 +132,7 @@ export class BudgetNewComponent implements OnInit {
         pessoa_id: 0, //this.pessoa_id;
         vendedor_id: 0//this.vendedor_id;
     };
+    budgetItems: BudgetItem[] = [];
     
     addSubItem(index: number){
         var self = this;
@@ -357,7 +358,6 @@ export class BudgetNewComponent implements OnInit {
         console.log("MB VT: " + this.mainBudget.valorTotal);
         console.log(this.budgets[this.currentItem].valorUnitario);
         this.currentValue = this.mainBudget.valorTotal;
-        
     }
     
     public setValue(){
@@ -396,6 +396,7 @@ export class BudgetNewComponent implements OnInit {
         var flag: boolean = false; 
         var keepGoing: boolean = true;
         var self = this;
+        
         this.budgets.forEach(function(b){
             count = count + 1;
             if(self.budgetsAmbient.length > 0){
@@ -437,6 +438,7 @@ export class BudgetNewComponent implements OnInit {
             keepGoing = true;
         });
         
+        
         self.budgetsAmbient.forEach(function(data, index){
            if(data.qtd.length  == 1){
                self.budgetsAmbient[index].valorTotalAmbiente = self.appService.converteMoedaFloat(self.budgetsAmbient[index].valorTotalAmbiente);
@@ -445,6 +447,48 @@ export class BudgetNewComponent implements OnInit {
 
         console.log(this.budgetsAmbient);
     }
+    
+    transformBudgets(){
+        var self = this;
+        this.budgets.forEach(function(data){
+            var b = {} as BudgetItem;
+            b.qtd = data.qtd;
+            b.cod = data.cod;
+            b.item = data.item;
+            b.detail = data.detalhe;
+            b.measure = data.medida;
+            b.ambient = data.comodo;
+            b.necessary = data.necessario;
+            b.unitValue = self.appService.converteMoedaFloat(data.valorUnitario).toString();
+            b.totalValue = self.appService.converteMoedaFloat(data.valorTotal).toString();
+            b.discount = self.discount.toString();
+            b.discountValue = b.discountValue = ((parseFloat(b.totalValue) - (parseFloat(b.totalValue) * parseFloat(b.discount) / 100)).toFixed(2)); //modificar;
+            b.budget = self.insertedBudget;
+            b.number = 0;
+            self.budgetItems.push(b);
+        });
+        
+        console.log(self.budgetItems);
+        self.params.query = self.convertToQuery(self.budgetItems);
+        self.appService.postInsertBudgetItems(self.params).subscribe(function(value){
+            console.log("DONE!");
+            console.log(value);
+        });
+        
+    }
+    
+    convertToQuery(budgetItems: BudgetItem[]): string{
+        var response: string = "";
+        budgetItems.forEach(function(data, index){
+            if(index != 0){
+                response = response + ",(" + data.budget + ",'" + data.qtd + "'," + data.cod + ",'" + data.item + "','" + data.detail + "','" + data.measure + "','" + data.ambient + "','" + data.necessary + "','" + data.unitValue + "','" + data.totalValue + "','" + data.discount + "','" + data.discountValue + "'," + data.number + ")";
+            } else{
+                response = response + "(" + data.budget + ",'" + data.qtd + "'," + data.cod + ",'" + data.item + "','" + data.detail + "','" + data.measure + "','" + data.ambient + "','" + data.necessary + "','" + data.unitValue + "','" + data.totalValue + "','" + data.discount + "','" + data.discountValue + "'," + data.number + ")";
+            }
+        });
+        return response;
+    }
+    
     
     getBudgets(): BudgetNew[]{
         return this.budgets;
@@ -616,6 +660,7 @@ export class BudgetNewComponent implements OnInit {
         self.setBudgetInsertion();
         console.log(self.bInsertion);
         
+        
         this.convertBudgetToString().then(function(data){
 
             
@@ -630,10 +675,10 @@ export class BudgetNewComponent implements OnInit {
             console.log(data);
             self.spinner.hide();
             self.route.navigate(['budget']);
+            self.transformBudgets();
             alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
         });
     }
-    
     
     
     checkBInsertion(){

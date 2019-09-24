@@ -10,8 +10,8 @@
         <a class="btn pull-left" *ngIf="selectionButton" (click)="selectAll()"><i class="fa fa-square"> Selecionar Tudo </i></a>
     </thead>
     <tbody>
-        <tr *ngFor="let data of datas | filter:filter | paginate: {itemsPerPage: ipp, currentPage: p}; index as j" (click)="eventRow(j)">
-            <td [class.linhaSelecionada]="selectRow(j)" *ngFor="let id of ids; index as i">
+        <tr *ngFor="let data of datas | filter:filter | paginate: {itemsPerPage: ipp, currentPage: p}; index as j" (click)="eventRow(j)" >
+            <td  [class.linhaSelecionada]="selectRow(j)" *ngFor="let id of ids; index as i">
                 <span *ngIf="id != 'approved'">
                     <span *ngIf="id == 'budgetId'">
                         <a [routerLink]="['/budgetEdit']" [queryParams]="{id: data[id]}" class="btn"> {{data[id]}} </a>
@@ -57,6 +57,10 @@
 
             <td *ngIf="itemButton">
                 <button (click)="openModalItem(data['id'], data['descricao'], data['valorUnitario'])" type="button" class="btn btn-primary">Alterar</button>
+            </td>
+            
+            <td *ngIf="removeItemOption && selectedRow ==j">
+                <a (click)="removeItem(j)" class="btn"><i class="fa fa-trash"></i></a>
             </td>
         </tr>
     </tbody>
