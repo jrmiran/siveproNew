@@ -1,4 +1,4 @@
-/*import {
+import {
   Directive,
   HostBinding,
   HostListener,
@@ -49,4 +49,4 @@ export class DragDirective {
       this.files.emit(files);
     }
   }
-}*/
+}
