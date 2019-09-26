@@ -323,11 +323,11 @@ export class BudgetNewComponent implements OnInit {
     changeItem(){
         var qtd: number = parseFloat(this.orderForm.get('txtQtd').value.toString().replace(',','.'));
         var valor: number = parseFloat(this.orderForm.get('txtValor').value.toString().replace(',','.'));
-        var medida1: number = parseFloat(this.orderForm.get('txtMedida1').value);
-        var medida2: number = parseFloat(this.orderForm.get('txtMedida2').value);
+        var medida1: number = parseFloat(this.orderForm.get('txtMedida1').value.replace(',','.'));
+        var medida2: number = parseFloat(this.orderForm.get('txtMedida2').value.replace(',','.'));
         var valorTotalLocal: number;
         
-        this.budgets[this.currentItem].qtd = this.orderForm.get('txtQtd').value;
+        this.budgets[this.currentItem].qtd = this.orderForm.get('txtQtd').value.replace(',','.');
         this.budgets[this.currentItem].necessario = this.orderForm.get('txtNecessario').value;
         this.budgets[this.currentItem].detalhe = this.orderForm.get('txtDetalhe').value;
         this.budgets[this.currentItem].valorUnitario = this.appService.converteFloatMoeda(this.orderForm.get('txtValor').value);
@@ -488,7 +488,6 @@ export class BudgetNewComponent implements OnInit {
         });
         return response;
     }
-    
     
     getBudgets(): BudgetNew[]{
         return this.budgets;
