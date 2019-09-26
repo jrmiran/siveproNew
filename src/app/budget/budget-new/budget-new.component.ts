@@ -327,7 +327,7 @@ export class BudgetNewComponent implements OnInit {
         var medida2: number = parseFloat(this.orderForm.get('txtMedida2').value.replace(',','.'));
         var valorTotalLocal: number;
         
-        this.budgets[this.currentItem].qtd = this.orderForm.get('txtQtd').value.replace(',','.');
+        this.budgets[this.currentItem].qtd = this.orderForm.get('txtQtd').value;
         this.budgets[this.currentItem].necessario = this.orderForm.get('txtNecessario').value;
         this.budgets[this.currentItem].detalhe = this.orderForm.get('txtDetalhe').value;
         this.budgets[this.currentItem].valorUnitario = this.appService.converteFloatMoeda(this.orderForm.get('txtValor').value);
