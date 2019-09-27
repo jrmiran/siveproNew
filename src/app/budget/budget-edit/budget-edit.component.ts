@@ -297,6 +297,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     }
     
     changeItem(){
+        console.log(this.budgets);
+        console.log(this.currentItem);
         var qtd: number = parseFloat(this.orderForm.get('txtQtd').value.toString().replace(',','.'));
         var valor: number = parseFloat(this.orderForm.get('txtValor').value.toString().replace(',','.'));
         var medida1: number = parseFloat(this.orderForm.get('txtMedida1').value);
@@ -744,7 +746,10 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.convertBudgetToString().then(function(data){
            self.removeBarURL();
             console.log(self.itemsString);
-           self.appService.budgetUpdate(self.mainBudget.number, self.mainBudget.discount, self.mainBudget.note, self.mainBudget.rectified, self.mainBudget.valorTotal, self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString).subscribe(function(value){
+        var params = {budgetId: self.mainBudget.number, discount: self.mainBudget.discount, note: self.mainBudget.note, rectified: self.mainBudget.rectified, amount: self.mainBudget.valorTotal, budgetCodes: self.codsString, budgetAmbients: self.comodosString, budgetDetails: self.detalhesString, budgetItems: self.itemsString, budgetMeasures: self.medidasString, budgetNeedings: self.necessariosString, budgetNumbers: "(1,'0')", budgetQuantitys: self.qtdsString, budgetValues: self.valoresUnitariosString}  
+        console.log(params);
+           //self.appService.budgetUpdate(self.mainBudget.number, self.mainBudget.discount, self.mainBudget.note, self.mainBudget.rectified, self.mainBudget.valorTotal, self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString).subscribe(function(value){
+        self.appService.postBudgetUpdate(params).subscribe(function(value){
                self.joinBudget();
                self.createPdf.gerarPDF(self.budgetsAmbient, self.mainBudget);
                console.log(value);

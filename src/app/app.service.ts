@@ -228,6 +228,10 @@ export class AppService{
         return this.callPost(`postTest`, obj);
     }
     
+    postBudgetUpdate(obj: any): Observable<Object[]>{
+        return this.callPost(`postBudgetUpdate`, obj);
+    }
+    
     postInsertBudgetItems(obj: any): Observable<Object[]>{
         return this.callPost(`postInsertBudgetItems`, obj);
     }
