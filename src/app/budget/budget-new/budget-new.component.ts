@@ -191,6 +191,10 @@ export class BudgetNewComponent implements OnInit {
         return response;
     }
     
+    changeAmbient(a: string){
+        this.budgets[this.currentItem].comodo = a;
+    }
+    
     showSpinner(show: boolean){
         if(show){
             this.spinner.show();

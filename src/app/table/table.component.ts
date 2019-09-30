@@ -53,6 +53,7 @@ export class TableComponent implements OnInit {
     @Input() mc: MaterialComponent;
     @Input() fdcMaterial: boolean = false;
     @Input() removeItemOption: boolean = false;
+    @Input() ambients: string[];
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
@@ -154,6 +155,10 @@ export class TableComponent implements OnInit {
         }else{
             return false;
         }
+    }
+    
+    changeAmbient(a: string){
+        this.bnc.changeAmbient(a);
     }
     
     removeItem(i: number){
