@@ -165,6 +165,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     cmds: string[] = [];
     formin= {type: "", client: "", vendor: "", thirdy: "", date: ""};
     budgets: BudgetNew[] = [];
+    budgetsAux: BudgetNew[] = [];
     returnedData: Object[];
     places: string[] = [];
     checks: string[] = [];
@@ -357,6 +358,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         }
         //------------------------------------- END NEW BUDGET ITEMS -------------------------------------------//
         console.log(this.budgetItems[this.currentItem]);
+        this.groupByAmbient();
     }
     
     createNewPdf(){
@@ -529,6 +531,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     addItem(b: BudgetNew){
         console.log("AddItem");
         this.budgets.push(b);
+        //this.groupByAmbient();
     }
     
     addItemBudget(b: BudgetNew){
@@ -556,6 +559,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.insertedItem = this.insertedItem + 1;
         this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.appService.converteMoedaFloat(b.valorTotal);
         this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        this.groupByAmbient();
         //this.applyDiscount();
     }
     
@@ -739,14 +743,26 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             alert("NÃO HÁ ITEM SELECIONADO");
         }
     }
+    removeSeparationRows(){
+        var self = this;
+        var budgetsAux: BudgetNew[] = []
+        this.budgets.forEach(function(data, index){
+           if(data.item != "LINHA DE SEPARAÇÃO"){
+                    budgetsAux.push(data);
+                }
+        });
+        this.budgets = budgetsAux;
+        console.log(this.budgets);
+    }
     
     retifyBudget(){
         var self = this;
         this.spinner.show();
+        this.removeSeparationRows();
         this.convertBudgetToString().then(function(data){
-           self.removeBarURL();
+            self.removeBarURL();
             console.log(self.itemsString);
-        var params = {budgetId: self.mainBudget.number, discount: self.mainBudget.discount, note: self.mainBudget.note, rectified: self.mainBudget.rectified, amount: self.mainBudget.valorTotal, budgetCodes: self.codsString, budgetAmbients: self.comodosString, budgetDetails: self.detalhesString, budgetItems: self.itemsString, budgetMeasures: self.medidasString, budgetNeedings: self.necessariosString, budgetNumbers: "(1,'0')", budgetQuantitys: self.qtdsString, budgetValues: self.valoresUnitariosString}  
+            var params = {budgetId: self.mainBudget.number, discount: self.mainBudget.discount, note: self.mainBudget.note, rectified: self.mainBudget.rectified, amount: self.mainBudget.valorTotal, budgetCodes: self.codsString, budgetAmbients: self.comodosString, budgetDetails: self.detalhesString, budgetItems: self.itemsString, budgetMeasures: self.medidasString, budgetNeedings: self.necessariosString, budgetNumbers: "(1,'0')", budgetQuantitys: self.qtdsString, budgetValues: self.valoresUnitariosString}  
         console.log(params);
            //self.appService.budgetUpdate(self.mainBudget.number, self.mainBudget.discount, self.mainBudget.note, self.mainBudget.rectified, self.mainBudget.valorTotal, self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString).subscribe(function(value){
         self.appService.postBudgetUpdate(params).subscribe(function(value){
@@ -1033,6 +1049,37 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         });
     }
     
+    changeAmbient(a: string){
+        this.budgets[this.currentItem].comodo = a;
+        this.groupByAmbient();
+    }
+    
+    groupByAmbient(){
+        var self = this;
+        self.budgetsAux = [];
+        var verifiedItems: number[] = [];
+
+        self.checks.forEach(function(value){
+
+            var b = {} as BudgetNew;
+            b.item = "LINHA DE SEPARAÇÃO";
+            b.comodo = value;
+            self.budgetsAux.push(b);
+            
+            self.budgets.forEach(function(data, index){
+                if(data.comodo == value && verifiedItems.indexOf(index) == -1 && data.item != "LINHA DE SEPARAÇÃO"){
+                    self.budgetsAux.push(data);
+                    verifiedItems.push(index);
+                }
+            })
+            
+        });
+        self.budgets = self.budgetsAux;
+        self.budgetsAux = [];
+        console.log(self.budgets);
+    }
+    
+    
   ngOnInit() {
       
       var self = this;
@@ -1235,6 +1282,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                         self.budgetItems.push(b);
                     });
                     console.log(self.budgetItems);
+                    console.log(self.budgets);
+                    self.groupByAmbient();
                 });
             })
         }

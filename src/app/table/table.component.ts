@@ -158,7 +158,12 @@ export class TableComponent implements OnInit {
     }
     
     changeAmbient(a: string){
-        this.bnc.changeAmbient(a);
+        if(this.bnc){
+            this.bnc.changeAmbient(a);    
+        } else if(this.budgetEdit){
+            this.budgetEdit.changeAmbient(a); 
+        }
+        
     }
     
     removeItem(i: number){

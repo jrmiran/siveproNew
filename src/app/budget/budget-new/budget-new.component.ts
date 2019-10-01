@@ -89,6 +89,7 @@ export class BudgetNewComponent implements OnInit {
     items: Object[];
     formin= {type: "", client: "", vendor: "", thirdy: "", date: ""};
     budgets: BudgetNew[] = [];
+    budgetsAux: BudgetNew[] = [];
     main: BudgetNewComponent = this;
     places: string[] = [""];
     checks: string[] = [''];
@@ -133,6 +134,7 @@ export class BudgetNewComponent implements OnInit {
         vendedor_id: 0//this.vendedor_id;
     };
     budgetItems: BudgetItem[] = [];
+    
     
     addSubItem(index: number){
         var self = this;
@@ -193,6 +195,7 @@ export class BudgetNewComponent implements OnInit {
     
     changeAmbient(a: string){
         this.budgets[this.currentItem].comodo = a;
+        this.groupByAmbient();
     }
     
     showSpinner(show: boolean){
@@ -383,6 +386,7 @@ export class BudgetNewComponent implements OnInit {
     addItemBudget(b: BudgetNew){
         this.budgets.push(b);
         this.mainBudget.valorTotal = this.mainBudget.valorTotal + this.appService.converteMoedaFloat(b.valorTotal);
+        this.groupByAmbient();
     }
     
     applyDiscount(){
@@ -501,6 +505,32 @@ export class BudgetNewComponent implements OnInit {
         const values = this.checks.map(v => new FormControl(false));
         return this.formBuilder.array(values); 
     }
+    
+    groupByAmbient(){
+        var self = this;
+        self.budgetsAux = [];
+        var verifiedItems: number[] = [];
+
+        self.checks.forEach(function(value){
+
+            var b = {} as BudgetNew;
+            b.item = "LINHA DE SEPARAÇÃO";
+            b.comodo = value;
+            self.budgetsAux.push(b);
+            
+            self.budgets.forEach(function(data, index){
+                if(data.comodo == value && verifiedItems.indexOf(index) == -1 && data.item != "LINHA DE SEPARAÇÃO"){
+                    self.budgetsAux.push(data);
+                    verifiedItems.push(index);
+                }
+            })
+            
+        });
+        self.budgets = self.budgetsAux;
+        self.budgetsAux = [];
+        console.log(self.budgets);
+    }
+    
     
     setBudgetInsertion(){    
         this.bInsertion.aprovado = false;
@@ -649,6 +679,18 @@ export class BudgetNewComponent implements OnInit {
                     this.bInsertion.vendedor_id + ")"
     }
     
+    removeSeparationRows(){
+        var self = this;
+        var budgetsAux: BudgetNew[] = []
+        this.budgets.forEach(function(data, index){
+           if(data.item != "LINHA DE SEPARAÇÃO"){
+                    budgetsAux.push(data);
+                }
+        });
+        this.budgets = budgetsAux;
+        console.log(this.budgets);
+    }
+    
     budgetInsertionTest(){
         var budgetId: number = 5;
         var codes: number[] = [100,200,300];
@@ -657,6 +699,7 @@ export class BudgetNewComponent implements OnInit {
         var queryAmbients = "";
         var response: any;
         var self = this;
+        this.removeSeparationRows();
         
         this.spinner.show();
         self.joinBudget();
@@ -682,8 +725,7 @@ export class BudgetNewComponent implements OnInit {
             alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
         });
     }
-    
-    
+
     checkBInsertion(){
         this.test();
         this.setBudgetInsertion();
