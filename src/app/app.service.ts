@@ -91,6 +91,8 @@ export class AppService{
     materials(): Observable<Object[]>{
         return this.callQuery("materials");
     }
+    
+    
     clientInsertion(
                     clientType: string,
                     clientNeighbor: string,
@@ -208,8 +210,8 @@ export class AppService{
         return this.callQuery(`searchAllServiceOrder`);
     }
     
-    insertSOExecution(id: number, date: string, stone: boolean, empreita: boolean, stoneValue: string, employees: string, shares: string, empreitaValue: string): Observable<Object[]>{
-        return this.callQuery(`soExecution/${id}/'${date}'/${stone}/${empreita}/${stoneValue}/${employees}/${shares}/${empreitaValue}`);
+    insertSOExecution(id: number, date: string, stone: any, empreita: any, stoneValue: string, employees: string, shares: string, empreitaValue: string): Observable<Object[]>{
+        return this.callQuery(`soExecution/${id}/'${date}'/${stone}/${empreita}/'${stoneValue}'/${employees}/${shares}/${empreitaValue}`);
     }
     
     searchAllEmployees(): Observable<Object[]>{
@@ -226,6 +228,10 @@ export class AppService{
     
     postTest(obj: any): Observable<Object[]>{
         return this.callPost(`postTest`, obj);
+    }
+    
+    postPayment(obj: any): Observable<Object[]>{
+        return this.callPost(`postPayment`, obj);
     }
     
     postBudgetUpdate(obj: any): Observable<Object[]>{

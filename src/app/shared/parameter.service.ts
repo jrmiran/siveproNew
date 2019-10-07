@@ -11,6 +11,24 @@ export class ParameterService{
     
     budgets: BudgetNew[];
     idOs: number;
+    privilege: boolean = false;
+    administrator: boolean = false;
+    
+    getPrivilege(){
+        return this.privilege;
+    }
+    
+    setPrivilege(data: boolean){
+        this.privilege = data;
+    }
+    
+    getAdministrator(){
+        return this.administrator;
+    }
+    
+    setAdministrator(data: boolean){
+        this.administrator = data;
+    }
     
     getIdOs(){
         return this.idOs;

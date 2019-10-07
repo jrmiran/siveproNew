@@ -1,3 +1,51 @@
-<p>
-  payment works!
-</p>
+<section class="content-header">
+</section>
+
+<section class="content">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p> Caregando Pagamentos </p>
+    </ngx-spinner>
+    <section class="invoice">
+        <div class="row">
+            <div class="col-sm-12 col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title"><i class="fa fa-usd"></i> Pagamentos</h3>
+                        <a data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-default"><i class="fa fa-plus"></i> Novo Pagamento </a>
+                    </div>
+                    <sivp-table [headers]="['Id', 'Conta', 'Data', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="payments" [ids]="['id','conta','data' ,'entrada', 'numeroCheque', 'status', 'formaPagamento']" [pc]="self" [runClickRow]="false">
+                    </sivp-table>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+        <!----------------------------------- MODAL --------------------------------------------------------------------->
+            <div class="modal fade" id="modal-default">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Novo Pagamento</h4>
+                        </div>
+                        <div class="modal-body">
+                            
+                            
+                            
+                            
+                        </div>
+                        <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!------------------------------------------ END MODAL ----------------------------------------------------------->
+        
+        
+    </section>
+</section>

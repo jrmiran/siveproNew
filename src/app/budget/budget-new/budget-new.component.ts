@@ -708,14 +708,10 @@ export class BudgetNewComponent implements OnInit {
         
         
         this.convertBudgetToString().then(function(data){
-
-            
-
             console.log(self.convertBInsertionToString());
             //self.convertBudgetToString();
             self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
                 console.log(response);
-
             });
             self.test();
             console.log(data);
@@ -725,7 +721,7 @@ export class BudgetNewComponent implements OnInit {
             alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
         });
     }
-
+    
     checkBInsertion(){
         this.test();
         this.setBudgetInsertion();

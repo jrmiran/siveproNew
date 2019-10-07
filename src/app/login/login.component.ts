@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../shared/user/user-model';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {LoginService} from './login.service';
+import {ParameterService} from '../shared/parameter.service';
 
 @Component({
   selector: 'sivp-login',
@@ -14,7 +15,7 @@ import {LoginService} from './login.service';
 export class LoginComponent implements OnInit {
 
     loginForm: FormGroup
-  constructor(private fb: FormBuilder, private appService: AppService, private router: Router, private spinner: NgxSpinnerService, private loginService: LoginService) { }
+  constructor(private fb: FormBuilder, private appService: AppService, private router: Router, private spinner: NgxSpinnerService, private loginService: LoginService, private parameterService: ParameterService) { }
     user: Object[] = [];
     userName= {nome:""};
     
@@ -31,6 +32,15 @@ export class LoginComponent implements OnInit {
                 self.router.navigate(['comp']);
                 window.sessionStorage.setItem('authenticated', 'true');
                 window.sessionStorage.setItem('user', self.userName.nome);
+                window.sessionStorage.setItem('privilege', data[0]['privilegio']['data']);
+                window.sessionStorage.setItem('administrator', data[0]['administrador']['data']);
+                if(window.sessionStorage.getItem('privilege') == "1"){
+                    self.parameterService.setPrivilege(true);
+                }
+                if(window.sessionStorage.getItem('administrator') == "1"){
+                    self.parameterService.setAdministrator(true);
+                }
+                console.log(window.sessionStorage);
             } else{
                 console.log("else");
                 alert("Usuário e/ou senha inválido");
@@ -50,5 +60,5 @@ export class LoginComponent implements OnInit {
           email: this.fb.control('', [Validators.required, Validators.email]),
           password: this.fb.control('', [Validators.required])
       })
-  }   
+  }
 }

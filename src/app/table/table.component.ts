@@ -16,6 +16,7 @@ import {ParameterService} from '../shared/parameter.service';
 import "rxjs/add/operator/map";
 import {FileDropComponent} from '../file-drop/file-drop.component';
 import {MaterialComponent} from '../material/material.component';
+import {PaymentComponent} from '../payment/payment.component';
 
 @Component({
   selector: 'sivp-table',
@@ -54,6 +55,7 @@ export class TableComponent implements OnInit {
     @Input() fdcMaterial: boolean = false;
     @Input() removeItemOption: boolean = false;
     @Input() ambients: string[];
+    @Input() pc: PaymentComponent;
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;

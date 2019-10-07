@@ -123,6 +123,8 @@ export class ServiceOrderTableComponent implements OnInit {
             this.spinner.show();
             this.queryEmployees = "";
             this.queryShares = "";
+            var stone: number = 0;
+            var empreita: number = 0;
             this.employees.forEach(function(data, index){
                 if(index == self.employees.length - 1){
                     self.queryEmployees = self.queryEmployees + "(" + self.id + ",'" + data + "')";
@@ -132,7 +134,21 @@ export class ServiceOrderTableComponent implements OnInit {
                     self.queryShares = self.queryShares + "(" + self.id + "," + self.sharesEmployees[index] + "),";
                 }
             });
+            console.log(this.modalForm.get('cbStone').value);
+            console.log(this.modalForm.get('txtStoneValue').value);
+            console.log(this.modalForm.get('txtDate').value);
+            console.log(this.modalForm.get('txtEmpreitaValue').value.toString().replace('.',','));
+            console.log(this.queryEmployees);
+            console.log(this.queryShares);
+            
+            if(console.log(this.modalForm.get('cbStone').value)){
+                stone = 1;
+            }
+            if(console.log(this.modalForm.get('cbEmpreita').value)){
+                empreita = 1;
+            }
             this.appService.insertSOExecution(this.id, this.modalForm.get('txtDate').value.replace(/[\/]/g,'%2F'), this.modalForm.get('cbStone').value, this.modalForm.get('cbEmpreita').value, this.modalForm.get('txtStoneValue').value.toString().replace('.',','), this.queryEmployees.replace(/[\/]/g,'%2F'), this.queryShares, this.modalForm.get('txtEmpreitaValue').value.toString().replace('.',',')).subscribe(function(data){
+                console.log(data);
                 self.openModalFunction(false);
                 alert("Ordem de Serviço Lançada!");
                 self.spinner.hide();
