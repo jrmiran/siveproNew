@@ -12,6 +12,7 @@ export class PaymentComponent implements OnInit {
   constructor(private appService: AppService, private spinner: NgxSpinnerService) { }
     
     payments: Object[] = [];
+    self: any = this;
     
   ngOnInit() {
       var self = this;

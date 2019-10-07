@@ -8,7 +8,7 @@ import {ParameterService} from '../shared/parameter.service';
 })
 export class MenuComponent implements OnInit {
 
-  constructor(private parameterService: ParameterService) { }
+  constructor(public parameterService: ParameterService) { }
 
     userName: string;
     privilege: boolean = false;
