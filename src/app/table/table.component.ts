@@ -178,8 +178,8 @@ export class TableComponent implements OnInit {
     }
     
     
-    eventRow(i:number){
-        if(this.runClickRow){
+    eventRow(i:number, data: string){
+        if(this.runClickRow && data != "LINHA DE SEPARAÇÃO"){
             this.selectedRow = i;
             if(!this.multipleRowsSelection){
                 console.log("1");
