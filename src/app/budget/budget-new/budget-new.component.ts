@@ -360,11 +360,13 @@ export class BudgetNewComponent implements OnInit {
         console.log("VTL: " + valorTotalLocal);
         console.log("CV: " + this.currentValue);
         this.mainBudget.valorTotal = parseFloat((parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue).toFixed(2));
+        
         this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
         this.pedraOption = false;
         console.log("MB VT: " + this.mainBudget.valorTotal);
         console.log(this.budgets[this.currentItem].valorUnitario);
         this.currentValue = this.mainBudget.valorTotal;
+        this.clickRow(this.currentItem);
     }
     
     public setValue(){

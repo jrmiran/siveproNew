@@ -328,12 +328,19 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         } else{
             valorTotalLocal = this.budgets[this.currentItem].valorTotal;
         }
-        
+        console.log("ANTES!!!");
         console.log("MB VT: " + this.mainBudget.valorTotal);
         console.log("VTL: " + valorTotalLocal);
         console.log("CV: " + this.currentValue);
+        
         this.mainBudget.valorTotal = parseFloat((parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue).toFixed(2));
-        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        
+        console.log("DEPOIS!!!");
+        console.log("MB VT: " + this.mainBudget.valorTotal);
+        console.log("VTL: " + valorTotalLocal);
+        console.log("CV: " + this.currentValue);
+        
+        this.mainBudget.valorComDesconto = parseFloat((parseFloat(this.mainBudget.valorTotal.toString()) - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
         this.pedraOption = false;
         console.log("MB VT: " + this.mainBudget.valorTotal);
         console.log(this.budgets[this.currentItem].valorUnitario);
@@ -342,7 +349,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         
         
         //------------------------------------- NEW BUDGET ITEMS -------------------------------------------//
-        this.budgetItems[this.currentItem].qtd = this.orderForm.get('txtQtd').value;
+        /*this.budgetItems[this.currentItem].qtd = this.orderForm.get('txtQtd').value;
         this.budgetItems[this.currentItem].necessary = this.orderForm.get('txtNecessario').value;
         this.budgetItems[this.currentItem].detail = this.orderForm.get('txtDetalhe').value;
         //this.budgetItems[this.currentItem].unitValue = this.appService.converteFloatMoeda(this.orderForm.get('txtValor').value);
@@ -355,10 +362,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             //this.budgetItems[this.currentItem].totalValue = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgetItems[this.currentItem].unitValue)).toFixed(2)));
             this.budgetItems[this.currentItem].totalValue = parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgetItems[this.currentItem].unitValue)).toFixed(2)).toString();
             this.budgetItems[this.currentItem].measure = this.orderForm.get('txtMedida').value;
-        }
+        }*/
         //------------------------------------- END NEW BUDGET ITEMS -------------------------------------------//
         console.log(this.budgetItems[this.currentItem]);
-        this.groupByAmbient();
+        this.clickRow(this.currentItem);
+        //this.groupByAmbient();
     }
     
     createNewPdf(){
@@ -494,7 +502,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         console.log(this.budgets[this.currentItem].valorUnitario);
         console.log(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
         
-        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario);
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
         console.log(this.currentValue);
         this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
         this.orderForm.get('txtNecessario').setValue(this.budgets[this.currentItem].necessario);
