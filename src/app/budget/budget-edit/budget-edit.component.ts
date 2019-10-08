@@ -417,10 +417,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         var self = this;
         var valorAmbienteLocal: number;
         var valorTotalLocal: number;
-        
+        console.log(self.budgetsAmbient);
         this.budgets.forEach(function(b){
             count = count + 1;
             if(self.budgetsAmbient.length > 0){
+                console.log(self.budgetsAmbient);
                 self.budgetsAmbient.forEach(function(value){
                     console.log(self.budgetsAmbient.length);
                     if(keepGoing){
@@ -437,7 +438,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                             //value.valorTotalAmbiente = self.appService.converteMoedaFloat(value.valorTotalAmbiente) + self.appService.converteMoedaFloat(b.valorTotal);
                             
                             if(isNaN(value.valorTotalAmbiente)){
-                               valorAmbienteLocal = parseFloat(self.appService.converteMoedaFloat(value.valorTotalAmbiente).toFixed(2));
+                                console.log(value);
+                                valorAmbienteLocal = parseFloat(self.appService.converteMoedaFloat(value.valorTotalAmbiente).toFixed(2));
                             } else{
                                 valorAmbienteLocal = parseFloat(value.valorTotalAmbiente.toFixed(2));
                             }
@@ -878,6 +880,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         var self = this;
         
         this.spinner.show();
+        this.removeSeparationRows();
         self.joinBudget();
         self.setBudgetInsertion();
         console.log(self.bInsertion);

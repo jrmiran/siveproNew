@@ -396,8 +396,7 @@ export class BudgetNewComponent implements OnInit {
         console.log(this.mainBudget.valorTotal);
         console.log(this.mainBudget.valorComDesconto);
     }
-    
-    
+
     joinBudget(){
         var self = this;
         var count = 0;

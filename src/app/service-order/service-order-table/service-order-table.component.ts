@@ -248,6 +248,9 @@ export class ServiceOrderTableComponent implements OnInit {
                 }else{
                     value['terminado'] = 0;
                 }
+                if(value['dataTermino'] == "__/__/____"){
+                    value['terminado'] =  0;
+                }
                 
             });
             //console.log(data[7]['imagem']);
