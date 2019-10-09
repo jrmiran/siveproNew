@@ -276,6 +276,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     public myModel = '';
     public mask = [/^([1-9]{1}[\d]{0,2}(\.[\d]{3})*(\,[\d]{0,2})?|[1-9]{1}[\d]{0,}(\,[\d]{0,2})?|0(\,[\d]{0,2})?|(\,[\d]{1,2})?)$/];
     discount: number = 0;
+    descriptionChangeItem: string;
     
     removePlace2(i: number){
         this.places = this.places.slice(0,i).concat(this.places.slice(i+1,this.places.length));
@@ -753,6 +754,26 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             alert("NÃO HÁ ITEM SELECIONADO");
         }
     }
+    
+    
+    clickRowChangeItem(description: string){
+        
+        this.descriptionChangeItem = description;
+        console.log(this.descriptionChangeItem);
+    }
+    
+    changeItemBudget(i: number){
+        if(this.currentItem >=0){
+            document.getElementById("openModalChangeItem").click();
+        } else{
+            alert("NÃO HÁ ITEM SELECIONADO");
+        }
+    }
+    
+    changeItem2(){
+        this.budgets[this.currentItem].item = this.descriptionChangeItem;
+    }
+    
     removeSeparationRows(){
         var self = this;
         var budgetsAux: BudgetNew[] = []
@@ -812,9 +833,6 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             this.appService.deleteBudgetItem(remove).subscribe(function(data){
                 console.log(data);
                 console.log("Itens Excluídos");
-                
-                
-                
                 
                 self.budgetItems.forEach(function(data){
                     if(data.id > 0){

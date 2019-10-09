@@ -74,6 +74,7 @@ export class BudgetNewComponent implements OnInit {
     descontosString: string = "(";
     valoresComDescontoString: string = "(";
     currentValue: number;
+    descriptionChangeItem: string;
     
     listTest: string[] = ['a','b','c','d'];
     listTestString: string = "(";
@@ -383,6 +384,22 @@ export class BudgetNewComponent implements OnInit {
         }else{
             this.enableButton = false;
         }
+    }
+    
+    clickRowChangeItem(description: string){
+        this.descriptionChangeItem = description;
+    }
+    
+    changeItemBudget(i: number){
+        if(this.currentItem >=0){
+            document.getElementById("openModalChangeItem").click();
+        } else{
+            alert("NÃO HÁ ITEM SELECIONADO");
+        }
+    }
+    
+    changeItem2(){
+        this.budgets[this.currentItem].item = this.descriptionChangeItem;
     }
     
     addItemBudget(b: BudgetNew){

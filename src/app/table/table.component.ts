@@ -56,6 +56,7 @@ export class TableComponent implements OnInit {
     @Input() removeItemOption: boolean = false;
     @Input() ambients: string[];
     @Input() pc: PaymentComponent;
+    @Input() changeItemTable: boolean = false;
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
@@ -177,9 +178,17 @@ export class TableComponent implements OnInit {
         
     }
     
+    changeItem(i: number){
+        if(this.budgetEdit){
+            this.budgetEdit.changeItemBudget(i);
+        }else if(this.bnc){
+            this.bnc.changeItemBudget(i);
+        }
+        
+    }
     
     eventRow(i:number, data: string){
-        if(this.runClickRow && data != "LINHA DE SEPARAÇÃO"){
+        if(this.runClickRow && data['item'] != "LINHA DE SEPARAÇÃO"){
             this.selectedRow = i;
             if(!this.multipleRowsSelection){
                 console.log("1");
@@ -194,27 +203,35 @@ export class TableComponent implements OnInit {
                 this.selectedRows.push(i);
             }
             
-            if(this.bnc){
-                console.log("bnc");
-                this.bnc.clickRow(i);
-            }else if(this.itemButton){
-                console.log("itemButton");
-                this.budgetItem.clickRow(i);
-            }else if(this.budgetEdit){
-                console.log("budgetEdit");
-                this.budgetEdit.clickRow(i);
-            }else if(this.soc){
-                this.soc.clickRow(this.selectedRows);
-            }else if(this.fdc){
-                console.log("FDC");
-                if(!this.fdcMaterial){
-                    this.fdc.clickRow(i);
-                } else{
-                    this.fdc.clickRowMaterial(i);
+            if(this.changeItemTable){
+                if(this.bnc){
+                    this.bnc.clickRowChangeItem(data['descricao']);
+                }else if(this.budgetEdit){
+                    this.budgetEdit.clickRowChangeItem(data['descricao']);
                 }
-            }else if(this.mc){
-                console.log("MC");
-                this.mc.clickRow(i);
+            } else{
+                if(this.bnc){
+                    console.log("bnc");
+                    this.bnc.clickRow(i);
+                }else if(this.itemButton){
+                    console.log("itemButton");
+                    this.budgetItem.clickRow(i);
+                }else if(this.budgetEdit){
+                    console.log("budgetEdit");
+                    this.budgetEdit.clickRow(i);
+                }else if(this.soc){
+                    this.soc.clickRow(this.selectedRows);
+                }else if(this.fdc){
+                    console.log("FDC");
+                    if(!this.fdcMaterial){
+                        this.fdc.clickRow(i);
+                    } else{
+                        this.fdc.clickRowMaterial(i);
+                    }
+                }else if(this.mc){
+                    console.log("MC");
+                    this.mc.clickRow(i);
+                }
             }
             this.currentLine = i;
         }

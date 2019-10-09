@@ -10,7 +10,7 @@
         <a class="btn pull-left" *ngIf="selectionButton" (click)="selectAll()"><i class="fa fa-square"> Selecionar Tudo </i></a>
     </thead>
     <tbody>
-        <tr *ngFor="let data of datas | filter:filter | paginate: {itemsPerPage: ipp, currentPage: p}; index as j" (click)="eventRow(j, data['item'])">
+        <tr *ngFor="let data of datas | filter:filter | paginate: {itemsPerPage: ipp, currentPage: p}; index as j" (click)="eventRow(j, data)">
 
             <td [class.linhaSelecionada]="selectRow(j)" *ngFor="let id of ids; index as i" [class.hide]="data['item'] == 'LINHA DE SEPARAÇÃO'">
                 <span *ngIf="id != 'approved' && id != 'entrada'">
@@ -73,6 +73,9 @@
                         <li *ngFor="let a of ambients"><a class="btn" (click)="changeAmbient(a)"> {{a}} </a> </li>
                     </ul>
                 </div>
+                <a class="btn" (click)="changeItem(j)">
+                    <i class = "fa fa-exchange"></i>
+                </a>
             </td>
 
 
