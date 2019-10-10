@@ -793,7 +793,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.convertBudgetToString().then(function(data){
             self.removeBarURL();
             console.log(self.itemsString);
-            var params = {budgetId: self.mainBudget.number, discount: self.mainBudget.discount, note: self.mainBudget.note, rectified: self.mainBudget.rectified, amount: self.mainBudget.valorTotal, budgetCodes: self.codsString, budgetAmbients: self.comodosString, budgetDetails: self.detalhesString, budgetItems: self.itemsString, budgetMeasures: self.medidasString, budgetNeedings: self.necessariosString, budgetNumbers: "(1,'0')", budgetQuantitys: self.qtdsString, budgetValues: self.valoresUnitariosString}  
+            var params = {budgetId: self.mainBudget.number, discount: self.mainBudget.discount, note: self.mainBudget.note.replace(/\n/g,","), rectified: self.mainBudget.rectified, amount: self.mainBudget.valorTotal, budgetCodes: self.codsString, budgetAmbients: self.comodosString.replace(/\n/g,","), budgetDetails: self.detalhesString.replace(/\n/g,","), budgetItems: self.itemsString.replace(/\n/g,","), budgetMeasures: self.medidasString.replace(/\n/g,","), budgetNeedings: self.necessariosString.replace(/\n/g,","), budgetNumbers: "(1,'0')", budgetQuantitys: self.qtdsString, budgetValues: self.valoresUnitariosString}  
         console.log(params);
            //self.appService.budgetUpdate(self.mainBudget.number, self.mainBudget.discount, self.mainBudget.note, self.mainBudget.rectified, self.mainBudget.valorTotal, self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString).subscribe(function(value){
         self.appService.postBudgetUpdate(params).subscribe(function(value){
@@ -1271,7 +1271,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 if(self.orc[0].observacao){
                    self.mainBudget.note = self.orc[0].observacao + " ";
                 } else{
-                    self.mainBudget.note = " ";
+                    self.mainBudget.note = "' '";
                 }
                 
                 console.log(self.mainBudget.valorTotal);
