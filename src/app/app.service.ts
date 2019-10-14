@@ -19,15 +19,14 @@ export class AppService{
     }
     
     callPost(q: string, obj: any): Observable<Object[]>{
-        /*const headers = new HttpHeaders()
-          .set('Authorization', 'my-auth-token')
-          .set('Content-Type', 'application/json');*/
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         console.log(`${DATA_API}/` + q);
         console.log(obj);
         return this.http.post(`${DATA_API}/` + q, obj, {headers: headers}).map(response => response.json());
     }
+    
+    
     
     budgets(): Observable<Object[]>{
         return this.callQuery("query");

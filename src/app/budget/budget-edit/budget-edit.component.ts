@@ -203,9 +203,9 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             descricao: this.modalForm.get('descricaoSubItem').value,
         });
         
-        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value * this.modalForm.get('qtdSubItem').value)/10000).toFixed(2));
+        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value * this.modalForm.get('qtdSubItem').value)).toFixed(2));
         
-        this.budgets[this.currentItem].detalhe = this.budgets[this.currentItem].detalhe + "\n*" +  this.modalForm.get('qtdSubItem').value + " " + this.modalForm.get('unidadeSubItem').value + " " + this.modalForm.get('medida1SubItem').value + "x" + this.modalForm.get('medida2SubItem').value + " " + this.modalForm.get('descricaoSubItem').value;
+        this.budgets[this.currentItem].detalhe = this.budgets[this.currentItem].detalhe + "\n*" +  this.modalForm.get('qtdSubItem').value + " " + this.modalForm.get('unidadeSubItem').value + " " + parseFloat(this.modalForm.get('medida1SubItem').value).toFixed(2) + "x" + parseFloat(this.modalForm.get('medida2SubItem').value).toFixed(2) + " " + this.modalForm.get('descricaoSubItem').value;
         this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
         
         if(isNaN(this.budgets[this.currentItem].valorTotal)){
@@ -232,6 +232,33 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         
         //this.changeItem();
     }
+    
+    removeSubItem(i: number, index: number){
+        var self = this;
+        var newQtd = 0;
+        var valorTotalLocal = 0;
+        console.log(this.subItems);
+        this.subItems = this.subItems.slice(0,i).concat(this.subItems.slice(i+1,this.subItems.length));
+        console.log(this.subItems);
+        self.budgets[self.currentItem].detalhe = "";
+        this.subItems.forEach(function(data){
+            self.budgets[self.currentItem].detalhe = self.budgets[self.currentItem].detalhe + "*" + data.qtd + " " + data.unidade + parseFloat(data.medida1).toFixed(2) + " x " + parseFloat(data.medida2).toFixed(2) + " " + data.descricao + "\n";
+            newQtd = newQtd + (data.medida1 * data.medida2);
+        });
+
+        this.budgets[this.currentItem].qtd = newQtd;
+        this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((newQtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
+        
+        
+        this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
+        this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
+        
+        this.mainBudget.valorTotal = parseFloat((parseFloat(this.mainBudget.valorTotal.toString()) + this.budgets[this.currentItem].valorTotal - this.currentValue).toFixed(2));
+        console.log(this.mainBudget.valorTotal);
+        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
+    }
+    
     
     setValueCheckBox(i: number){
             this.orderForm.value.checkBoxOption[i] = !this.orderForm.value.checkBoxOption[i];
@@ -371,7 +398,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     }
     
     createNewPdf(){
-    
+        this.removeSeparationRows();
         this.joinBudget();
         this.testGenerate();
     }

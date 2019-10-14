@@ -145,7 +145,7 @@ export class BudgetNewComponent implements OnInit {
         }
         
         this.subItems.push({
-            index: index,    
+            index: index,
             qtd: this.modalForm.get('qtdSubItem').value + "  ",
             unidade: this.modalForm.get('unidadeSubItem').value + "  ",
             medida1: this.modalForm.get('medida1SubItem').value,
@@ -153,10 +153,13 @@ export class BudgetNewComponent implements OnInit {
             descricao: this.modalForm.get('descricaoSubItem').value,
         });
         
+        console.log(this.modalForm.get('medida1SubItem').value);
+        console.log(this.modalForm.get('medida2SubItem').value);
+        console.log((this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value *  this.modalForm.get('qtdSubItem').value));
         
-        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value *  this.modalForm.get('qtdSubItem').value)/10000).toFixed(2));
+        this.budgets[this.currentItem].qtd = parseFloat((this.budgets[this.currentItem].qtd + (this.modalForm.get('medida1SubItem').value * this.modalForm.get('medida2SubItem').value *  this.modalForm.get('qtdSubItem').value)).toFixed(2));
         
-        this.budgets[this.currentItem].detalhe = this.budgets[this.currentItem].detalhe + "\n*" +  this.modalForm.get('qtdSubItem').value + " " + this.modalForm.get('unidadeSubItem').value + " " + this.modalForm.get('medida1SubItem').value + "x" + this.modalForm.get('medida2SubItem').value + " " + this.modalForm.get('descricaoSubItem').value;
+        this.budgets[this.currentItem].detalhe = this.budgets[this.currentItem].detalhe + "\n*" +  this.modalForm.get('qtdSubItem').value + " " + this.modalForm.get('unidadeSubItem').value + " " + parseFloat(this.modalForm.get('medida1SubItem').value).toFixed(2) + "x" + parseFloat(this.modalForm.get('medida2SubItem').value).toFixed(2) + " " + this.modalForm.get('descricaoSubItem').value;
         this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((this.budgets[this.currentItem].qtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
         
         if(isNaN(this.budgets[this.currentItem].valorTotal)){
@@ -172,8 +175,6 @@ export class BudgetNewComponent implements OnInit {
         this.modalForm.get('medida2SubItem').setValue("");
         this.modalForm.get('descricaoSubItem').setValue("");
         
-        
-        
         this.mainBudget.valorTotal = parseFloat((parseFloat(this.mainBudget.valorTotal.toString()) + valorTotalLocal - this.currentValue).toFixed(2));
         console.log(this.mainBudget.valorTotal);
         this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
@@ -182,6 +183,30 @@ export class BudgetNewComponent implements OnInit {
         
         this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
         this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
+    }
+    
+    removeSubItem(i: number, index: number){
+        var self = this;
+        var newQtd = 0;
+        var valorTotalLocal = 0;
+        this.subItems = this.subItems.slice(0,i).concat(this.subItems.slice(i+1,this.subItems.length));
+        self.budgets[self.currentItem].detalhe = "";
+        this.subItems.forEach(function(data){
+            self.budgets[self.currentItem].detalhe = self.budgets[self.currentItem].detalhe + "*" + data.qtd + " " + data.unidade + parseFloat(data.medida1).toFixed(2) + " x " + parseFloat(data.medida2).toFixed(2) + " " + data.descricao + "\n";
+            newQtd = newQtd + (data.medida1 * data.medida2);
+        });
+
+        this.budgets[this.currentItem].qtd = newQtd;
+        this.budgets[this.currentItem].valorTotal = this.appService.converteFloatMoeda(parseFloat((newQtd * this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario)).toFixed(2)));
+        
+        
+        this.orderForm.get('txtQtd').setValue(this.budgets[this.currentItem].qtd);
+        this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
+        
+        this.mainBudget.valorTotal = parseFloat((parseFloat(this.mainBudget.valorTotal.toString()) + this.budgets[this.currentItem].valorTotal - this.currentValue).toFixed(2));
+        console.log(this.mainBudget.valorTotal);
+        this.mainBudget.valorComDesconto = parseFloat((this.mainBudget.valorTotal - this.mainBudget.valorTotal * (this.mainBudget.discount/100)).toFixed(2));
+        this.currentValue = this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorTotal);
     }
     
     getSubItems(index: number): SubItem[]{
