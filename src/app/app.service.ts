@@ -19,12 +19,7 @@ export class AppService{
         var self = this;
         console.log(`${DATA_API}/` + q);
         return this.http.get(`${DATA_API}/` + q).map(response => response.json()).catch(function(err: HttpErrorResponse){
-            if(err.status > 0){
-                return self.callQuery2(q);
-            } else{
-                return Observable.throw(err);
-            }
-            
+            return self.callQuery2(q);
         });
     }
     
@@ -41,12 +36,7 @@ export class AppService{
         console.log(`${DATA_API}/` + q);
         console.log(obj);
         return this.http.post(`${DATA_API}/` + q, obj, {headers: headers}).map(response => response.json()).catch(function(err: HttpErrorResponse){
-            if(err.status >  0){
-                return self.callPost2(q, obj);
-            } else{
-                return Observable.throw(err);
-            }
-            
+            return self.callPost2(q, obj);
         });
     }
     
@@ -57,11 +47,10 @@ export class AppService{
         console.log(`${DATA_API2}/` + q);
         console.log(obj);
         return this.http.post(`${DATA_API2}/` + q, obj, {headers: headers}).map(response => response.json()).catch(function(err: HttpErrorResponse){
-                return Observable.throw(err);
+            return Observable.throw(err);
         });
     }
-    
-    
+
     budgets(): Observable<Object[]>{
         return this.callQuery("query");
     }
