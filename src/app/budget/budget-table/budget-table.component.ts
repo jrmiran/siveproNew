@@ -39,7 +39,9 @@ export class BudgetTableComponent implements OnInit {
                data['approved'] =  data['approved']['data'][0];
             });
             self.spinner.hide();
-        });
+        }, function(error){
+            console.log('ERRO! ' + error);
+        })
         
         interval(1000).pipe(
             map((x) => {

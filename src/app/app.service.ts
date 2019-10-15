@@ -1,9 +1,11 @@
 import {Injectable} from "@angular/core";
 import {DATA_API} from "./app.api";
+import {DATA_API2} from "./app.api2";
 import { Http, RequestOptions, Headers } from "@angular/http";
-import { HttpHeaders, HttpClient } from "@angular/common/http";
+import { HttpHeaders, HttpClient, HttpErrorResponse  } from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
 import "rxjs/add/operator/map";
+import 'rxjs/add/operator/catch';
 import {BudgetInsertion} from './budget/budget-insertion.model';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -14,18 +16,50 @@ export class AppService{
     released: boolean = false;
     
     callQuery(q: string): Observable<Object[]>{
+        var self = this;
         console.log(`${DATA_API}/` + q);
-        return this.http.get(`${DATA_API}/` + q).map(response => response.json());
+        return this.http.get(`${DATA_API}/` + q).map(response => response.json()).catch(function(err: HttpErrorResponse){
+            if(err.status > 0){
+                return self.callQuery2(q);
+            } else{
+                return Observable.throw(err);
+            }
+            
+        });
+    }
+    
+    callQuery2(q: string): Observable<Object[]>{
+        return this.http.get(`${DATA_API2}/` + q).map(response => response.json()).catch(function(err: HttpErrorResponse){
+            return Observable.throw(err);
+        });
     }
     
     callPost(q: string, obj: any): Observable<Object[]>{
+        var self = this;
         const headers = new Headers();
         headers.append('Content-Type', 'application/json');
         console.log(`${DATA_API}/` + q);
         console.log(obj);
-        return this.http.post(`${DATA_API}/` + q, obj, {headers: headers}).map(response => response.json());
+        return this.http.post(`${DATA_API}/` + q, obj, {headers: headers}).map(response => response.json()).catch(function(err: HttpErrorResponse){
+            if(err.status >  0){
+                return self.callPost2(q, obj);
+            } else{
+                return Observable.throw(err);
+            }
+            
+        });
     }
     
+    callPost2(q: string, obj: any): Observable<Object[]>{
+        var self = this;
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        console.log(`${DATA_API2}/` + q);
+        console.log(obj);
+        return this.http.post(`${DATA_API2}/` + q, obj, {headers: headers}).map(response => response.json()).catch(function(err: HttpErrorResponse){
+                return Observable.throw(err);
+        });
+    }
     
     
     budgets(): Observable<Object[]>{
