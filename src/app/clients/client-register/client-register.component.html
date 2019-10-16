@@ -11,7 +11,7 @@
         </div>
 
         <form [formGroup]="clientForm" novalidate>
-            <div class="row">
+            <div *ngIf="!editClient" class="row">
                 <div class="col-sm-12 col-xs-12">
                     <div class="box box-primary">
                         <div class="box-header">
@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row" *ngIf="typeClient == 'Cliente Loja'">
                 <div class="col-sm-12 col-xs-12">
                     <div class="box box-primary">
@@ -36,6 +36,17 @@
                     </div>
                 </div>
             </div>
+            
+            <div *ngIf="editClient" class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-cart-plus"></i> Loja: {{nameStore}}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
 
             <div class="row">
                 <div class="col-sm-12 col-xs-12">
@@ -55,15 +66,15 @@
                             <input type="text" class="form-control" formControlName="txtEmail" placeholder="E-mail">
                         </sivp-input-container>
 
-                        <sivp-input-container class="col-sm-6 col-xs-12" *ngIf="typeClient == 'Pessoa' || typeClient == 'Arquiteto'">
+                        <sivp-input-container class="col-sm-6 col-xs-12">
                             <label> CPF</label>
                             <input type="text" class="form-control" formControlName="txtCPF" placeholder="CPF" mask="000.000.000-00">
                         </sivp-input-container>
 
 
-                        <sivp-input-container class="col-sm-6 col-xs-12" *ngIf="typeClient == 'ClienteJuridico'">
+                        <sivp-input-container class="col-sm-6 col-xs-12">
                             <label> CNPJ</label>
-                            <input type="text" class="form-control" formControlName="txtCPF" placeholder="CNPJ" mask="00.000.000-0000/00">
+                            <input type="text" class="form-control" formControlName="txtCNPJ" placeholder="CNPJ" mask="00.000.000-0000/00">
                         </sivp-input-container>
 
 
@@ -120,8 +131,13 @@
             </div>
 
             <div class="row">
-                <div class="col-xs-12">
+                <div *ngIf="!editClient" class="col-xs-12">
                     <a (click)="insertClient()" class="btn btn-success pull-right" [class.disabled]="!clientForm.valid"><i class="fa fa-pencil"></i> Cadastrar
+                    </a>
+                </div>
+                
+                <div *ngIf="editClient" class="col-xs-12">
+                    <a (click)="updateClient()" class="btn btn-success pull-right"><i class="fa fa-pencil"></i> Atualizar
                     </a>
                 </div>
             </div>

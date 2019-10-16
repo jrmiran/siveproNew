@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {DATA_API} from "./app.api";
 import {DATA_API2} from "./app.api2";
+import {DATA_API_QA} from "./app.apiqa";
 import { Http, RequestOptions, Headers } from "@angular/http";
 import { HttpHeaders, HttpClient, HttpErrorResponse  } from "@angular/common/http";
 import {Observable} from "rxjs/Observable";
@@ -24,7 +25,15 @@ export class AppService{
     }
     
     callQuery2(q: string): Observable<Object[]>{
+        var self = this;
         return this.http.get(`${DATA_API2}/` + q).map(response => response.json()).catch(function(err: HttpErrorResponse){
+            return self.callQueryQa(q);
+        });
+    }
+    
+    callQueryQa(q: string): Observable<Object[]>{
+        
+        return this.http.get(`${DATA_API_QA}/` + q).map(response => response.json()).catch(function(err: HttpErrorResponse){
             return Observable.throw(err);
         });
     }
@@ -47,10 +56,22 @@ export class AppService{
         console.log(`${DATA_API2}/` + q);
         console.log(obj);
         return this.http.post(`${DATA_API2}/` + q, obj, {headers: headers}).map(response => response.json()).catch(function(err: HttpErrorResponse){
+            return self.callPostQa(q, obj);
+        });
+    }
+    
+    callPostQa(q: string, obj: any): Observable<Object[]>{
+        var self = this;
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        console.log(`${DATA_API_QA}/` + q);
+        console.log(obj);
+        return this.http.post(`${DATA_API_QA}/` + q, obj, {headers: headers}).map(response => response.json()).catch(function(err: HttpErrorResponse){
+            console.log(err);
             return Observable.throw(err);
         });
     }
-
+    
     budgets(): Observable<Object[]>{
         return this.callQuery("query");
     }
@@ -250,6 +271,18 @@ export class AppService{
     
     postTest(obj: any): Observable<Object[]>{
         return this.callPost(`postTest`, obj);
+    }
+    
+    postSearchClients(): Observable<Object[]>{
+        return this.callPost(`postSearchClients`, {});
+    }
+    
+    postSearchClient(obj: any): Observable<Object[]>{
+        return this.callPost(`postSearchClient`, obj);
+    }
+    
+    postUpdateClient(obj: any): Observable<Object[]>{
+        return this.callPost(`postUpdateClient`, obj);
     }
     
     postPayment(obj: any): Observable<Object[]>{

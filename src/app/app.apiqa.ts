@@ -1,0 +1,1 @@
+export const DATA_API_QA = "http://localhost:3000";

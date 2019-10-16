@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {AppService} from '../../app.service';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'sivp-client-search',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ClientSearchComponent implements OnInit {
 
-  constructor() { }
+  constructor(private appService: AppService, private spinner: NgxSpinnerService) { }
 
-  ngOnInit() {
-  }
-
+    clients: Object[] = [];
+    self = this;
+    
+    ngOnInit() {
+        var self = this;
+        setTimeout(()=>{this.spinner.show()}, 1000);
+        this.appService.postSearchClients().subscribe(function(data){
+            console.log(data);
+            self.clients = data; 
+            setTimeout(()=>{self.spinner.hide()}, 1000);
+        });
+    }
 }

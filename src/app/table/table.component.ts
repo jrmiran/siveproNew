@@ -17,6 +17,7 @@ import "rxjs/add/operator/map";
 import {FileDropComponent} from '../file-drop/file-drop.component';
 import {MaterialComponent} from '../material/material.component';
 import {PaymentComponent} from '../payment/payment.component';
+import {ClientSearchComponent} from '../clients/client-search/client-search.component';
 
 @Component({
   selector: 'sivp-table',
@@ -57,6 +58,7 @@ export class TableComponent implements OnInit {
     @Input() ambients: string[];
     @Input() pc: PaymentComponent;
     @Input() changeItemTable: boolean = false;
+    @Input() csc: ClientSearchComponent;
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
