@@ -5,6 +5,7 @@ import {RadioOption} from '../../shared/radio/radio-option.model';
 import {NgxSpinnerService} from 'ngx-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 
+
 @Component({
   selector: 'sivp-client-register',
   templateUrl: './client-register.component.html',
@@ -141,6 +142,8 @@ export class ClientRegisterComponent implements OnInit {
 
         });
     }
+    
+    
     
     ngOnInit() {
         var self = this;

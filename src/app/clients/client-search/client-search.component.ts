@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AppService} from '../../app.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {BudgetTableComponent} from '../../budget/budget-table/budget-table.component';
 
 @Component({
   selector: 'sivp-client-search',
@@ -13,6 +14,12 @@ export class ClientSearchComponent implements OnInit {
 
     clients: Object[] = [];
     self = this;
+    
+    openBudgetsClient(id: number){
+        this.appService.postBudgetsClient({clientId: id}).subscribe(function(data){
+            
+        });
+    }
     
     ngOnInit() {
         var self = this;

@@ -297,6 +297,10 @@ export class AppService{
         return this.callPost(`postInsertBudgetItems`, obj);
     }
     
+    postBudgetsClient(obj: any): Observable<Object[]>{
+        return this.callPost(`postBudgetsClient`, obj);
+    }
+    
     insertMaterial(obj: any): Observable<Object[]>{
         return this.callPost(`postInsertMaterial`, obj);
     }

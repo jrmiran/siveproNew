@@ -146,6 +146,10 @@ export class TableComponent implements OnInit {
         });
     }
     
+    openBudgetsClient(id: number){
+        this.csc.openBudgetsClient(id);
+    }
+    
     openModalItem(id: number, descricao: string, valorUnitario: string){
         this.budgetItem.openModalFunction(true, id, descricao, valorUnitario);
     }
