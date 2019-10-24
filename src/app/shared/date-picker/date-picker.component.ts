@@ -20,6 +20,7 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
     value: any;
     onChange: any;
     @ViewChild('picker') picker: any;
+    currentDate: string = "01/01/2000";
     
   ngOnInit() {
   }
@@ -29,7 +30,7 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
     }
     
     setValue(value: any){
-        console.log("VALUE");
+        console.log(value);
         this.value = value;
         this.onChange(this.value);
     }
@@ -39,6 +40,7 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
     }
     
     registerOnChange(fn: any){
+        console.log(fn);
         this.onChange = fn;
     }
     
@@ -46,12 +48,20 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
         
     }
     
+    setDate(date: any){
+        this.picker.select(date);
+    }
+    
     formatDate(date: Date) {
         if(date){
             if (date.getUTCMonth()+1 < 10){
                 this.setValue(date.getUTCDate() + "/" + "0" + (date.getUTCMonth()+1) + "/" + date.getUTCFullYear());
+                this.currentDate = date.getUTCDate() + "/" + "0" + (date.getUTCMonth()+1) + "/" + date.getUTCFullYear();
+                console.log(this.currentDate);
             }else{
                 this.setValue(date.getUTCDate() + "/" + (date.getUTCMonth()+1) + "/" + date.getUTCFullYear());
+                this.currentDate = date.getUTCDate() + "/" + (date.getUTCMonth()+1) + "/" + date.getUTCFullYear();
+                console.log(this.currentDate);
             }
         }
     }

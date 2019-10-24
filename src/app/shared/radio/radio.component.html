@@ -1,6 +1,6 @@
 <div *ngFor="let option of options">
     <label>
-        <input (click)="setValue(option.value)" type="radio" name="optionsRadios" class="minimal" [class.checked]="option.value === value">
+        <input (click)="setValue(option.value)" type="radio" name="optionsRadios" [class.checked]="option.value === value">
         {{option.label}}
     </label>
 </div>

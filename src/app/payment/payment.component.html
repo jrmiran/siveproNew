@@ -11,41 +11,123 @@
                 <div class="box box-primary">
                     <div class="box-header">
                         <h3 class="box-title"><i class="fa fa-usd"></i> Pagamentos</h3>
-                        <a data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-default"><i class="fa fa-plus"></i> Novo Pagamento </a>
+                        <a (click)="setNewPayment()" data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-default"><i class="fa fa-plus"></i> Novo Pagamento </a>
                     </div>
                     <sivp-table [headers]="['Id', 'Conta', 'Data', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="payments" [ids]="['id','conta','data' ,'entrada', 'numeroCheque', 'status', 'formaPagamento']" [pc]="self" [runClickRow]="false">
                     </sivp-table>
                 </div>
             </div>
         </div>
-        
-        
-        
+
+
+
         <!----------------------------------- MODAL --------------------------------------------------------------------->
-            <div class="modal fade" id="modal-default">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Novo Pagamento</h4>
-                        </div>
-                        <div class="modal-body">
-                            
-                            
-                            
-                            
-                        </div>
-                        <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
-                        </div>
+        <div class="modal fade" id="modal-default" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button (click)="closeModal()" type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeButton">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="fa fa-usd"></i>Novo Pagamento</h4>
                     </div>
-                    <!-- /.modal-content -->
+                    <div class="modal-body">
+                        <form [formGroup]="paymentForm" novalidate>
+
+                            <div class="row" [class.hide]="showForm">
+                                <sivp-input-container class="form-group col-sm-3 col-xs-12 pull-left">
+                                    <label> Parcelas </label>
+                                    <input type="text" class="form-control" formControlName="txtInstallment">
+                                </sivp-input-container>
+                            </div>
+
+
+
+                            <span [class.hide]="!showForm">
+                                <div class="row">
+                                    <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                                        <label> Data </label>
+                                        <br>
+                                        <sivp-date-picker formControlName="txtDate" #dPicker></sivp-date-picker>
+                                    </sivp-input-container>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="form-group col-sm-9 col-xs-12">
+                                        <sivp-radio [options]="inOut" formControlName="rdInOut" (click)="radioEvent()"></sivp-radio>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <sivp-input-container class="form-group col-sm-9 col-xs-12">
+                                        <label> Assunto </label>
+                                        <input type="text" class="form-control" formControlName="txtBill">
+                                    </sivp-input-container>
+                                    <div class="form-group col-sm-3 col-xs-12">
+                                        <label> </label>
+                                        <p> {{currentPart}} / {{totalParts}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <sivp-input-container class="form-group col-sm-4 col-xs-12">
+                                        <label> Valor </label>
+                                        <input type="text" class="form-control" formControlName="txtValue" currencyMask [(ngModel)]="value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                                    </sivp-input-container>
+
+                                    <sivp-input-container class="form-group col-sm-5 col-xs-12">
+                                        <label>Status</label>
+                                        <select class="form-control" formControlName="cmbStatus">
+                                            <option *ngFor="let s of status">{{s}}</option>
+                                        </select>
+                                    </sivp-input-container>
+
+                                    <sivp-input-container class="form-group col-sm-3 col-xs-12">
+                                        <label> Cheque Nº </label>
+                                        <input type="text" class="form-control" formControlName="txtCheckNumber">
+                                    </sivp-input-container>
+
+                                </div>
+
+                                <div class="row">
+                                    <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                                        <label> Forma de Pagamento </label>
+                                        <select class="form-control" formControlName="cmbPaymentForm">
+                                            <option *ngFor="let pw of paymentWay">{{pw}}</option>
+                                        </select>
+                                    </sivp-input-container>
+
+                                    <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                                        <label> Tipo Pagamento </label>
+                                        <select class="form-control" formControlName="cmbTypePayment">
+                                            <option *ngFor="let pt of paymentType">{{pt}}</option>
+                                        </select>
+                                    </sivp-input-container>
+                                </div>
+
+                                <div class="row">
+                                    <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                                        <label> Observação </label>
+                                        <input type="text" class="form-control" formControlName="txtNote">
+                                    </sivp-input-container>
+                                </div>
+
+                                <div class="row">
+                                    <a class="btn pull-right" (click)="changePayment('next')" [class.disabled]="currentPart >= totalParts || !paymentForm.valid"><i class="fa fa-arrow-right"></i></a>
+                                    <a class="btn pull-right" (click)="changePayment('previous')" [class.disabled]="currentPart <= 1"><i class="fa fa-arrow-left"></i></a>
+                                </div>
+                            </span>
+                        </form>
+                    </div>
+                    <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                        <a class="btn btn-primary" (click)="submitPayments()" [class.disabled]="!enableOk || !paymentForm.valid">OK</a>
+                    </div>
                 </div>
-                <!-- /.modal-dialog -->
+                <!-- /.modal-content -->
             </div>
-            <!------------------------------------------ END MODAL ----------------------------------------------------------->
-        
-        
+            <!-- /.modal-dialog -->
+        </div>
+        <!------------------------------------------ END MODAL ----------------------------------------------------------->
+
+
     </section>
 </section>
