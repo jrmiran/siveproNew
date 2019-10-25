@@ -42,8 +42,9 @@
                         <p class="col-sm-10"> {{nameClient}} </p>
                     </div>
                     <div class="row">
-                        <label class="col-xs-2" *ngIf="typeClient == 'LOJ'"> Terceiro: </label>
-                        <p class="col-xs-10" *ngIf="typeClient == 'LOJ'"> {{nameThirdy}} </p>
+                        <label class="col-sm-2" *ngIf="typeClient == 'LOJ'"> Terceiro: </label>
+                        <a class="col-sm-10 pull-left" [routerLink]="['/clientRegister']" [queryParams]="{id: clientId, store: nameClient}" style="{align: left}">{{nameThirdy}}</a>
+                        <!--<p class="col-xs-10" *ngIf="typeClient == 'LOJ'"> {{nameThirdy}} </p>-->
                     </div>
                     <div class="row">
                         <label class="col-xs-2" *ngIf="typeClient == 'LOJ'"> Vendedor: </label>

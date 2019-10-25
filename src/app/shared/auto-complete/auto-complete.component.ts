@@ -34,11 +34,8 @@ export class AutoCompleteComponent implements OnInit, ControlValueAccessor{
     @Input() bco: BudgetComponent;
     @Input() typeInput: string;
     
-    
-    
     public objs: Object[];
     
-
     public inicia(){
         var opString = this.optionsString;
         var idsNumber = this.idsNumber;
@@ -51,7 +48,7 @@ export class AutoCompleteComponent implements OnInit, ControlValueAccessor{
             map(value => this._filter(value))
         );
     }
-    
+
     ngOnInit() {
        this.inicia();
     }
@@ -60,15 +57,15 @@ export class AutoCompleteComponent implements OnInit, ControlValueAccessor{
         const filterValue = value.toLowerCase();
         return this.optionsString.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
     }
-    
+
     public switchClientEmpresa(value: string){
         this.appService.clientsEmpresa(`'${value}'`).subscribe(clientsEmpresa => this.objs = clientsEmpresa);
     }
-    
+
     public getObjs(): Object[]{
         return this.objs;
     }
-
+    
     setValue(value: any){
         var self = this;
         this.value = value;

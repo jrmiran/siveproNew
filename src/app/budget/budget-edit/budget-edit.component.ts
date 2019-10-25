@@ -84,6 +84,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     params = {query: ""};
     insertedItem: number = -1000;
     
+    budgetModel: Object;
+    
     b: BudgetNew = {
         qtd: 0,
         cod: "",
@@ -171,6 +173,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     checks: string[] = [];
     currentValue: number;
     approved: boolean;
+    clientId: any;
     
     cmd = [{comodos: ""}];
     qtd = [{quantidades: ""}];
@@ -1142,6 +1145,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
       self.formin.type = "LOJ";
       var valorTotalLocal: number;
       setTimeout(() => {this.spinner.show()}, 10);
+      
       this.orderForm = this.formBuilder.group({
             inputPlace: this.formBuilder.control(''),
             txtQtd: this.formBuilder.control(''),
@@ -1166,12 +1170,20 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
 
       this.cbo = (this.orderForm.get('checkBoxOption') as FormArray);
       
+      
+      
       this.route.queryParams.subscribe(
         (queryParams: any) =>{
             self.appService.budgetItems().subscribe(function(budgetItems){
             self.items = budgetItems;
 
             self.idInput = queryParams.id;
+                
+                self.appService.budget(queryParams.id).subscribe(function(data){
+                    self.budgetModel = data[0]; 
+                    self.clientId = data[0]['clienteEmpresaa_id'];
+                });
+                
             self.appService.budgetEdit(self.idInput).subscribe(function(data){
                 self.returnedData = data;
                 console.log(data);

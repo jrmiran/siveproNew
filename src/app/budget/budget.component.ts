@@ -30,8 +30,8 @@ export class BudgetComponent implements OnInit, OnChanges{
     validateVendedor: boolean;
     public bnc: BudgetNewComponent;
     tipoCliente: RadioOption[] = [
-        {label: 'Loja', value: 'LOJ'},
-        {label: 'Cliente Físico', value: 'FIS'}
+        {label: 'Loja', value: 'LOJ'}
+        //{label: 'Cliente Físico', value: 'FIS'}
     ]
     clientsJuridicoObj: Object[];
     clientsFisicoObj: Object[];
@@ -58,6 +58,9 @@ export class BudgetComponent implements OnInit, OnChanges{
             if(!this.clientsJuridicoObj){
                 self.showSpinner(true, "spinnerCliente");
                 this.appService.clientsJuridico().subscribe(function(clientsJuridico){
+                    clientsJuridico.map(function(value){
+                       value = value['nome'] + " - " + value['ide'] 
+                    });
                     self.validateCliente = true;
                     self.validateTerceiro = true;
                     self.validateVendedor = true;
@@ -76,6 +79,9 @@ export class BudgetComponent implements OnInit, OnChanges{
             this.validateVendedor = false;
             if(!this.clientsFisicoObj){
                 this.appService.clientsFisico().subscribe(function(clientsFisico){
+                    clientsFisico.map(function(value){
+                       value = value['nome'] + " - " + value['ide'] 
+                    });
                     self.validateCliente = true;
                     self.validateTerceiro = false;
                     self.validateVendedor = false;
