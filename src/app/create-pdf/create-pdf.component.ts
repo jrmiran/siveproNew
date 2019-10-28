@@ -405,7 +405,7 @@ export class CreatePdfComponent implements OnInit {
                                             c1: {cellWidth: 0.03, fontStyle: 'bold', fillColor: [0,0,0]},
                                             c4: {cellWidth: 0.03, fontStyle: 'bold', fillColor: [0,0,0]}
                                           },
-                              styles: {halign: "center"},                       
+                              styles: {halign: "left"},                       
                               margin:{left: self.defaultMarginLeft, right: self.defaultMarginRight},
                               startY: doc.previousAutoTable.finalY                   
                 });

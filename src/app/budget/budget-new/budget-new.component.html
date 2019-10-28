@@ -220,7 +220,7 @@
 
                                     <sivp-input-container [label]="'Descricao'" class="form-group col-sm-2 col-xs-12">
                                         <label> Medida 1 </label>
-                                        <input type="text" class="form-control" formControlName="medida1SubItem" currencyMask [(ngModel)]="value2" [options]="{ prefix: '', thousands: '.', decimal: ',' }">
+                                        <input type="text" class="form-control" formControlName="medida1SubItem" currencyMask [(ngModel)]="value2" [options]="{ prefix: '', thousands: '.', decimal: ',', precision: 3 }">
                                     </sivp-input-container>
 
                                     <!--<sivp-input-container [label]="'Descrição'" class="form-group col-sm-2 col-xs-12">
@@ -229,7 +229,7 @@
                                     </sivp-input-container>-->
                                     <sivp-input-container [label]="'Descricao'" class="form-group col-sm-2 col-xs-12">
                                         <label> Medida 2 </label>
-                                        <input type="text" class="form-control" formControlName="medida2SubItem" currencyMask [(ngModel)]="value3" [options]="{ prefix: '', thousands: '.', decimal: ',' }">
+                                        <input type="text" class="form-control" formControlName="medida2SubItem" currencyMask [(ngModel)]="value3" [options]="{ prefix: '', thousands: '.', decimal: ',', precision: 3 }">
                                     </sivp-input-container>
                                     
                                     <!--<sivp-input-container [label]="'Descrição'" class="form-group col-sm-2 col-xs-12">

@@ -580,7 +580,7 @@ export class BudgetNewComponent implements OnInit {
         this.bInsertion.caminho = "";
         this.bInsertion.data = this.formin.date;
         this.bInsertion.desconto = this.discount;
-        this.bInsertion.observacao = "";
+        this.bInsertion.observacao = this.orderForm.get('txtObservacao').value;
         this.bInsertion.retificado = 1;
         this.bInsertion.tipoCliente = this.formin.type; //MODIFICAR
         this.bInsertion.valorTotal = this.mainBudget.valorTotal;
@@ -640,7 +640,7 @@ export class BudgetNewComponent implements OnInit {
                 });
             self.fillStringToQuery(self.detalhes, self.detalhesString, self.insertedBudget)
                 .then(function(response){
-                        self.detalhesString = response.replace(/[\/]/g,'%2F');
+                        self.detalhesString = self.appService.replaceAll(response.replace(/[\/]/g,'%2F'), String.fromCharCode(10), "QUEBRADELINHA");
                 });
             self.fillStringToQuery(self.medidas, self.medidasString, self.insertedBudget)
                 .then(function(response){
@@ -694,7 +694,7 @@ export class BudgetNewComponent implements OnInit {
            caminho = this.bInsertion.caminho;
         }
         if(this.bInsertion.observacao != ""){
-           observacao = this.bInsertion.observacao;
+           observacao = "'" + this.appService.replaceAll(this.bInsertion.observacao, String.fromCharCode(10), "QUEBRADELINHA") + "'";
         }
         if(this.bInsertion.retificado != 1){
            retificado = this.bInsertion.retificado;
@@ -803,7 +803,9 @@ export class BudgetNewComponent implements OnInit {
             txtDetalhe: this.formBuilder.control(''),
             txtObservacao: this.formBuilder.control(''),
             txtDiscount: this.formBuilder.control(''),
-            checkBoxOption: this.buildComodos()
+            checkBoxOption: this.buildComodos(),
+            txtFrete: this.formBuilder.control(''),
+            txtFormaPagamento: this.formBuilder.control('')
       })
       
       this.modalForm = this.formBuilder.group({
@@ -814,6 +816,7 @@ export class BudgetNewComponent implements OnInit {
             descricaoSubItem: this.formBuilder.control('', [Validators.required])
       })
       
+      this.orderForm.get('txtObservacao').setValue("ORÇAMENTO SUJEITO A ALTERAÇÃO DE VALOR APÓS MEDIÇÃO E CONFERÊNCIA DO PROJETO EM LOCO" + String.fromCharCode(10) +"ORÇAMENTO VÁLIDO POR 10 DIAS"+ String.fromCharCode(10) +"CUBAS DE LOUÇA E INOX NÃO INCLUSAS NO ORÇAMENTO"+ String.fromCharCode(10) + "DESCONTO NÃO APLICÁVEL SOBRE O FRETE" + String.fromCharCode(10) + String.fromCharCode(10) +"FORMA DE PAGAMENTO: ");
       this.cbo = (this.orderForm.get('checkBoxOption') as FormArray);
       
       this.router.queryParams.subscribe(

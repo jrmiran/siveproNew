@@ -224,7 +224,6 @@
                 </div>
             </div>
 
-
             <!----------------------------------- MODAL --------------------------------------------------------------------->
             <div class="modal fade" id="modal-default" *ngIf="currentItem >=0">
                 <div class="modal-dialog">
@@ -236,7 +235,6 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-
                                 <form [formGroup]="modalForm" novalidate>
                                     <sivp-input-container [label]="'Qtd'" class="form-group col-sm-2 col-xs-12">
                                         <label> Quantidade </label>
@@ -251,7 +249,7 @@
 
                                     <sivp-input-container [label]="'Descricao'" class="form-group col-sm-2 col-xs-12">
                                         <label> Medida 1 </label>
-                                        <input type="text" class="form-control" formControlName="medida1SubItem" currencyMask [(ngModel)]="value2" [options]="{ prefix: '', thousands: '.', decimal: ',' }">
+                                        <input type="text" class="form-control" formControlName="medida1SubItem" currencyMask [(ngModel)]="value2" [options]="{ prefix: '', thousands: '.', decimal: ',', precision: 3 }">
                                     </sivp-input-container>
 
                                     <!--<sivp-input-container [label]="'Descrição'" class="form-group col-sm-2 col-xs-12">
@@ -260,7 +258,7 @@
                                     </sivp-input-container>-->
                                     <sivp-input-container [label]="'Descricao'" class="form-group col-sm-2 col-xs-12">
                                         <label> Medida 2 </label>
-                                        <input type="text" class="form-control" formControlName="medida2SubItem" currencyMask [(ngModel)]="value3" [options]="{ prefix: '', thousands: '.', decimal: ',' }">
+                                        <input type="text" class="form-control" formControlName="medida2SubItem" currencyMask [(ngModel)]="value3" [options]="{ prefix: '', thousands: '.', decimal: ',', precision: 3 }">
                                     </sivp-input-container>
                                     
                                     <!--<sivp-input-container [label]="'Descrição'" class="form-group col-sm-2 col-xs-12">
@@ -312,10 +310,10 @@
                             <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
                         </div>
                         <div class="modal-body">
-                            
+
                             <sivp-table [name]="''" [headers]="['Id', 'Item', 'Valor Unitario']" [datas]="items" [ids]="['id','descricao','valorUnitario']" [budgetEdit]="self" [check]="checks" [comodos]="comods" [enableButton]="enableButton" [runClickRow]="true" [changeItemTable]="true">
                             </sivp-table>
-                            
+
                         </div>
                         <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
                             <button type="button" (click)="changeItem2()" class="btn btn-primary" data-dismiss="modal">OK</button>

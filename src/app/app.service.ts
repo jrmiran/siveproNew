@@ -72,6 +72,10 @@ export class AppService{
         });
     }
     
+    replaceAll(s: string, oldString: string, newString: string): string{
+        return s.split(oldString).join(newString);
+    }
+    
     budgets(): Observable<Object[]>{
         return this.callQuery("query");
     }

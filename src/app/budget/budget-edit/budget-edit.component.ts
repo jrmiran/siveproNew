@@ -709,7 +709,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 });
             self.fillStringToQuery(self.detalhes, self.detalhesString, self.mainBudget.number)
                 .then(function(response){
-                        self.detalhesString = response.replace(/[\/]/g,'%2F');
+                        self.detalhesString = self.appService.replaceAll(response.replace(/[\/]/g,'%2F'), String.fromCharCode(10), "QUEBRADELINHA");
                 });
             self.fillStringToQuery(self.medidas, self.medidasString, self.mainBudget.number)
                 .then(function(response){
@@ -823,11 +823,12 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         this.convertBudgetToString().then(function(data){
             self.removeBarURL();
             console.log(self.itemsString);
-            var params = {budgetId: self.mainBudget.number, discount: self.mainBudget.discount, note: self.mainBudget.note.replace(/\n/g,","), rectified: self.mainBudget.rectified, amount: self.mainBudget.valorTotal, budgetCodes: self.codsString, budgetAmbients: self.comodosString.replace(/\n/g,","), budgetDetails: self.detalhesString.replace(/\n/g,","), budgetItems: self.itemsString.replace(/\n/g,","), budgetMeasures: self.medidasString.replace(/\n/g,","), budgetNeedings: self.necessariosString.replace(/\n/g,","), budgetNumbers: "(1,'0')", budgetQuantitys: self.qtdsString, budgetValues: self.valoresUnitariosString}  
+            var params = {budgetId: self.mainBudget.number, discount: self.mainBudget.discount, note: "'" + self.appService.replaceAll(self.orderForm.get('txtObservacao').value,String.fromCharCode(10),"QUEBRADELINHA") + "'", rectified: self.mainBudget.rectified, amount: self.mainBudget.valorTotal, budgetCodes: self.codsString, budgetAmbients: self.comodosString.replace(/\n/g,","), budgetDetails: self.detalhesString.replace(/\n/g,","), budgetItems: self.itemsString.replace(/\n/g,","), budgetMeasures: self.medidasString.replace(/\n/g,","), budgetNeedings: self.necessariosString.replace(/\n/g,","), budgetNumbers: "(1,'0')", budgetQuantitys: self.qtdsString, budgetValues: self.valoresUnitariosString}  
         console.log(params);
            //self.appService.budgetUpdate(self.mainBudget.number, self.mainBudget.discount, self.mainBudget.note, self.mainBudget.rectified, self.mainBudget.valorTotal, self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString).subscribe(function(value){
         self.appService.postBudgetUpdate(params).subscribe(function(value){
                self.joinBudget();
+                self.mainBudget.note = self.orderForm.get('txtObservacao').value
                self.createPdf.gerarPDF(self.budgetsAmbient, self.mainBudget);
                console.log(value);
                self.spinner.hide();
@@ -960,13 +961,15 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     testGenerate(){
         this.mainBudget.number = this.idInput;
         //this.joinBudget();
-        
+        this.mainBudget.note = this.appService.replaceAll(this.mainBudget.note, 'QUEBRADELINHA', String.fromCharCode(10));
         this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
     }
     
     test(){
         this.mainBudget.number = this.insertedBudget;
-        this.mainBudget.note = this.orderForm.get('txtObservacao').value;        
+        this.mainBudget.note = this.orderForm.get('txtObservacao').value;    
+        
+        this.mainBudget.note = this.appService.replaceAll(this.mainBudget.note, 'QUEBRADELINHA', String.fromCharCode(10));
         this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
     }
     
@@ -1215,7 +1218,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                     self.b.qtd = parseFloat(self.qtd[index].quantidades);
                     self.b.cod = self.cod[index].codigos;
                     self.b.item = self.ite[index].itens;
-                    self.b.detalhe = self.det[index].detalhes;
+                    self.b.detalhe = self.appService.replaceAll(self.det[index].detalhes, "QUEBRADELINHA", String.fromCharCode(10));
                     self.b.medida = self.med[index].medidas;
                     self.b.comodo = self.cmd[index].comodos;
                     self.b.necessario = self.nec[index].necessidades;
@@ -1310,8 +1313,12 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 if(self.orc[0].observacao){
                    self.mainBudget.note = self.orc[0].observacao + " ";
                 } else{
-                    self.mainBudget.note = "' '";
+                    self.mainBudget.note = "";
                 }
+                
+                self.orderForm.get('txtObservacao').setValue(self.appService.replaceAll(self.mainBudget.note, "QUEBRADELINHA", String.fromCharCode(10)));
+                
+                console.log({obs: self.mainBudget.note});
                 
                 console.log(self.mainBudget.valorTotal);
                 console.log(self.mainBudget.discount);
@@ -1337,7 +1344,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                         b.ambient = value['comodo'];
                         b.budget = self.idInput;
                         b.cod = value['codigo'];
-                        b.detail = value['detalhe'];
+                        b.detail = self.appService.replaceAll(value['detalhe'], "QUEBRADELINHA", String.fromCharCode(10));
                         b.discount = value['desconto'];
                         b.discountValue = value['valorComDesconto'];
                         b.item = value['item'];
