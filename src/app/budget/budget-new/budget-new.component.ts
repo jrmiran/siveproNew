@@ -249,7 +249,8 @@ export class BudgetNewComponent implements OnInit {
                             valorTotal: 0,
                             discount: 0,
                             valorComDesconto: 0,
-                            note: ""
+                            note: "",
+                           freight: 0
                            };
     }
     
@@ -488,7 +489,6 @@ export class BudgetNewComponent implements OnInit {
             flag = false;
             keepGoing = true;
         });
-        
         
         self.budgetsAmbient.forEach(function(data, index){
            if(data.qtd.length  == 1){
@@ -785,7 +785,11 @@ export class BudgetNewComponent implements OnInit {
         });
     }
     
-    
+    applyFreight(){
+        this.mainBudget.freight = parseFloat(this.orderForm.get('txtFreight').value);
+        
+        console.log(this.mainBudget.freight);
+    }
     
   ngOnInit() {
       var self = this;
@@ -805,7 +809,8 @@ export class BudgetNewComponent implements OnInit {
             txtDiscount: this.formBuilder.control(''),
             checkBoxOption: this.buildComodos(),
             txtFrete: this.formBuilder.control(''),
-            txtFormaPagamento: this.formBuilder.control('')
+            txtFormaPagamento: this.formBuilder.control(''),
+            txtFreight: this.formBuilder.control('')
       })
       
       this.modalForm = this.formBuilder.group({
@@ -831,21 +836,19 @@ export class BudgetNewComponent implements OnInit {
           
       });
       
-      
       /*this.appService.thirdyBudget("'" + this.formin.client + "'", "'" + this.formin.thirdy + "'").subscribe(function(thirdyBudget){
           self.thirdyDataObj = thirdyBudget;
           console.log(self.thirdyDataObj[0]);
-      
       });*/
-
+      
       this.appService.clientBudget("'" + this.formin.client + "'", "'" + this.formin.vendor + "'").subscribe(function(clientBudget){
         self.appService.thirdyBudget("'" + self.formin.client + "'", "'" + self.formin.thirdy + "'").subscribe(function(thirdyBudget){
               self.thirdyDataObj = thirdyBudget;
               console.log(self.thirdyDataObj[0]);
               self.clientDataObj = clientBudget;
-              console.log(self.clientDataObj); 
+              console.log(self.clientDataObj);
               console.log(self.thirdyDataObj);
-              console.log(self.clientDataObj[0]); 
+              console.log(self.clientDataObj[0]);
               self.setData();
               self.setClient();
               self.setThirdy();

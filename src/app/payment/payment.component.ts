@@ -18,6 +18,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     payments: Object[] = [];
     self: any = this;
     paymentForm: FormGroup;
+    paymentFormEdit: FormGroup;
     status: string[] = ['', 'Pago', 'Não Pago', 'Cheque a Compensar'];
     paymentWay: string[] = ['', 'Cartão Crédito', 'Cartão Débito', 'Cheque', 'Dinheiro'];
     paymentType: string[] = ['', 'Salario', 'Investimento', 'Maquinario', 'Insumos'];
@@ -26,6 +27,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     paymentsParts: Payment[] = [];
     enableOk: boolean = false;
     @ViewChild('dPicker') dPicker: DatePickerComponent;
+    @ViewChild('dPickerEdit') dPickerEdit: DatePickerComponent;
     inOut: RadioOption[] = [
         {label: 'Entrada', value: 'IN'},
         {label: 'Saída', value: 'OUT'}
@@ -152,6 +154,17 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             self.spinner.hide();
         })   
     }
+    
+    submitEditPayment(){
+        var self = this;
+        this.spinner.show();
+        var params = {bill: this.paymentFormEdit.get('txtBillEdit').value, date: this.paymentFormEdit.get('txtDateEdit').value, check: this.paymentFormEdit.get('txtCheckNumberEdit').value, status: this.paymentFormEdit.get('cmbStatusEdit').value, value: this.paymentFormEdit.get('txtValueEdit').value, paymentForm: this.paymentFormEdit.get('cmbPaymentFormEdit').value, note: this.paymentFormEdit.get('txtNoteEdit').value, paymentType: this.paymentFormEdit.get('cmbTypePaymentEdit').value};
+        this.appService.postEditPayment(params).subscribe(function(data){
+           alert("Pagamento Editado!");
+            self.spinner.hide();
+        });
+    }
+    
     stringQuery(): string{
         var self = this;
         var query: string = "";
@@ -163,6 +176,25 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             }
         });
         return query;
+    }
+    
+    editPayment(id: any){
+        var paymentEdit = this.payments.find(function(data){return data['id'] == id});
+        console.log(paymentEdit);
+        
+        this.paymentFormEdit.get('txtDateEdit').setValue(paymentEdit['data']);
+        this.paymentFormEdit.get('txtBillEdit').setValue(paymentEdit['conta']);
+        this.paymentFormEdit.get('txtValueEdit').setValue(this.appService.converteMoedaFloat(paymentEdit['valor']));
+        this.paymentFormEdit.get('cmbStatusEdit').setValue(paymentEdit['status']);
+        this.paymentFormEdit.get('cmbPaymentFormEdit').setValue(paymentEdit['formaPagamento_formaPagamento']);
+        this.paymentFormEdit.get('txtCheckNumberEdit').setValue(paymentEdit['numeroCheque']);
+        this.paymentFormEdit.get('cmbTypePaymentEdit').setValue(paymentEdit['tipoPagamento_tipoPagamento']);
+        this.paymentFormEdit.get('txtNoteEdit').setValue(paymentEdit['observacao']);
+        
+        let date: string[] = paymentEdit['data'].split('/');
+        this.dPickerEdit.setDate(new Date(parseFloat(date[2]), parseFloat(date[1])-1, parseFloat(date[0])));
+        
+        document.getElementById("editPayment").click();
     }
     
   ngOnInit() {
@@ -182,6 +214,17 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         txtCheckNumber: this.formBuilder.control('', []),
         cmbTypePayment: this.formBuilder.control('', [Validators.required]),
         txtNote: this.formBuilder.control('', []),
+    })
+      
+      this.paymentFormEdit = this.formBuilder.group({
+        txtDateEdit: this.formBuilder.control('', [Validators.required]),
+        txtBillEdit: this.formBuilder.control('', [Validators.required]),
+        txtValueEdit: this.formBuilder.control('0', [Validators.required]),
+        cmbStatusEdit: this.formBuilder.control('', [Validators.required]),
+        cmbPaymentFormEdit: this.formBuilder.control('', [Validators.required]),
+        txtCheckNumberEdit: this.formBuilder.control('', []),
+        cmbTypePaymentEdit: this.formBuilder.control('', [Validators.required]),
+        txtNoteEdit: this.formBuilder.control('', []),
     })
       
       //setTimeout(() => {this.dPicker.setDate(new Date(2019,1,30))}, 100);
@@ -225,6 +268,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
               }else{
                   value['entrada'] = false;
               }
+              value['valor'] = self.appService.converteFloatMoeda(value['valor'].replace(',','.'));
           })
           console.log(self.payments);
           self.spinner.hide();

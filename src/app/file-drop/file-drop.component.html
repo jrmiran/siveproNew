@@ -16,7 +16,7 @@
                 <div class="center">
                     <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
                         <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-                            Arraste a imagem que deseja apresentar no projeto
+                            Arraste a imagem que deseja apresentar no projeto  
                             <button type="button" (click)="openFileSelector()">Ou clique aqui</button>
                         </ng-template>
                     </ngx-file-drop>
@@ -88,12 +88,12 @@
                         </sivp-table>
                     </div>
                     <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="exportPdf()" [class.disabled]="!currentItem">Gerar Desenho</button>
-                    </div>
-                </div>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="exportPdf()" [class.disabled]="currentItem < 0">Gerar Desenho</button>
+                    </div>                                
+                </div>                                                                                              
                 <!-- /.modal-content -->
             </div>
-            <!-- /.modal-dialog -->
+            <!-- /.modal-dialog -->                                                                                                                                                                                                                                                                                                                                                                                             
         </div>
         <!------------------------------------------ END MODAL ORC ----------------------------------------------------------->
 
@@ -107,7 +107,7 @@
                         <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
                     </div>
                     <div class="modal-body">
-                        <sivp-table [headers]="['Id', 'Nome', 'Tamanho Comercial', 'Tamanho Real']" [datas]="materials" [ids]="['id','nome','tamanhoComercial','tamanhoReal']" [fdc]="self" [fdcMaterial]="true" [runClickRow]="true">
+                        <sivp-table [headers]="['Id', 'Nome', 'Tamanho Comercial', 'Tamanho Real']" [datas]="materials" [ids]="['id','nome','tamanhoComercial','tamanhoReal']" [fdc]="self" [fdcMaterial]="true" [runClickRow]="true">                                                                                            
                         </sivp-table>
                     </div>
                     <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">

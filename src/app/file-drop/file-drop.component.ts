@@ -27,7 +27,7 @@ export class FileDropComponent implements OnInit{
     self: any;
     public files: NgxFileDropEntry[] = [];
     imageSrc: string = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAICAIAAABChommAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAARSURBVChTY/hPBBjxiv7/BwDkUx7w62JyhgAAAABJRU5ErkJggg==";
-    currentItem: number;
+    currentItem: number = -1;
     drawId: number;
     materials: Object[];
     currentMaterial: number = 1;

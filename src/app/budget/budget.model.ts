@@ -12,4 +12,5 @@ export interface BudgetModel{
     discount: number;
     valorComDesconto: number;
     note: string;
+    freight: number;
 }

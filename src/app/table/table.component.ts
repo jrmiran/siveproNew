@@ -90,6 +90,10 @@ export class TableComponent implements OnInit {
         }
     }
     
+    openModalPayment(id: any){
+        this.pc.editPayment(id);
+    }
+    
     exportPdfSo(id: number){
         this.sotc.exportPdf(id);    
     }

@@ -277,6 +277,10 @@ export class AppService{
         return this.callPost(`postTest`, obj);
     }
     
+    postEditPayment(obj: any): Observable<Object[]>{
+        return this.callPost(`postEditPayment`, obj);
+    }
+    
     postSearchClients(): Observable<Object[]>{
         return this.callPost(`postSearchClients`, {});
     }
