@@ -26,6 +26,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     currentPart: number = 1;
     paymentsParts: Payment[] = [];
     enableOk: boolean = false;
+    paymentId: any;
     @ViewChild('dPicker') dPicker: DatePickerComponent;
     @ViewChild('dPickerEdit') dPickerEdit: DatePickerComponent;
     inOut: RadioOption[] = [
@@ -158,7 +159,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     submitEditPayment(){
         var self = this;
         this.spinner.show();
-        var params = {bill: this.paymentFormEdit.get('txtBillEdit').value, date: this.paymentFormEdit.get('txtDateEdit').value, check: this.paymentFormEdit.get('txtCheckNumberEdit').value, status: this.paymentFormEdit.get('cmbStatusEdit').value, value: this.paymentFormEdit.get('txtValueEdit').value, paymentForm: this.paymentFormEdit.get('cmbPaymentFormEdit').value, note: this.paymentFormEdit.get('txtNoteEdit').value, paymentType: this.paymentFormEdit.get('cmbTypePaymentEdit').value};
+        var params = {bill: this.paymentFormEdit.get('txtBillEdit').value, date: this.paymentFormEdit.get('txtDateEdit').value, check: this.paymentFormEdit.get('txtCheckNumberEdit').value, status: this.paymentFormEdit.get('cmbStatusEdit').value, value: this.paymentFormEdit.get('txtValueEdit').value, paymentForm: this.paymentFormEdit.get('cmbPaymentFormEdit').value, note: this.paymentFormEdit.get('txtNoteEdit').value, paymentType: this.paymentFormEdit.get('cmbTypePaymentEdit').value, id: this.paymentId};
         this.appService.postEditPayment(params).subscribe(function(data){
            alert("Pagamento Editado!");
             self.spinner.hide();
@@ -180,6 +181,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     
     editPayment(id: any){
         var paymentEdit = this.payments.find(function(data){return data['id'] == id});
+        this.paymentId = id;
         console.log(paymentEdit);
         
         this.paymentFormEdit.get('txtDateEdit').setValue(paymentEdit['data']);
