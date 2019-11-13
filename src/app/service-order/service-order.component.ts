@@ -32,11 +32,13 @@ export class ServiceOrderComponent implements OnInit {
     currentItems: number[] = [];
     self: any;
     empty: boolean = false;
+    formArray: FormArray = new FormArray([]);
     
     clickRow(ids: number[]){
         this.currentItems = ids;
         console.log(this.currentItems);
     }
+    
     
     generateServiceOrder(){
         
@@ -74,11 +76,42 @@ export class ServiceOrderComponent implements OnInit {
         });
     }
     
+    buildFormArray(){
+        var self = this;
+        var count = 0;
+        var obj = {composition: {} as any, share: {} as any};
+        var fg: FormGroup;
+        
+        
+        self.budgets.forEach(function(data, index){
+            count = count + 1;
+            fg = new FormGroup({
+               soComposition: new FormControl(count + "",[]),
+               soShare: new FormControl("1",[])
+           });
+            self.formArray.push(fg);
+            console.log(fg)
+            
+            obj={composition: fg.controls['soComposition'], share: fg.controls['soShare']}
+            data = Object.assign(data, obj);
+            console.log(Object.assign(data, obj));
+        });
+    }
+    
     ngOnInit() {
         this.self = this;
         var self = this;
+        this.soForm = this.formBuilder.group({
+            soComposition: this.formArray
+      });
         this.budgets = this.parameterService.getBudgets();
         console.log(this.budgets);
+        
+        var obj = {param1: "1", param2:"2"};
+        var obj2 = {param3:"3", param4:"4"};
+        
+        console.log(Object.assign(obj, obj2));
+        
         this.router.queryParams.subscribe(
             (queryParams: any) =>{
                 self.formin = queryParams;
@@ -91,8 +124,7 @@ export class ServiceOrderComponent implements OnInit {
             }
         );
         
-        this.soForm = this.formBuilder.group({
-      });
         
+        this.buildFormArray();
     }
 }

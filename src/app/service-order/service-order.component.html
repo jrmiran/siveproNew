@@ -16,8 +16,6 @@
                         <a class="btn pull-right" data-toggle="modal" data-target="#modal-default"><i class="fa fa-plus"></i> Adicionar OS</a>
                     </h2>
 
-
-
                     <div class="row">
                         <label class="col-sm-2"> Orçamento: </label>
                         <p class="col-sm-10"> {{formin.budgetId}} </p>
@@ -49,15 +47,13 @@
                             <h3 class="box-title"> Ordens de Serviço:</h3>
                             <a class="btn pull-right"><i class="fa fa-print"></i> Imprimir </a>
                         </div>
-                        <sivp-table *ngIf="!empty" [name]="''" [headers]="['ID', 'Loja', 'Cliente', 'Item', 'Medida', 'Ambiente', 'Previsão Entrega', 'Data Término', 'Empreita', 'Mármore/Granito']" [searchBar]="false" [datas]="serviceOrders" [ids]="['id','loja', 'cliente', 'item', 'medida', 'comodo', 'dataPrevisaoTermino', 'dataTermino', 'empreita', 'pedra']" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection] = "true">
+                        <sivp-table *ngIf="!empty" [name]="''" [headers]="['ID', 'Loja', 'Cliente', 'Item', 'Medida', 'Ambiente', 'Previsão Entrega', 'Data Término', 'Empreita', 'Mármore/Granito', 'Comb.', 'Qtd']" [searchBar]="false" [datas]="serviceOrders" [ids]="['id','loja', 'cliente', 'item', 'medida', 'comodo', 'dataPrevisaoTermino', 'dataTermino', 'empreita', 'pedra', '', '']" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection] = "false" [runClickRow]="false">
                         </sivp-table>
                         
                         <label *ngIf="empty"> Não há ordens de serviço geradas para este orçamento </label>
                     </div>
                 </div>
             </div>
-
-
 
             <!----------------------------------- MODAL --------------------------------------------------------------------->
             <div class="modal fade" id="modal-default">
@@ -69,7 +65,7 @@
                             <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
                         </div>
                         <div class="modal-body">
-                            <sivp-table [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Ambiente']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection] = "true" [selectionButton]="true">
+                            <sivp-table [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Ambiente']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection] = "false" [selectionButton]="false" [formGroupSO] = "soForm" [formArraySO] = "formArray" [runClickRow]="false">
                             </sivp-table>
                         </div>
                         <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">

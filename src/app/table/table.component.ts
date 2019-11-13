@@ -8,7 +8,6 @@ import {StartService} from '../start.service';
 import {AppService} from '../app.service';
 import {BudgetItemsComponent} from '../budget/budget-items/budget-items.component';
 import {BudgetEditComponent} from '../budget/budget-edit/budget-edit.component';
-import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
 import {ServiceOrderComponent} from '../service-order/service-order.component';
 import {ServiceOrderTableComponent} from '../service-order/service-order-table/service-order-table.component';
 import {UploadComponent} from '../upload/upload.component';
@@ -18,6 +17,8 @@ import {FileDropComponent} from '../file-drop/file-drop.component';
 import {MaterialComponent} from '../material/material.component';
 import {PaymentComponent} from '../payment/payment.component';
 import {ClientSearchComponent} from '../clients/client-search/client-search.component';
+import {OrderServiceTestComponent} from '../order-service-test/order-service-test.component';
+import {FormGroup, FormBuilder, Validators, FormControl, FormArray} from '@angular/forms';
 
 @Component({
   selector: 'sivp-table',
@@ -59,6 +60,12 @@ export class TableComponent implements OnInit {
     @Input() pc: PaymentComponent;
     @Input() changeItemTable: boolean = false;
     @Input() csc: ClientSearchComponent;
+    @Input() ostc: OrderServiceTestComponent;
+    @Input() formArraySO: FormArray;
+    @Input() formGroupSO: FormGroup;
+    @Input() drawTable: boolean = false;
+    
+    releseSoc: boolean = false;
     
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
     @ViewChild(TemplateRef) template: TemplateRef<any>;
@@ -159,7 +166,12 @@ export class TableComponent implements OnInit {
     }
     
     openModalServiceOrder(id: number, value: string){
-        this.sotc.openModalFunction(true, id, value);
+        if(this.sotc){
+            this.sotc.openModalFunction(true, id, value);
+        } else{
+            this.ostc.openModalFunction(true, id, value);
+        }
+        
     }
     
     selectRow(i: number): Boolean{
@@ -232,11 +244,15 @@ export class TableComponent implements OnInit {
                 }else if(this.soc){
                     this.soc.clickRow(this.selectedRows);
                 }else if(this.fdc){
-                    console.log("FDC");
-                    if(!this.fdcMaterial){
-                        this.fdc.clickRow(i);
+                    if(!this.drawTable){
+                        console.log("FDC");
+                        if(!this.fdcMaterial){
+                            this.fdc.clickRow(i);
+                        } else{
+                            this.fdc.clickRowMaterial(i);
+                        }
                     } else{
-                        this.fdc.clickRowMaterial(i);
+                        this.fdc.clickRowDraw(i);
                     }
                 }else if(this.mc){
                     console.log("MC");
@@ -245,9 +261,6 @@ export class TableComponent implements OnInit {
             }
             this.currentLine = i;
         }
-        
-
-                
     }
     
     setUploadId(id: number){
@@ -264,11 +277,17 @@ export class TableComponent implements OnInit {
         return this.formBuilder.array(values); 
     }
     
-    
     ngOnInit() {
         this.start.start();
         this.orderForm = this.formBuilder.group({
             checkBoxOption: this.buildComodos()
         })
+        if(this.soc){
+            if(this.formGroupSO){
+                this.releseSoc = true;
+                console.log(this.formGroupSO);
+            }
+            
+        }
     }
 }

@@ -200,6 +200,11 @@ export class AppService{
         return this.callQuery(`budgetInsertion/${codes}/${ambients}/${details}/${items}/${measures}/${needings}/${numbers}/${quantitys}/${values}/${insertion}`);
     }
     
+    postBudgetInsertion(obj: any){
+        return this.callPost(`postBudgetInsertion/`, obj);
+    }
+    
+    
     budgetUpdate(   id: number,
                     discount: number,
                     note: string,
@@ -307,6 +312,10 @@ export class AppService{
     
     postBudgetsClient(obj: any): Observable<Object[]>{
         return this.callPost(`postBudgetsClient`, obj);
+    }
+    
+    postBudgetClientStore(obj: any): Observable<Object[]>{
+        return this.callPost(`postBudgetClientStore`, obj);
     }
     
     insertMaterial(obj: any): Observable<Object[]>{

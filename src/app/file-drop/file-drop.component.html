@@ -10,18 +10,43 @@
 
         <form [formGroup]="projectForm">
 
-
-            <!-- DRAG AND DROP CONTAINER-->
             <div class="row">
-                <div class="center">
-                    <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
-                        <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-                            Arraste a imagem que deseja apresentar no projeto  
-                            <button type="button" (click)="openFileSelector()">Ou clique aqui</button>
-                        </ng-template>
-                    </ngx-file-drop>
-                    <div class="upload-table">
-                        <table class="table">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-file"></i> Orçamento </h3>
+                        </div>
+                        <span class="col-sm-6 col-xs-12">
+                            <sivp-input-container>
+                                <label> Orçamento</label>
+                                <input type="text" class="form-control" formControlName="txtBudget" placeholder="Orçamento Nº">
+                            </sivp-input-container>
+                            <a class="btn btn-primary pull-left" (click)="submitBudget()"> OK </a>
+                        </span>
+
+                        <span class="col-sm-6 col-xs-12" *ngIf="storeName != '' && clientName != ''">
+                            <label> Loja: </label>
+                            <p> {{storeName}}</p>
+                            <label> Cliente: </label>
+                            <p> {{clientName}}</p>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <span *ngIf="isBudget">
+                <!-- DRAG AND DROP CONTAINER-->
+                <br />
+                <br />
+                <div class="row">
+                    <div class="center">
+                        <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+                            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                                Arraste a imagem que deseja apresentar no projeto
+                                <button type="button" (click)="openFileSelector()">Ou clique aqui</button>
+                            </ng-template>
+                        </ngx-file-drop>
+                        <div class="upload-table">
+                            <!--<table class="table">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -32,45 +57,50 @@
                                     <td><strong>{{ item.relativePath }}</strong></td>
                                 </tr>
                             </tbody>
-                        </table>
-                    </div>
-                    <div class="col-sm-12 col-xs-12">
-                        <img *ngIf="imageSrc" src={{imageSrc}}>
-                    </div>
-                </div>
-                <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modal-default">Open Modal</button>
-                <button id="openModalMaterial" [hidden]="true" data-toggle="modal" data-target="#modal-default-material">Open Modal</button>
-            </div>
-
-            <!-- END OF DRAG AND DROP CONTAINER-->
-
-            <!--FORM DATA INSERTION-->
-            <div class="row">
-                <div class="col-sm-12 col-xs-12">
-                    <div class="box box-primary">
-                        <div class="box-header">
-                            <h3 class="box-title"><i class="fa fa-pencil"></i> Dados </h3>
+                        </table>-->
+                            <sivp-table [name]="''" [headers]="['Desenho']" [searchBar]="false" [datas]="files" [ids]="['relativePath']" [ipp]="1000" [showPagination]="false" [runClickRow]="true" [drawTable]="true" [fdc]="self">
+                            </sivp-table>
                         </div>
-
-                        <sivp-input-container class="col-sm-4 col-xs-12">
-                            <label> Orçamento</label>
-                            <input type="text" class="form-control" formControlName="txtBudget" placeholder="Orçamento Nº">
-                        </sivp-input-container>
-
-                        <sivp-input-container class="col-sm-6 col-xs-12">
-                            <label> Material</label>
-                            <input type="text" class="form-control" formControlName="txtMaterial" placeholder="Material">
-                        </sivp-input-container>
-
-                        <div class="col-sm-2 col-xs-12">
-                            <a class="btn" (click)="openModalMaterial()"><i class="fa fa-plus"></i> Material</a>
+                        <div class="col-sm-12 col-xs-12">
+                            <!--<img *ngIf="imageSrc" src={{imageSrc}}>-->
+                            <img *ngIf="currentItemDraw > -1" src="{{images[currentItemDraw].img}}">
                         </div>
-
-
-                        <a class="btn btn-success pull-right" [class.disabled]="!projectForm.valid" (click)="runDraw()"> <i class="fa fa-check"></i>Gerar Desenho </a>
                     </div>
+                    <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modal-default">Open Modal</button>
+                    <button id="openModalMaterial" [hidden]="true" data-toggle="modal" data-target="#modal-default-material">Open Modal</button>
                 </div>
-            </div>
+
+                <!-- END OF DRAG AND DROP CONTAINER-->
+
+                <!--FORM DATA INSERTION-->
+                <span *ngIf="currentItemDraw > -1">
+                    <div class="row">
+                        <div class="col-sm-12 col-xs-12">
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <h3 class="box-title"><i class="fa fa-pencil"></i> Dados </h3>
+                                </div>
+
+                                <sivp-input-container class="col-sm-6 col-xs-12">
+                                    <label class="btn"> Ambiente</label>
+                                    <input type="text" class="form-control" formControlName="txtAmbient" placeholder="Ambiente">
+                                </sivp-input-container>
+
+                                <sivp-input-container class="col-sm-6 col-xs-12">
+                                    <label class="btn" (click)="openModalMaterial()"> Material</label>
+                                    <input type="text" class="form-control" formControlName="txtMaterial" placeholder="Material">
+                                </sivp-input-container>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <a class="btn btn-success pull-right" [class.disabled]="!projectForm.valid" (click)="submitDraw()"> <i class="fa fa-check"></i>Gerar Desenho </a>
+                    </div>
+                </span>
+            </span>
         </form>
         <!--END OF FORM DATA INSERTION-->
 
@@ -89,11 +119,11 @@
                     </div>
                     <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
                         <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="exportPdf()" [class.disabled]="currentItem < 0">Gerar Desenho</button>
-                    </div>                                
-                </div>                                                                                              
+                    </div>
+                </div>
                 <!-- /.modal-content -->
             </div>
-            <!-- /.modal-dialog -->                                                                                                                                                                                                                                                                                                                                                                                             
+            <!-- /.modal-dialog -->
         </div>
         <!------------------------------------------ END MODAL ORC ----------------------------------------------------------->
 
@@ -107,7 +137,7 @@
                         <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
                     </div>
                     <div class="modal-body">
-                        <sivp-table [headers]="['Id', 'Nome', 'Tamanho Comercial', 'Tamanho Real']" [datas]="materials" [ids]="['id','nome','tamanhoComercial','tamanhoReal']" [fdc]="self" [fdcMaterial]="true" [runClickRow]="true">                                                                                            
+                        <sivp-table [headers]="['Id', 'Nome', 'Tamanho Comercial', 'Tamanho Real']" [datas]="materials" [ids]="['id','nome','tamanhoComercial','tamanhoReal']" [fdc]="self" [fdcMaterial]="true" [runClickRow]="true">
                         </sivp-table>
                     </div>
                     <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">

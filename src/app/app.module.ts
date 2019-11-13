@@ -75,6 +75,7 @@ import { NgxFileDropModule } from 'ngx-file-drop';
 import { CreatePdfProjectComponent } from './create-pdf-project/create-pdf-project.component';
 import { MaterialComponent } from './material/material.component';
 import { PaymentComponent } from './payment/payment.component';
+import { OrderServiceTestComponent } from './order-service-test/order-service-test.component';
 
 @NgModule({
   declarations: [
@@ -122,6 +123,7 @@ import { PaymentComponent } from './payment/payment.component';
     CreatePdfProjectComponent,
     MaterialComponent,
     PaymentComponent,
+    OrderServiceTestComponent,
   ],
   imports: [
     BrowserModule,

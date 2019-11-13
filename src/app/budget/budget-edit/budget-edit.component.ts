@@ -609,9 +609,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         
         return new Promise(function(resolve, reject){
             self.appService.budgetInsertionTest(self.convertBInsertionToString()).subscribe(function(data){
+            console.log(data);    
             self.insertedBudget = data['insertId'];
         
             self.budgets.forEach(function(data){
+                console.log(data);
                 console.log(data.qtd);
                 self.qtds.push(data.qtd);
                 self.cods.push(data.cod);
@@ -941,26 +943,45 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         self.joinBudget();
         self.setBudgetInsertion();
         console.log(self.bInsertion);
+        this.removeSeparationRows();
         
         this.convertDuplicateBudgetToString().then(function(data){
 
             
 
             console.log(self.convertBInsertionToString());
-            self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
+            /*self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
                 console.log(response);
+                self.test();
+                console.log(data);
+                self.spinner.hide();
+                self.router.navigate(['budget']);
+                alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
+            });*/
+            
+            var params = {budgetCodes: self.codsString, budgetAmbients: self.comodosString, budgetDetails: self.detalhesString, budgetItems: self.itemsString, budgetMeasures: self.medidasString, budgetNeedings: self.necessariosString, budgetNumbers: "(1,'0')", budgetQuantitys: self.qtdsString, budgetValues: self.valoresUnitariosString, budgetInsertion: self.convertBInsertionToString()};
+            self.appService.postBudgetInsertion(params).subscribe(function(response){
+                console.log(response);
+                self.test();
+                console.log(data);
+                self.spinner.hide();
+                self.router.navigate(['budget']);
+                alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
             });
-            self.test();
+            
+            /*self.test();
             console.log(data);
             self.spinner.hide();
             self.router.navigate(['budget']);
-            alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
+            alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");*/
         });
     }
     
+    
+    
     testGenerate(){
         this.mainBudget.number = this.idInput;
-        //this.joinBudget();
+        //this.joinBudget(); 
         this.mainBudget.note = this.appService.replaceAll(this.mainBudget.note, 'QUEBRADELINHA', String.fromCharCode(10));
         this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
     }

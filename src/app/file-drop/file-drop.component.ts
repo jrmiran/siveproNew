@@ -8,6 +8,7 @@ import { BudgetNew } from '../budget/budget-new/budget-new.model';
 import {BudgetItem} from '../budget/budget-item.model';
 import {ProjectDraw} from './project.model';
 import {NgxSpinnerService} from 'ngx-spinner';
+import {ImgSrc} from './img-src';
 
 @Component({
   selector: 'sivp-file-drop',
@@ -32,6 +33,15 @@ export class FileDropComponent implements OnInit{
     materials: Object[];
     currentMaterial: number = 1;
     currentItemMaterial: number = -1;
+    currentItemDraw: number = -1;
+    images: ImgSrc[] = [];
+    storeName: string = "";
+    clientName: string = "";
+    isBudget: boolean = false;
+    materiais: string[] = [];
+    ambients: string[] = [];
+    budgetId: string;
+    imagesSrc: string[] = [];
     
   public dropped(files: NgxFileDropEntry[]) {
     this.files = files;
@@ -110,6 +120,11 @@ export class FileDropComponent implements OnInit{
     _handleReaderLoaded(e) {
         let reader = e.target;
         this.imageSrc = reader.result;
+        this.imagesSrc.push(this.imageSrc);
+        this.images.push({img: this.imageSrc});
+        this.ambients.push('');
+        this.materiais.push('');
+        console.log(this.imagesSrc);
         console.log(this.imageSrc);
         this.projectForm.get('txtImage').setValue(this.imageSrc);
         //var param = {idOs: this.parameterService.getIdOs(), image: this.imageSrc};
@@ -127,10 +142,28 @@ export class FileDropComponent implements OnInit{
         return pModel;
     }
     
+    submitBudget(){
+        var self = this;
+        var params = {budgetId: this.projectForm.get('txtBudget').value};
+        self.spinner.show();
+        this.appService.postBudgetClientStore(params).subscribe(function(data){
+            console.log(data);
+            if(data.length > 0){
+                self.storeName = data[0]['nameStore'];
+                self.clientName = data[0]['nameClient'];
+                self.budgetId = data[0]['id'];
+                self.isBudget = true;
+            }else{
+                alert("Orçamento não encontrado");
+            }
+           self.spinner.hide(); 
+        });    
+    }
+    
     exportPdf(){
         this.spinner.show();
         var self = this;
-        var params = {approved: 0, image: self.imageSrc, budgetItem: self.projectDraw.budgetItem, material: this.currentMaterial};
+        var params = {approved: 0, image: self.imageSrc, budget: self.projectDraw.budgetItem, material: this.currentMaterial};
         console.log(params);
         self.appService.insertDraw(params).subscribe(function(data){
             console.log(data);
@@ -150,10 +183,27 @@ export class FileDropComponent implements OnInit{
                 self.spinner.hide();
             });
         });
-        
-        
-        
     }
+    
+    submitDraw(){
+        this.spinner.show();
+        var self = this;
+        
+        var query = "";
+        self.images.forEach(function(data, index){
+            query = query + "(0,'" + self.images[index].img + "'," + self.budgetId + "," + "1" + ",'" + self.ambients[index] + "')";
+            if(index != self.images.length-1){
+                query = query + ",";
+            }
+        })
+        var params = {query: query};
+        this.appService.insertDraw(params).subscribe(function(data){
+            console.log(data);
+            self.spinner.hide();
+        })
+    }
+    
+    
     
     runDraw(){
         var self = this;
@@ -189,6 +239,12 @@ export class FileDropComponent implements OnInit{
         console.log(this.currentItemMaterial);
     }
     
+    clickRowDraw(i: number){
+        this.currentItemDraw = i;
+        this.projectForm.get('txtAmbient').setValue(this.ambients[this.currentItemDraw]);
+        this.projectForm.get('txtMaterial').setValue(this.materiais[this.currentItemDraw]);
+    }
+    
     openModalMaterial(){
         var self = this;
         this.appService.materials().subscribe(function(data){
@@ -205,6 +261,7 @@ export class FileDropComponent implements OnInit{
     
     ngOnInit(){
         this.self = this;
+        var self = this;
         this.projectForm = this.formBuilder.group({
             txtAmbient: this.formBuilder.control(''),
             txtClient: this.formBuilder.control(''),
@@ -214,6 +271,20 @@ export class FileDropComponent implements OnInit{
             txtStore: this.formBuilder.control(''),
             txtBudget: this.formBuilder.control('', [Validators.required])
         });
+        
+        this.projectForm.get('txtMaterial').valueChanges.subscribe(function(data){
+            setTimeout(()=>{
+                self.materiais[self.currentItemDraw] = data;
+                console.log(self.materiais);
+            }, 10);
+        });
+        this.projectForm.get('txtAmbient').valueChanges.subscribe(function(data){
+            setTimeout(()=>{
+                self.ambients[self.currentItemDraw] = data;
+                console.log(self.ambients);
+            }, 10);
+        });
+        
         this.pModel = this.initializeProjectModel();
     }
     

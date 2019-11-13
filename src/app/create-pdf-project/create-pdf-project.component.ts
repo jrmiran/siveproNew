@@ -89,24 +89,24 @@ export class CreatePdfProjectComponent implements OnInit {
         
         //********************************************************** SO DATA *******************************************************
         lineTop();
-        doc.autoTable(columnsInfo1, [{c2: "Loja: " + project.store, c3: "Cliente: " + project.client, c1:"", c4:"", c5:"", c6:""}, {c2: "Material: " + project.material, c3: "", c1:"", c4:"", c5:"", c6:""}], {theme: 'plain', 
-        didDrawCell: data => {
+        doc.autoTable(columnsInfo1, [{c2: "Loja: " + project.store, c3: "Cliente: " + project.client, c1:"", c4:"", c5:"Des.: 2457   Orc.: 2326", c6:""}, {c2: "Material: " + project.material, c3: "Corredor: ", c1:"", c4:"", c5:"OS: ________________", c6:""}, {c2: "Ambiente: " + project.material, c3: "Acabamento: _________________   ____/____/____ ", c1:"", c4:"", c5:"Ass.: _______________", c6:""}], {theme: 'plain', 
+        /*didDrawCell: data => {
                 if (data.section === 'body' && data.column.index === 4 && data.row.index === 0) {
                     var base64Img = this.projectDraw;
         
                     doc.addImage(this.belartteLogo, 'PNG', data.cell.x + 6, data.cell.y + 5);
                 }
-            },
+            },*/
             columnStyles: {
-                            c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
-                            c2: {cellWidth: 200, fontStyle: 'bold', halign: "left"},
-                            c3: {cellWidth: 200, fontStyle: 'bold', halign: "left"},
+                            c1: {cellWidth: 1, fillColor: [0,0,0]},
+                            c2: {cellWidth: 200, halign: "left"},
+                            c3: {cellWidth: 200, halign: "left"},
                             //limitDate: {cellWidth: 140, fontStyle: 'bold', halign: "left"},
-                            c4: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
-                            c5: {cellWidth: 80, fontStyle: 'bold', halign: "left"},
-                            c6: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
+                            c4: {cellWidth: 1, fillColor: [0,0,0]},
+                            c5: {cellWidth: 80, halign: "left"},
+                            c6: {cellWidth: 1, fillColor: [0,0,0]}
                           },
-            styles: {halign: "center", cellPadding: 2, fontSize: 11},                       
+            styles: {halign: "center", fontSize: 11},                       
             margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
              startY: doc.previousAutoTable.finalY                  
         });
@@ -114,17 +114,24 @@ export class CreatePdfProjectComponent implements OnInit {
         //********************************************************** SO DATA *******************************************************
         
         //********************************************************** ITEM *******************************************************
-        doc.autoTable([{title: "", key:"c1"}, {title: "", key:"c2"}, {title: "", key:"c3"}], [{c2: project.item + " - " + project.ambient, c1:"", c3:""}], {theme: 'plain', 
+        /*doc.autoTable([{title: "", key:"c1"}, {title: "", key:"c2"}, {title: "", key:"c3"}], [{c2: project.item + " - " + project.ambient, c1:"", c3:""}], {theme: 'plain', 
             columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c2: {cellWidth: 483, halign: "center"},
                             c3: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]}
                           },
+            didDrawCell: data => {
+                if (data.section === 'body' && data.column.index === 1) {
+                    var base64Img = this.projectDraw;
+        
+                    doc.addImage(this.belartteLogo, 'PNG', data.cell.x + 675, data.cell.y + 395);
+                }
+            },
             styles: {halign: "center", cellPadding: 1, fontSize: 12},                       
             margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
              startY: doc.previousAutoTable.finalY                  
         });
-        lineBottom();
+        lineBottom();*/
         //********************************************************** ITEM *******************************************************
         
         
@@ -135,6 +142,11 @@ export class CreatePdfProjectComponent implements OnInit {
                     var base64Img = this.projectDraw;
         
                     doc.addImage(project.image, 'PNG', data.cell.x + 50, data.cell.y + 10);
+                }
+                if (data.section === 'body' && data.column.index === 1) {
+                    var base64Img = this.projectDraw;
+        
+                    doc.addImage(this.belartteLogo, 'PNG', data.cell.x + 675, data.cell.y + 395);
                 }
             },
             rowStyles: {
