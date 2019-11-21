@@ -6,4 +6,7 @@ export interface ProjectModel{
     ambient: string;
     material: string;
     item: string;
+    drawId: string;
+    budgetId: string;
+    local: string;
 }

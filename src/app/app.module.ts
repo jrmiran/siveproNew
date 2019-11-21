@@ -76,6 +76,7 @@ import { CreatePdfProjectComponent } from './create-pdf-project/create-pdf-proje
 import { MaterialComponent } from './material/material.component';
 import { PaymentComponent } from './payment/payment.component';
 import { OrderServiceTestComponent } from './order-service-test/order-service-test.component';
+import { SearchProjectComponent } from './search-project/search-project.component';
 
 @NgModule({
   declarations: [
@@ -124,6 +125,7 @@ import { OrderServiceTestComponent } from './order-service-test/order-service-te
     MaterialComponent,
     PaymentComponent,
     OrderServiceTestComponent,
+    SearchProjectComponent,
   ],
   imports: [
     BrowserModule,

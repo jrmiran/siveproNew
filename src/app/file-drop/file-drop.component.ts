@@ -19,7 +19,8 @@ export class FileDropComponent implements OnInit{
 
     constructor(private formBuilder: FormBuilder, private createPdf: CreatePdfProjectComponent, private appService: AppService, private spinner: NgxSpinnerService){}
     
-    projectForm: FormGroup
+    projectForm: FormGroup;
+    formMaterial: FormGroup;
     //createPdf= {} as CreatePdfProjectComponent;
     pModel: ProjectModel;
     budgets: BudgetNew[] =  [];
@@ -40,8 +41,13 @@ export class FileDropComponent implements OnInit{
     isBudget: boolean = false;
     materiais: string[] = [];
     ambients: string[] = [];
+    locals: string[] = [];
     budgetId: string;
     imagesSrc: string[] = [];
+    materiaisId: string[] = [];
+    enableGenerateDraw: boolean = false;
+    releaseAmbient: boolean = false;
+    releaseMaterial: boolean = false;
     
   public dropped(files: NgxFileDropEntry[]) {
     this.files = files;
@@ -124,6 +130,7 @@ export class FileDropComponent implements OnInit{
         this.images.push({img: this.imageSrc});
         this.ambients.push('');
         this.materiais.push('');
+        this.locals.push('');
         console.log(this.imagesSrc);
         console.log(this.imageSrc);
         this.projectForm.get('txtImage').setValue(this.imageSrc);
@@ -177,6 +184,7 @@ export class FileDropComponent implements OnInit{
                 self.pModel.material = self.projectForm.get('txtMaterial').value;
                 self.pModel.store =  data[2][0]['nome'];
                 self.pModel.name = "Desenho " + self.drawId + " " + self.pModel.client + " (" + self.pModel.store + ")";
+                self.pModel.local = "";
                 console.log(self.pModel);
                 self.createPdf.gerarPDF(self.pModel);
                 alert("Desenho criado");
@@ -188,10 +196,10 @@ export class FileDropComponent implements OnInit{
     submitDraw(){
         this.spinner.show();
         var self = this;
-        
+        console.log(self.locals);
         var query = "";
         self.images.forEach(function(data, index){
-            query = query + "(0,'" + self.images[index].img + "'," + self.budgetId + "," + "1" + ",'" + self.ambients[index] + "')";
+            query = query + "(0,'" + self.images[index].img + "'," + self.budgetId + "," + self.materiaisId[index] + ",'" + self.ambients[index] + "','" + self.locals[index] + "')";
             if(index != self.images.length-1){
                 query = query + ",";
             }
@@ -199,8 +207,24 @@ export class FileDropComponent implements OnInit{
         var params = {query: query};
         this.appService.insertDraw(params).subscribe(function(data){
             console.log(data);
+            var drawId: number = data['insertId'];
+            for(let i=0; i<data['affectedRows']; i++){
+                self.pModel.ambient = self.ambients[i];
+                self.pModel.client = self.clientName;
+                self.pModel.image = self.images[i].img;
+                self.pModel.item = "";
+                self.pModel.material = self.materiais[i];
+                self.pModel.local = self.locals[i];
+                self.pModel.store =  self.storeName;
+                self.pModel.drawId = drawId.toString();
+                self.pModel.budgetId = self.budgetId;
+                self.pModel.name = "Desenho " + drawId + " " + self.pModel.client + " (" + self.pModel.store + ")";
+                self.createPdf.gerarPDF(self.pModel);
+                drawId = drawId + 1;
+            }
             self.spinner.hide();
-        })
+            alert("Desenhos criados");
+        });
     }
     
     
@@ -255,8 +279,26 @@ export class FileDropComponent implements OnInit{
     }
     
     setMaterial(){
-        this.projectForm.get('txtMaterial').setValue(this.materials[this.currentItemMaterial]['nome']);
-        this.currentMaterial = this.materials[this.currentItemMaterial]['id'];
+        console.log(this.materials);
+        this.projectForm.get('txtMaterial').setValue(this.materials[this.currentItemMaterial]['nome']  + " " + this.materials[this.currentItemMaterial]['tamanhoComercial'] + " (" + this.materials[this.currentItemMaterial]['tamanhoReal'] + ")");
+        this.currentMaterial = parseFloat(this.materials[this.currentItemMaterial]['id']);
+        this.materiaisId.push(this.materials[this.currentItemMaterial]['id']);
+    }
+    
+    openModalAddMaterial(){
+        document.getElementById('openModalMaterialButton').click();
+    }
+    
+    insertMaterial(){
+        var self = this;
+        var obj = {name: this.formMaterial.get('txtName').value, comercialSize: this.formMaterial.get('txtComercialSize').value, realSize: this.formMaterial.get('txtRealSize').value};
+        this.appService.insertMaterial(obj).subscribe(function(data){
+            console.log(data);
+            alert("Material Inserido");
+            self.appService.materials().subscribe(function(data){
+                self.materials = data;
+            });
+        })
     }
     
     ngOnInit(){
@@ -269,21 +311,60 @@ export class FileDropComponent implements OnInit{
             txtMaterial: this.formBuilder.control(''),
             txtImage: this.formBuilder.control(''),
             txtStore: this.formBuilder.control(''),
+            txtLocal: this.formBuilder.control(''),
             txtBudget: this.formBuilder.control('', [Validators.required])
+        });
+        
+        this.formMaterial = this.formBuilder.group({
+            txtName: this.formBuilder.control('', [Validators.required]),
+            txtComercialSize: this.formBuilder.control(''),
+            txtRealSize: this.formBuilder.control(''),
         });
         
         this.projectForm.get('txtMaterial').valueChanges.subscribe(function(data){
             setTimeout(()=>{
                 self.materiais[self.currentItemDraw] = data;
-                console.log(self.materiais);
-            }, 10);
+                
+                if(self.materiais.find((v) => v == "") == undefined){
+                   self.releaseMaterial = true; 
+                }else{
+                    self.releaseMaterial = false;
+                }
+                
+                if(self.releaseMaterial && self.releaseAmbient){
+                    self.enableGenerateDraw = true;
+                } else{
+                    self.enableGenerateDraw = false;
+                }
+
+            }, 50);
         });
+        
         this.projectForm.get('txtAmbient').valueChanges.subscribe(function(data){
             setTimeout(()=>{
                 self.ambients[self.currentItemDraw] = data;
-                console.log(self.ambients);
-            }, 10);
+                
+                console.log(self.ambients.find((v) => v == ""));
+                
+                if(self.ambients.find((v) => v == "") == undefined){
+                   self.releaseAmbient = true; 
+                    console.log("ambient true");
+                }else{
+                    self.releaseAmbient = false;
+                    console.log("ambient false");
+                }
+                
+                if(self.releaseMaterial && self.releaseAmbient){
+                    self.enableGenerateDraw = true;
+                } else{
+                    self.enableGenerateDraw = false;
+                }
+            }, 50);
         });
+        
+        this.projectForm.get('txtLocal').valueChanges.subscribe(function(data){
+            self.locals[self.currentItemDraw] = data;
+        })
         
         this.pModel = this.initializeProjectModel();
     }

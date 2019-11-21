@@ -19,6 +19,7 @@ import {PaymentComponent} from '../payment/payment.component';
 import {ClientSearchComponent} from '../clients/client-search/client-search.component';
 import {OrderServiceTestComponent} from '../order-service-test/order-service-test.component';
 import {FormGroup, FormBuilder, Validators, FormControl, FormArray} from '@angular/forms';
+import {SearchProjectComponent} from '../search-project/search-project.component';
 
 @Component({
   selector: 'sivp-table',
@@ -64,6 +65,7 @@ export class TableComponent implements OnInit {
     @Input() formArraySO: FormArray;
     @Input() formGroupSO: FormGroup;
     @Input() drawTable: boolean = false;
+    @Input() spc: SearchProjectComponent;
     
     releseSoc: boolean = false;
     
@@ -257,10 +259,17 @@ export class TableComponent implements OnInit {
                 }else if(this.mc){
                     console.log("MC");
                     this.mc.clickRow(i);
+                }else if(this.spc){
+                    console.log("SPC");
+                    this.spc.setCurrentDraw(data['id']);
                 }
             }
             this.currentLine = i;
         }
+    }
+    
+    showSpcDraw(id: any){
+        this.spc.setCurrentDraw(id);    
     }
     
     setUploadId(id: number){

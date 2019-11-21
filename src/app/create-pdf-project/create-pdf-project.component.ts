@@ -46,7 +46,7 @@ export class CreatePdfProjectComponent implements OnInit {
         
         function lineBottom():any{
             return doc.autoTable(columnLine, [{valor: ""}],
-                          {theme: 'plain', 
+                          {theme: 'striped', 
                            columnStyles: {
                                         valor: {cellWidth:545, fillColor: [0,0,0]}
                                       },
@@ -65,7 +65,7 @@ export class CreatePdfProjectComponent implements OnInit {
         function lineTop():any{
             
             return doc.autoTable(columnLine, [{valor: ""}],
-                          {theme: 'plain', 
+                          {theme: 'grid', 
                            columnStyles: {
                                         valor: {cellWidth:545, fillColor: [0,0,0]}
                                       },
@@ -76,7 +76,7 @@ export class CreatePdfProjectComponent implements OnInit {
         }
         function lineBottomAmmount():any{
             return doc.autoTable(columnLine, [{valor: ""}],
-                          {theme: 'plain', 
+                          {theme: 'grid', 
                            columnStyles: {
                                         valor: {fillColor: [0,0,0]}
                                       },
@@ -87,9 +87,25 @@ export class CreatePdfProjectComponent implements OnInit {
             });
         }
         
-        //********************************************************** SO DATA *******************************************************
+        //********************************************************** TITLE *******************************************************
         lineTop();
-        doc.autoTable(columnsInfo1, [{c2: "Loja: " + project.store, c3: "Cliente: " + project.client, c1:"", c4:"", c5:"Des.: 2457   Orc.: 2326", c6:""}, {c2: "Material: " + project.material, c3: "Corredor: ", c1:"", c4:"", c5:"OS: ________________", c6:""}, {c2: "Ambiente: " + project.material, c3: "Acabamento: _________________   ____/____/____ ", c1:"", c4:"", c5:"Ass.: _______________", c6:""}], {theme: 'plain', 
+        doc.autoTable([{title: "", key:"c1"},{title: "", key:"c2"},{title: "", key:"c3"}], [{c1: "", c2: "PROJETO EXECUTIVO", c3: ""}], {theme: 'grid', 
+            columnStyles: {
+                            c1: {cellWidth: 1, fillColor: [0,0,0]},
+                            c2: {cellWidth: 481, halign: "center"},
+                            c3: {cellWidth: 1, fillColor: [0,0,0]},
+                          },      
+            bodyStyles: {lineColor: [0, 0, 0]},
+            styles: {halign: "center", fontSize: 12, cellPadding: 0, fontStyle: "bold", font: "times"},                       
+            margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
+             startY: doc.previousAutoTable.finalY                  
+        });
+        lineBottom();
+        //********************************************************** TITLE *******************************************************
+        
+        //********************************************************** SO DATA *******************************************************
+        //lineTop();
+        doc.autoTable(columnsInfo1, [{c2: "Loja: " + project.store, c3: "Cliente: " + project.client, c1:"", c4:"", c5:"Pjt.: "+ project.drawId+"   Orc.: " + project.budgetId, c6:""}, {c2: "Material: " + project.material, c3: "Corredor: " + project.local, c1:"", c4:"", c5:"OS: ", c6:""}, {c2: "Ambiente: " + project.ambient, c3: "Acabamento:  ", c1:"", c4:"", c5:"Ass.: ", c6:""}], {theme: 'grid', 
         /*didDrawCell: data => {
                 if (data.section === 'body' && data.column.index === 4 && data.row.index === 0) {
                     var base64Img = this.projectDraw;
@@ -106,7 +122,11 @@ export class CreatePdfProjectComponent implements OnInit {
                             c5: {cellWidth: 80, halign: "left"},
                             c6: {cellWidth: 1, fillColor: [0,0,0]}
                           },
-            styles: {halign: "center", fontSize: 11},                       
+            rowStyles: {
+                            0: {cellHeight: 0.5}    
+            },              
+            bodyStyles: {lineColor: [0, 0, 0]},
+            styles: {halign: "center", fontSize: 11, cellPadding: 2},                       
             margin:{left: self.defaultMarginLeft, top: 50, right: self.defaultMarginRight},
              startY: doc.previousAutoTable.finalY                  
         });
@@ -136,22 +156,20 @@ export class CreatePdfProjectComponent implements OnInit {
         
         
         //********************************************* PROJECT DRAW *****************************************************************
-        doc.autoTable([{title: "", key:"c1"}, {title: "", key:"c2"}, {title: "", key:"c3"}], [{c1:"",c2:"",c3:""}],{showHead: 'false', theme:'plain',
+        doc.autoTable([{title: "", key:"c1"}, {title: "", key:"c2"}, {title: "", key:"c3"}], [{c1:"",c2:"",c3:""}],{showHead: 'false', theme:'grid',
             didDrawCell: data => {
                 if (data.section === 'body' && data.column.index === 1) {
                     var base64Img = this.projectDraw;
         
-                    doc.addImage(project.image, 'PNG', data.cell.x + 50, data.cell.y + 10);
+                    doc.addImage(project.image, 'PNG', data.cell.x + 1, data.cell.y + 1);
                 }
                 if (data.section === 'body' && data.column.index === 1) {
                     var base64Img = this.projectDraw;
         
-                    doc.addImage(this.belartteLogo, 'PNG', data.cell.x + 675, data.cell.y + 395);
+                    doc.addImage(this.belartteLogo, 'PNG', data.cell.x + 675, data.cell.y + 385);
                 }
             },
-            rowStyles: {
-                            0: {cellHeigth: 50, fillColor: [0,0,0]}
-                          }, 
+            bodyStyles: {lineColor: [0, 0, 0]},
             columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c2: {cellWidth: 483, fontStyle: 'bold'},

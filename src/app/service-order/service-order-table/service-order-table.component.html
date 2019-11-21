@@ -10,7 +10,7 @@
         <!--<sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente', 'Vendedor','Previsão Entrega', 'Data Inicio', 'Data Termino', 'Item', 'Detalhe', 'Ambiente', 'Medida', 'Valor', 'Empreita', 'Pedra']" [datas]="serviceOrders" [ids]="['id','orcamento_id','loja' ,'cliente', 'vendedor', 'dataPrevisaoTermino','dataInicio','dataTermino','item','detalhe','comodo','medida','valor','empreita','pedra']" [runClickRow]="false" [sotc]="self">
         </sivp-table>-->
 
-        <sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente','Previsão Entrega', 'Item', 'Detalhe', 'Ambiente', 'Valor', 'Terminado', 'Empreita']" [datas]="serviceOrders" [ids]="['id','orcamento_id','loja' ,'cliente', 'dataPrevisaoTermino','item','detalhe','comodo','valor','terminado','empreita']" [runClickRow]="false" [sotc]="self">
+        <sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente','Previsão Entrega', 'Item', 'Detalhe', 'Ambiente', 'Valor', 'Terminado', 'Empreita']" [datas]="serviceOrders" [ids]="['id','orcamento_id','loja' ,'cliente', 'dataPrevisaoTermino','item','detalhe','comodo','valor','dataTermino','empreita']" [runClickRow]="false" [sotc]="self">
         </sivp-table>
 
         <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modal-default">Open Modal</button>

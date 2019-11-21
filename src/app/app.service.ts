@@ -294,6 +294,10 @@ export class AppService{
         return this.callPost(`postSearchClient`, obj);
     }
     
+    postImageDraw(obj: any): Observable<Object[]>{
+        return this.callPost('postImageDraw', obj);
+    }
+    
     postUpdateClient(obj: any): Observable<Object[]>{
         return this.callPost(`postUpdateClient`, obj);
     }
@@ -332,6 +336,18 @@ export class AppService{
     
     postSearchPaymentForm():Observable<Object[]>{
         return this.callPost('postSearchPaymentForm', {});
+    }
+    
+    postSearchProject(obj: any):Observable<Object[]>{
+        if(obj['type'] == "All"){
+            return this.callPost('postSearchAllProjects', obj);
+        } else if(obj['type'] == "Budget"){
+            return this.callPost('postSearchProjectByBudget', obj);
+        } else if(obj['type'] == "Client"){
+            return this.callPost('postSearchProjectByClient', obj);
+        } else if(obj['type'] == "Store"){
+            return this.callPost('postSearchProjectByStore', obj);
+        }
     }
     
     postInsertPayment(obj: any):Observable<Object[]>{
