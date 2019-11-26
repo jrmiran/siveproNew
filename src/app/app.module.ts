@@ -77,6 +77,7 @@ import { MaterialComponent } from './material/material.component';
 import { PaymentComponent } from './payment/payment.component';
 import { OrderServiceTestComponent } from './order-service-test/order-service-test.component';
 import { SearchProjectComponent } from './search-project/search-project.component';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 
 @NgModule({
   declarations: [
@@ -151,7 +152,8 @@ import { SearchProjectComponent } from './search-project/search-project.componen
     DndModule,
     AngularFileUploaderModule,
     FileUploadModule,
-    NgxFileDropModule
+    NgxFileDropModule,
+    NgxDaterangepickerMd.forRoot()
   ],
   providers: [
       AppService,

@@ -6,6 +6,99 @@
         <p> Caregando Pagamentos </p>
     </ngx-spinner>
     <section class="invoice">
+
+        <div class="row">
+            <form [formGroup]="filterForm" novalidate>
+                <div class="col-md-12">
+                    <div class="box box-primary collapsed-box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-filter"></i> Filtros</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                            <!-- /.box-tools -->
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-4 col-xs-12">
+
+                                    <label> Data </label>
+                                    <a (click)="clearDateFilter()" class="btn"><i class="fa fa-trash"> Limpar </i></a>
+                                    <input type="text" ngxDaterangepickerMd formControlName="txtDate" class="form-control" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" readonly="true"/>
+                                </sivp-input-container>
+
+                                
+                                <sivp-input-container class="form-group col-sm-3 col-xs-12">
+                                    <label> Entrada / Saída </label>
+                                    <select class="form-control" formControlName="cmbInOut">
+                                        <option></option>
+                                        <option>Entrada</option>
+                                        <option>Saída</option>
+                                    </select>
+                                </sivp-input-container>
+
+
+                                <sivp-input-container class="form-group col-sm-5 col-xs-12">
+                                    <label> Assunto </label>
+                                    <input type="text" class="form-control" formControlName="txtBill">
+                                </sivp-input-container>
+                            </div>
+
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-4 col-xs-12">
+                                    <label> Valor </label>
+                                    <input type="text" class="form-control" formControlName="txtValue" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                                </sivp-input-container>
+
+                                <sivp-input-container class="form-group col-sm-5 col-xs-12">
+                                    <label>Status</label>
+                                    <select class="form-control" formControlName="cmbStatus">
+                                        <option *ngFor="let s of status">{{s}}</option>
+                                    </select>
+                                </sivp-input-container>
+
+                                <sivp-input-container class="form-group col-sm-3 col-xs-12">
+                                    <label> Cheque Nº </label>
+                                    <input type="text" class="form-control" formControlName="txtCheckNumber">
+                                </sivp-input-container>
+
+                            </div>
+
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                                    <label> Forma de Pagamento </label>
+                                    <select class="form-control" formControlName="cmbPaymentForm">
+                                        <option *ngFor="let pw of paymentWay">{{pw}}</option>
+                                    </select>
+                                </sivp-input-container>
+
+                                <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                                    <label> Tipo Pagamento </label>
+                                    <select class="form-control" formControlName="cmbTypePayment">
+                                        <option *ngFor="let pt of paymentType">{{pt}}</option>
+                                    </select>
+                                </sivp-input-container>
+                            </div>
+
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                                    <label> Observação </label>
+                                    <input type="text" class="form-control" formControlName="txtNote">
+                                </sivp-input-container>
+                            </div>
+                            <a class="btn btn-default pull-left" (click)="clearFilter()"><i class="fa fa-trash"></i> Limpar Filtros </a>
+                            <a class="btn btn-primary pull-right" (click)="applyFilter()"><i class="fa fa-filter"></i> Filtrar </a>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </form>
+        </div>
+
         <div class="row">
             <div class="col-sm-12 col-xs-12">
                 <div class="box box-primary">
@@ -13,10 +106,17 @@
                         <h3 class="box-title"><i class="fa fa-usd"></i> Pagamentos</h3>
                         <a (click)="setNewPayment()" data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-default"><i class="fa fa-plus"></i> Novo Pagamento </a>
                     </div>
-                    <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="payments" [ids]="['id','conta','data' , 'valor', 'entrada', 'numeroCheque', 'status', 'formaPagamento_formaPagamento']" [pc]="self" [runClickRow]="false">
+                    <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="filteredPayments" [ids]="['id','conta','data' , 'valor', 'entrada', 'numeroCheque', 'status', 'formaPagamento_formaPagamento']" [pc]="self" [runClickRow]="false" [searchBar] = "false">
                     </sivp-table>
                 </div>
             </div>
+        </div>
+        
+        <div class="row">
+            <span class="pull-right">
+                <label> Total </label>
+                <p> {{totalValueString}}</p>
+            </span>
         </div>
 
         <!----------------------------------- MODAL --------------------------------------------------------------------->
@@ -37,16 +137,19 @@
                                     <input type="text" class="form-control" formControlName="txtInstallment">
                                 </sivp-input-container>
                             </div>
-                            
+
                             <span [class.hide]="!showForm">
                                 <div class="row">
                                     <sivp-input-container class="form-group col-sm-12 col-xs-12">
                                         <label> Data </label>
+                                        
                                         <br>
                                         <sivp-date-picker formControlName="txtDate" #dPicker></sivp-date-picker>
                                     </sivp-input-container>
+                                    
+                                    
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="form-group col-sm-9 col-xs-12">
                                         <sivp-radio [options]="inOut" formControlName="rdInOut" (click)="radioEvent()"></sivp-radio>
@@ -123,9 +226,9 @@
             <!-- /.modal-dialog -->
         </div>
         <!------------------------------------------ END MODAL ----------------------------------------------------------->
-        
+
         <a data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-Edit" id="editPayment" [class.hide]="true"><i class="fa fa-plus"></i> Editar Pagamento </a>
-         <!----------------------------------- MODAL EDIT --------------------------------------------------------------------->
+        <!----------------------------------- MODAL EDIT --------------------------------------------------------------------->
         <div class="modal fade" id="modal-Edit" data-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -136,65 +239,65 @@
                     </div>
                     <div class="modal-body">
                         <form [formGroup]="paymentFormEdit" novalidate>
-                            
-                                <div class="row">
-                                    <sivp-input-container class="form-group col-sm-12 col-xs-12">
-                                        <label> Data </label>
-                                        <br>
-                                        <sivp-date-picker formControlName="txtDateEdit" #dPickerEdit></sivp-date-picker>
-                                    </sivp-input-container>
-                                </div>
-                                
 
-                                <div class="row">
-                                    <sivp-input-container class="form-group col-sm-9 col-xs-12">
-                                        <label> Assunto </label>
-                                        <input type="text" class="form-control" formControlName="txtBillEdit">
-                                    </sivp-input-container>
-                                </div>
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                                    <label> Data </label>
+                                    <br>
+                                    <sivp-date-picker formControlName="txtDateEdit" #dPickerEdit></sivp-date-picker>
+                                </sivp-input-container>
+                            </div>
 
-                                <div class="row">
-                                    <sivp-input-container class="form-group col-sm-4 col-xs-12">
-                                        <label> Valor </label>
-                                        <input type="text" class="form-control" formControlName="txtValueEdit" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
-                                    </sivp-input-container>
 
-                                    <sivp-input-container class="form-group col-sm-5 col-xs-12">
-                                        <label>Status</label>
-                                        <select class="form-control" formControlName="cmbStatusEdit">
-                                            <option *ngFor="let s of status">{{s}}</option>
-                                        </select>
-                                    </sivp-input-container>
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-9 col-xs-12">
+                                    <label> Assunto </label>
+                                    <input type="text" class="form-control" formControlName="txtBillEdit">
+                                </sivp-input-container>
+                            </div>
 
-                                    <sivp-input-container class="form-group col-sm-3 col-xs-12">
-                                        <label> Cheque Nº </label>
-                                        <input type="text" class="form-control" formControlName="txtCheckNumberEdit">
-                                    </sivp-input-container>
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-4 col-xs-12">
+                                    <label> Valor </label>
+                                    <input type="text" class="form-control" formControlName="txtValueEdit" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                                </sivp-input-container>
 
-                                </div>
+                                <sivp-input-container class="form-group col-sm-5 col-xs-12">
+                                    <label>Status</label>
+                                    <select class="form-control" formControlName="cmbStatusEdit">
+                                        <option *ngFor="let s of status">{{s}}</option>
+                                    </select>
+                                </sivp-input-container>
 
-                                <div class="row">
-                                    <sivp-input-container class="form-group col-sm-6 col-xs-12">
-                                        <label> Forma de Pagamento </label>
-                                        <select class="form-control" formControlName="cmbPaymentFormEdit">
-                                            <option *ngFor="let pw of paymentWay">{{pw}}</option>
-                                        </select>
-                                    </sivp-input-container>
+                                <sivp-input-container class="form-group col-sm-3 col-xs-12">
+                                    <label> Cheque Nº </label>
+                                    <input type="text" class="form-control" formControlName="txtCheckNumberEdit">
+                                </sivp-input-container>
 
-                                    <sivp-input-container class="form-group col-sm-6 col-xs-12">
-                                        <label> Tipo Pagamento </label>
-                                        <select class="form-control" formControlName="cmbTypePaymentEdit">
-                                            <option *ngFor="let pt of paymentType">{{pt}}</option>
-                                        </select>
-                                    </sivp-input-container>
-                                </div>
+                            </div>
 
-                                <div class="row">
-                                    <sivp-input-container class="form-group col-sm-12 col-xs-12">
-                                        <label> Observação </label>
-                                        <input type="text" class="form-control" formControlName="txtNoteEdit">
-                                    </sivp-input-container>
-                                </div>
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                                    <label> Forma de Pagamento </label>
+                                    <select class="form-control" formControlName="cmbPaymentFormEdit">
+                                        <option *ngFor="let pw of paymentWay">{{pw}}</option>
+                                    </select>
+                                </sivp-input-container>
+
+                                <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                                    <label> Tipo Pagamento </label>
+                                    <select class="form-control" formControlName="cmbTypePaymentEdit">
+                                        <option *ngFor="let pt of paymentType">{{pt}}</option>
+                                    </select>
+                                </sivp-input-container>
+                            </div>
+
+                            <div class="row">
+                                <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                                    <label> Observação </label>
+                                    <input type="text" class="form-control" formControlName="txtNoteEdit">
+                                </sivp-input-container>
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">

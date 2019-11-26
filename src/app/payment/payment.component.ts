@@ -5,6 +5,8 @@ import {FormGroup, FormBuilder, Validators, FormControl, FormArray} from '@angul
 import {Payment} from './payment.model';
 import {DatePickerComponent} from '../shared/date-picker/date-picker.component';
 import {RadioOption} from '../shared/radio/radio-option.model';
+import { Pipe, PipeTransform } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'sivp-payment',
@@ -16,9 +18,11 @@ export class PaymentComponent implements OnInit, AfterViewInit {
   constructor(private appService: AppService, private spinner: NgxSpinnerService, private formBuilder: FormBuilder) { }
     
     payments: Object[] = [];
+    filteredPayments: Object[] = [];
     self: any = this;
     paymentForm: FormGroup;
     paymentFormEdit: FormGroup;
+    filterForm: FormGroup;
     status: string[] = ['', 'Pago', 'Não Pago', 'Cheque a Compensar'];
     paymentWay: string[] = ['', 'Cartão Crédito', 'Cartão Débito', 'Cheque', 'Dinheiro'];
     paymentType: string[] = ['', 'Salario', 'Investimento', 'Maquinario', 'Insumos'];
@@ -35,6 +39,33 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     ]
     inOutPayment: string;
     showForm: boolean = false;
+    selected: {startDate: any, endDate: any};
+    startDateFilter: Date;
+    endDateFilter: Date;
+    totalValue: number = 0;
+    totalValueString: string = "";
+    
+    
+    setTotalValue(){
+        var self = this;
+        self.totalValue = 0;
+        this.filteredPayments.forEach(function(data){
+            self.totalValue = self.totalValue + self.appService.converteMoedaFloat(data['valor']);
+            self.totalValueString = self.appService.converteFloatMoeda(parseFloat(self.totalValue.toFixed(2)));
+        });    
+    }
+    
+    clearFilter(){
+        this.clearDateFilter();
+        this.filterForm.get('cmbInOut').setValue('');
+        this.filterForm.get('txtBill').setValue('');
+        this.filterForm.get('txtValue').setValue(null);
+        this.filterForm.get('cmbStatus').setValue('');
+        this.filterForm.get('cmbPaymentForm').setValue('');
+        this.filterForm.get('txtCheckNumber').setValue('');
+        this.filterForm.get('cmbTypePayment').setValue('');
+        this.filterForm.get('txtNote').setValue('');
+    }
     
     enableOkFunction(){
         if(this.currentPart == this.totalParts){
@@ -51,6 +82,66 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         } else{
             this.inOutPayment = "0";
         }
+    }
+    
+    applyFilter(){
+        var self = this;
+        
+        this.filteredPayments = this.payments.filter(function(data){
+            return self.filterData(data, 'formaPagamento_formaPagamento', self.filterForm.get('cmbPaymentForm').value) 
+            && self.filterData(data, 'status', self.filterForm.get('cmbStatus').value)
+            && self.filterData(data, 'conta', self.filterForm.get('txtBill').value, true)
+            && self.filterData(data, 'numeroCheque', self.filterForm.get('txtCheckNumber').value)
+            && self.filterData(data, 'tipoPagamento_tipoPagamento', self.filterForm.get('cmbTypePayment').value)
+            && self.filterData(data, 'observacao', self.filterForm.get('txtNote').value, true)
+            && self.filterData(data, 'entrada', self.filterForm.get('cmbInOut').value)
+            && self.filterData(data, 'valor', self.appService.converteFloatMoeda(self.filterForm.get('txtValue').value))
+            && self.filterDataDate(data, 'data', self.startDateFilter, self.endDateFilter);;
+        });
+        self.setTotalValue();
+    }
+    
+    filterData(data: any, param:string, value: any, contains?: boolean){
+        if(param == "entrada"){
+            if(value == ""){
+                return true;
+            }
+            if(value == "Saída"){
+                value = false;
+            }else{
+                value = true;
+            }
+            return data[param] == value;
+        }
+
+        if(data[param] == null){
+                return true;
+        }
+        if(contains){
+            return data[param].includes(value);
+            //return true;
+        }
+        if(value != null && value != "" && value != "R$ n.ull,00"){
+            return data[param] == value;
+        } else{
+            //return data[param].includes("");
+            return true;
+        }
+    }
+    
+    filterDataDate(data: any, param: string, startDate: any, endDate: any){
+        let date = data['data'].split('/');
+        var auxDate: Date = new Date(date[2], date[1]-1, date[0]);
+        
+        if(!startDate || !endDate){
+            return true;
+        }else{
+            return auxDate >= startDate && auxDate <= endDate;
+        }
+    }
+    
+    clearDateFilter(){
+        this.filterForm.get('txtDate').setValue('');    
     }
     
     closeModal(){
@@ -204,7 +295,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
       setTimeout(()=> {self.spinner.show();}, 100)
       
       
-      
     this.paymentForm = this.formBuilder.group({
         rdInOut: this.formBuilder.control('', [Validators.required]),
         txtInstallment: this.formBuilder.control('', [Validators.required]),
@@ -227,10 +317,50 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         txtCheckNumberEdit: this.formBuilder.control('', []),
         cmbTypePaymentEdit: this.formBuilder.control('', [Validators.required]),
         txtNoteEdit: this.formBuilder.control('', []),
-    })
+    });
       
+      this.filterForm = this.formBuilder.group({
+        cmbInOut: this.formBuilder.control('', []),
+        txtDate: this.formBuilder.control('', []),
+        txtBill: this.formBuilder.control('', []),
+        txtValue: this.formBuilder.control(null, []),
+        cmbStatus: this.formBuilder.control('', []),
+        cmbPaymentForm: this.formBuilder.control('', []),
+        txtCheckNumber: this.formBuilder.control('', []),
+        cmbTypePayment: this.formBuilder.control('', []),
+        txtNote: this.formBuilder.control('', [])
+    });
+      
+
       //setTimeout(() => {this.dPicker.setDate(new Date(2019,1,30))}, 100);
         
+    this.filterForm.get('txtDate').valueChanges.subscribe(function(data){
+            
+        if(data['startDate'] == null){
+            self.startDateFilter = undefined;
+            self.endDateFilter = undefined;
+        } else{
+        
+            var startDate = data['startDate']['_d'];
+            var endDate = data['endDate']['_d'];
+            var datePipe = new DatePipe('en-US');
+            
+            var startDateAux = datePipe.transform(startDate, 'dd/MM/yyyy');
+            var endDateAux = datePipe.transform(endDate, 'dd/MM/yyyy');
+
+
+            var startDateAux2 = startDateAux.split('/');
+            var endDateAux2 = endDateAux.split('/');
+
+            
+            self.startDateFilter = new Date(parseFloat(startDateAux2[2]), parseFloat(startDateAux2[1])-1, parseFloat(startDateAux2[0]));
+            self.endDateFilter = new Date(parseFloat(endDateAux2[2]), parseFloat(endDateAux2[1])-1, parseFloat(endDateAux2[0]));
+            
+            console.log(self.startDateFilter);
+            console.log(self.endDateFilter);
+        }
+    });
+      
         this.paymentForm.get('txtInstallment').valueChanges.subscribe(function(data){
             if(data != ""){
                 setTimeout(() => {
@@ -262,23 +392,30 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             }); 
         })
       
+      var datePipe = new DatePipe('en-US');
+      
       self.appService.postPayment({}).subscribe(function(data){
+          //let date = data['data'].split('/');
           self.payments = data;
           self.payments.map(function(value){
+              let date = value['data'].split('/');
               if(value['entrada']['data'][0] ==  1){
                   value['entrada'] = true;
               }else{
                   value['entrada'] = false;
               }
               value['valor'] = self.appService.converteFloatMoeda(value['valor'].replace(',','.'));
+              value['data'] = datePipe.transform(new Date(date[2], date[1]-1, date[0]), 'dd/MM/yyyy');
+              //value['data'] = new Date(date[2], date[1]-1, date[0]);
+              
           })
+          self.filteredPayments = self.payments;
           console.log(self.payments);
+          self.setTotalValue();
           self.spinner.hide();
       });
   }
     
     ngAfterViewInit(){
-        //let date = new Date(2011, 11, 31);
-        //this.dPicker.setValue("01/11/2019");
     }
 }
