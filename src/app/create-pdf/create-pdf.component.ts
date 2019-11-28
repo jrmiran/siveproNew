@@ -35,7 +35,7 @@ export class CreatePdfComponent implements OnInit {
     
     rows: BudgetPdf[] = [];
     
-    public gerarPDF(items: BudgetAmbient[], mainBudget: BudgetModel) {
+    public gerarPDF(items: BudgetAmbient[], mainBudget: BudgetModel, cpf: string) {
         var self = this;
         var doc = new jsPDF('p', 'pt', 'a4');
         
@@ -239,7 +239,8 @@ export class CreatePdfComponent implements OnInit {
             lineTop()
             doc.autoTable(columnsInfo2, [{column1: "Nome: " + mainBudget.terceiro.name, column2: ""},
                                          {column1: "Vendedor: " + mainBudget.vendor, column2: "Telefone: " + mainBudget.terceiro.tel},
-                                         {column1: "E-mail: " + mainBudget.terceiro.email, column2: "Celular: " + mainBudget.terceiro.cel}],
+                                         {column1: "E-mail: " + mainBudget.terceiro.email, column2: "Celular: " + mainBudget.terceiro.cel},
+                                         {column1: "Endereço: " + mainBudget.terceiro.address, column2: "CPF: " + cpf}],
                           {theme: 'plain', 
                           columnStyles: {
                                         c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},

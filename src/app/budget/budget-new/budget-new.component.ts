@@ -61,6 +61,8 @@ export class BudgetNewComponent implements OnInit {
     valoresTotais: number[] = [];
     descontos: number[] = [];
     valoresComDesconto: number[] = [];
+    thirdyCnpj: string = "";
+    thirdyCpf: string = "";
     
     qtdsString: string = "(";
     codsString: string = "(";
@@ -295,11 +297,12 @@ export class BudgetNewComponent implements OnInit {
     
     
     test(){
+        var self = this;
         this.mainBudget.number = this.insertedBudget;
         this.mainBudget.note = this.orderForm.get('txtObservacao').value;
         //this.joinBudget();
         
-        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
+        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget, self.thirdyCpf);
     }
     
     removePlace2(i: number){
@@ -352,6 +355,13 @@ export class BudgetNewComponent implements OnInit {
         this.orderForm.get('txtMedida').setValue(this.budgets[this.currentItem].medida);
         this.orderForm.get('txtValor').setValue(this.appService.converteMoedaFloat(this.budgets[this.currentItem].valorUnitario));
         this.orderForm.get('txtDetalhe').setValue(this.budgets[this.currentItem].detalhe);
+    }
+    
+    setCpf(){
+        var self = this;
+        if(self.thirdyCpf != ""){
+            self.thirdyCpf = self.thirdyCpf.substring(0,3) + "." + self.thirdyCpf.substring(3,6) + "." + self.thirdyCpf.substring(6,9) + "-" + self.thirdyCpf.substring(9);
+        }
     }
     
     changeItem(){
@@ -844,6 +854,9 @@ export class BudgetNewComponent implements OnInit {
       this.appService.clientBudget("'" + this.formin.client + "'", "'" + this.formin.vendor + "'").subscribe(function(clientBudget){
         self.appService.thirdyBudget("'" + self.formin.client + "'", "'" + self.formin.thirdy + "'").subscribe(function(thirdyBudget){
               self.thirdyDataObj = thirdyBudget;
+                self.thirdyCnpj = thirdyBudget[0]['thirdyCnpj'];
+                self.thirdyCpf = thirdyBudget[0]['thirdyCpf'];
+            self.setCpf();
               console.log(self.thirdyDataObj[0]);
               self.clientDataObj = clientBudget;
               console.log(self.clientDataObj);

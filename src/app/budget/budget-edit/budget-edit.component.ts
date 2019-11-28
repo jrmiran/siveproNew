@@ -52,6 +52,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     valoresTotais: number[] = [];
     descontos: number[] = [];
     valoresComDesconto: number[] = [];
+    thirdyCnpj: string = "";
+    thirdyCpf: string = "";
     
     qtdsString: string = "(";
     codsString: string = "(";
@@ -831,7 +833,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         self.appService.postBudgetUpdate(params).subscribe(function(value){
                self.joinBudget();
                 self.mainBudget.note = self.orderForm.get('txtObservacao').value
-               self.createPdf.gerarPDF(self.budgetsAmbient, self.mainBudget);
+               self.createPdf.gerarPDF(self.budgetsAmbient, self.mainBudget, self.thirdyCpf);
                console.log(value);
                self.spinner.hide();
                self.router.navigate(['budget']);
@@ -981,17 +983,25 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     
     testGenerate(){
         this.mainBudget.number = this.idInput;
+        var self = this;
         //this.joinBudget(); 
         this.mainBudget.note = this.appService.replaceAll(this.mainBudget.note, 'QUEBRADELINHA', String.fromCharCode(10));
-        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
+        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget, self.thirdyCpf);
     }
     
     test(){
+        var self = this;
         this.mainBudget.number = this.insertedBudget;
         this.mainBudget.note = this.orderForm.get('txtObservacao').value;    
         
         this.mainBudget.note = this.appService.replaceAll(this.mainBudget.note, 'QUEBRADELINHA', String.fromCharCode(10));
-        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget);
+        this.createPdf.gerarPDF(this.budgetsAmbient, this.mainBudget, self.thirdyCpf);
+    }
+    
+    setCpf(){ var self = this;
+        if(self.thirdyCpf != ""){
+            self.thirdyCpf = self.thirdyCpf.substring(0,3) + "." + self.thirdyCpf.substring(3,6) + "." + self.thirdyCpf.substring(6,9) + "-" + self.thirdyCpf.substring(9);
+        }
     }
     
     setBudgetInsertion(){    
@@ -1234,6 +1244,17 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.ter = Object.assign(self.ter, self.returnedData[14]);
                 self.ven = Object.assign(self.ven, self.returnedData[15]);
 
+                var cnpj = self.returnedData[14][0]['cnpj'];
+                var cpf = self.returnedData[14][0]['cpf'];
+                
+                self.thirdyCnpj = cnpj;
+                self.thirdyCpf = cpf;
+                
+                
+                console.log(self.thirdyCpf);
+                console.log(self.ter);
+                
+                self.setCpf();
                 console.log(self.ite);
                 self.qtd.forEach(function(value, index){
                     self.b.qtd = parseFloat(self.qtd[index].quantidades);
