@@ -22,6 +22,8 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     self: any = this;
     paymentForm: FormGroup;
     paymentFormEdit: FormGroup;
+    paymentTypeForm: FormGroup;
+    paymentFormForm: FormGroup;
     filterForm: FormGroup;
     status: string[] = ['', 'Pago', 'Não Pago', 'Cheque a Compensar'];
     paymentWay: string[] = ['', 'Cartão Crédito', 'Cartão Débito', 'Cheque', 'Dinheiro'];
@@ -217,7 +219,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             if(this.currentPart < this.totalParts){
                 this.currentPart = this.currentPart + 1;
             }
-        //---------------------------------------------------------  CLIQUE NO BOTÃO ANTERIO  ---------------------------------------------------------    
+        //---------------------------------------------------------  CLIQUE NO BOTÃO ANTERIOR  ---------------------------------------------------------    
         }else{
             if(this.currentPart > 1){
                 this.currentPart = this.currentPart - 1;
@@ -251,9 +253,24 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         var self = this;
         this.spinner.show();
         var params = {bill: this.paymentFormEdit.get('txtBillEdit').value, date: this.paymentFormEdit.get('txtDateEdit').value, check: this.paymentFormEdit.get('txtCheckNumberEdit').value, status: this.paymentFormEdit.get('cmbStatusEdit').value, value: this.paymentFormEdit.get('txtValueEdit').value, paymentForm: this.paymentFormEdit.get('cmbPaymentFormEdit').value, note: this.paymentFormEdit.get('txtNoteEdit').value, paymentType: this.paymentFormEdit.get('cmbTypePaymentEdit').value, id: this.paymentId};
+        
+        var payment = this.filteredPayments.find(function(data){
+           return data['id'] == self.paymentId; 
+        });
+        
+        
+        
         this.appService.postEditPayment(params).subscribe(function(data){
            alert("Pagamento Editado!");
             self.spinner.hide();
+            payment['conta'] = self.paymentFormEdit.get('txtBillEdit').value;
+            payment['data'] = self.paymentFormEdit.get('txtDateEdit').value;
+            payment['numeroCheque'] = self.paymentFormEdit.get('txtCheckNumberEdit').value;
+            payment['status'] = self.paymentFormEdit.get('cmbStatusEdit').value;
+            payment['valor'] = self.paymentFormEdit.get('txtValueEdit').value;
+            payment['formaPagamento_formaPagamento'] = self.paymentFormEdit.get('cmbPaymentFormEdit').value;
+            payment['observacao'] = self.paymentFormEdit.get('txtNoteEdit').value;
+            payment['tipoPagamento_tipoPagamento'] = self.paymentFormEdit.get('cmbTypePaymentEdit').value;
         });
     }
     
@@ -268,6 +285,18 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             }
         });
         return query;
+    }
+    
+    addNewPaymentForm(){
+        this.appService.postInsertPaymentForm({query: "'" + this.paymentFormForm.get('txtPaymentForm').value + "'"}).subscribe(function(data){
+             console.log(data);
+        });
+    }
+    
+    addNewPaymentType(){
+        this.appService.postInsertPaymentType({query: "'" + this.paymentTypeForm.get('txtPaymentType').value + "'"}).subscribe(function(data){
+             console.log(data);
+        });
     }
     
     editPayment(id: any){
@@ -329,6 +358,14 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         txtCheckNumber: this.formBuilder.control('', []),
         cmbTypePayment: this.formBuilder.control('', []),
         txtNote: this.formBuilder.control('', [])
+    });
+      
+      this.paymentTypeForm = this.formBuilder.group({
+        txtPaymentType: this.formBuilder.control('', [Validators.required])
+    });
+      
+      this.paymentFormForm = this.formBuilder.group({
+        txtPaymentForm: this.formBuilder.control('', [Validators.required]),
     });
       
 

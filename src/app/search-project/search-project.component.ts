@@ -35,7 +35,6 @@ export class SearchProjectComponent implements OnInit {
         this.appService.postImageDraw({drawId: id}).subscribe(function(data){
             console.log(data);
             self.currentProject = self.projects.find(data => data['id'] == id);
-            //self.projectData = self.projects.find(data => data['id'] == id);
             self.currentDraw = data[0]['imagem'];
             self.currentDrawId = id;
             self.currentMaterial = self.projects.find(data => data['id'] == id)['material'];
@@ -53,7 +52,7 @@ export class SearchProjectComponent implements OnInit {
                 self.pModel.client = self.currentProject['client'];
                 self.pModel.image = self.currentDraw;
                 self.pModel.item = "";
-                self.pModel.material = self.currentProject['material'];
+                self.pModel.material = self.currentProject['material'] + " " + self.currentProject['tamanhoComercial'] + " (" + self.currentProject['tamanhoReal'] + ")";
                 self.pModel.store =  self.currentProject['store'];
                 self.pModel.name = "Desenho " + self.currentProject['id'] + " " + self.currentProject['client'] + " (" + self.currentProject['store'] + ")";
                 self.pModel.drawId = self.currentProject['id'];

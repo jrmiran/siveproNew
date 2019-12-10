@@ -6,7 +6,8 @@
         <p> Caregando Orçamentos </p>
     </ngx-spinner>
     <section class="invoice">
-
+        <a class="btn pull-right" (click)="loadBudgets()"><i class="fa fa-download"></i> Carregar Orçamentos </a>
+        
         <sivp-table [name]="'Orçamento'" [headers]="['Id', 'Cliente', 'Terceiro', 'Data', 'Valor', 'Aprovado']" [datas]="buds" [ids]="['budgetId','clientName','storeClient' ,'date', 'value', 'approved']" [btc]="self" [dropdownButton]="true" [runClickRow]="false">
         </sivp-table>
     </section>

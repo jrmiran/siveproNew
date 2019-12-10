@@ -104,7 +104,19 @@
                 <div class="box box-primary">
                     <div class="box-header">
                         <h3 class="box-title"><i class="fa fa-usd"></i> Pagamentos</h3>
-                        <a (click)="setNewPayment()" data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-default"><i class="fa fa-plus"></i> Novo Pagamento </a>
+                        <div class="btn-group pull-right" style="margin-bottom: 5px">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a (click)="setNewPayment()" data-toggle="modal" class="btn pull-left" data-target="#modal-default"><i class="fa fa-money"></i> Novo Pagamento </a></li>
+                                <li><a data-toggle="modal" class="btn pull-left" data-target="#modal-formPayment"><i class="fa fa-money"></i> Novo Forma Pagamento </a></li>
+                                <li><a data-toggle="modal" class="btn pull-left" data-target="#modal-typePayment"><i class="fa fa-money"></i> Novo Tipo Pagamento </a></li>
+                            </ul>
+                        </div>
+                        
+                        
                     </div>
                     <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="filteredPayments" [ids]="['id','conta','data' , 'valor', 'entrada', 'numeroCheque', 'status', 'formaPagamento_formaPagamento']" [pc]="self" [runClickRow]="false" [searchBar] = "false">
                     </sivp-table>
@@ -309,6 +321,61 @@
             <!-- /.modal-dialog -->
         </div>
         <!------------------------------------------ END MODAL EDIT ----------------------------------------------------------->
+        
+        <!----------------------------------- MODAL FORM PAYMENT --------------------------------------------------------------------->
+        <div class="modal fade" id="modal-formPayment" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button (click)="closeModal()" type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeButton">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="fa fa-usd"></i> Forma de Pagamento</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form [formGroup]="paymentFormForm" novalidate>
+                            <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                                <label> Forma de Pagamento </label>
+                                <input type="text" class="form-control" formControlName="txtPaymentForm">
+                            </sivp-input-container>
+                            
+                        </form>
+                    </div>
+                    <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                        <a class="btn btn-primary" (click)="addNewPaymentForm()" [class.disabled]="!paymentFormForm.valid"><i class="fa fa-pencil"></i>OK</a>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!------------------------------------------ END MODAL FORM PAYMENT ----------------------------------------------------------->
+        
+        <!----------------------------------- MODAL TYPE PAYMENT --------------------------------------------------------------------->
+        <div class="modal fade" id="modal-typePayment" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button (click)="closeModal()" type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeButton">
+                            <span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="fa fa-usd"></i> Tipo de Pagamento</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form [formGroup]="paymentTypeForm" novalidate>
+                            <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                                <label> Tipo de Pagamento </label>
+                                <input type="text" class="form-control" formControlName="txtPaymentType">
+                            </sivp-input-container>
+                        </form>
+                    </div>
+                    <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                        <a class="btn btn-primary" (click)="addNewPaymentType()" [class.disabled]="!paymentTypeForm.valid"><i class="fa fa-pencil"></i>OK</a>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!------------------------------------------ END MODAL TYPE PAYMENT ----------------------------------------------------------->
 
     </section>
 </section>

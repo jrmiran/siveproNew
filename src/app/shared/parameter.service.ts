@@ -14,6 +14,11 @@ export class ParameterService{
     privilege: boolean = false;
     administrator: boolean = false;
     
+    //TABLE LISTS
+    budgetsTable: Object[] = [];
+    orderServicesTable: Object[] = [];
+    paymentsTable: Object[] = [];
+    
     getPrivilege(){
         return this.privilege;
     }

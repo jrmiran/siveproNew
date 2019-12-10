@@ -354,6 +354,14 @@ export class AppService{
         return this.callPost('postInsertPayment', obj);
     }
     
+    postInsertPaymentForm(obj: any):Observable<Object[]>{
+        return this.callPost('postInsertPaymentForm', obj);
+    }
+    
+    postInsertPaymentType(obj: any):Observable<Object[]>{
+        return this.callPost('postInsertPaymentType', obj);
+    }
+    
     draw(budgetId: number): Observable<Object[]>{
         return this.callQuery(`draw/${budgetId}`);
     }
