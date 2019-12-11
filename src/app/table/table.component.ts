@@ -123,6 +123,10 @@ export class TableComponent implements OnInit {
         this.budgetComponent.changeBudgetStatus(id, status, this.btc);
     }
     
+    removePayment(j: any){
+        console.log(j);
+    }
+    
     addBudgetItem(id: string, item: string, valorUnitario: string){
         var self = this;
         console.log("entrou no addbudgeitem");
@@ -251,7 +255,7 @@ export class TableComponent implements OnInit {
                         if(!this.fdcMaterial){
                             this.fdc.clickRow(i);
                         } else{
-                            this.fdc.clickRowMaterial(i);
+                            this.fdc.clickRowMaterial(data['id']);
                         }
                     } else{
                         this.fdc.clickRowDraw(i);

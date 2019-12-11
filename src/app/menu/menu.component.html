@@ -19,8 +19,8 @@
          <li> <sivp-menu-item [name]="'Material'" [subItems]="['Material']" [routers]="['/materials']" class="sidebar-menu" ></sivp-menu-item></li>
         <li> <sivp-menu-item [name]="'Cliente'" [subItems]="['Cadastrar', 'Procurar']" [routers]="['/clientRegister', '/clientSearch']" class="sidebar-menu" ></sivp-menu-item></li>
         <li> <sivp-menu-item [name]="'Vendedor'" [subItems]="['Cadastrar', 'Procurar']" [routers]="['/sellerRegister', '/sellerSearch']" class="sidebar-menu" ></sivp-menu-item></li>
-        <li *ngIf="privilege"> <sivp-menu-item [name]="'Pagamentos'" [subItems]="['Consultar']" [routers]="['/payment']" class="sidebar-menu" ></sivp-menu-item></li>
-        <li *ngIf="administrator"> <sivp-menu-item [name]="'Test Area'" [subItems]="['Service Order']" [routers]="['/serviceOrderTest']" class="sidebar-menu" ></sivp-menu-item></li>
+        <li *ngIf="privilege || parameterService.privilege"> <sivp-menu-item [name]="'Pagamentos'" [subItems]="['Consultar']" [routers]="['/payment']" class="sidebar-menu" ></sivp-menu-item></li>
+        <li *ngIf="administrator || parameterService.administrator"> <sivp-menu-item [name]="'Test Area'" [subItems]="['Service Order']" [routers]="['/serviceOrderTest']" class="sidebar-menu" ></sivp-menu-item></li>
     </ul>
   </section>
 </aside>

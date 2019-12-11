@@ -117,6 +117,10 @@
             <td *ngIf="removeItemOption && selectedRow ==j && data['item'] != 'LINHA DE SEPARAÇÃO'">
                 <a (click)="removeItem(j)" class="btn"><i class="fa fa-trash"></i></a>
             </td>
+            
+            <td *ngIf="selectedRow ==j && data['item'] != 'LINHA DE SEPARAÇÃO' && pc">
+                <a (click)="removePayment(j)" class="btn"><i class="fa fa-trash"></i></a>
+            </td>
 
             <!--<span *ngIf="soc && releseSoc">
                 <form [formGroup]="formGroupSO">

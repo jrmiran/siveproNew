@@ -258,9 +258,10 @@ export class FileDropComponent implements OnInit{
         
     }
     
-    clickRowMaterial(i: number){
-        this.currentItemMaterial = i;
-        console.log(this.currentItemMaterial);
+    clickRowMaterial(i: any){
+        this.currentItemMaterial = this.materials.indexOf(this.materials.find(function(data){
+            return data['id'] == i;
+        }));
     }
     
     clickRowDraw(i: number){
