@@ -119,7 +119,7 @@
             </td>
             
             <td *ngIf="selectedRow ==j && data['item'] != 'LINHA DE SEPARAÇÃO' && pc">
-                <a (click)="removePayment(j)" class="btn"><i class="fa fa-trash"></i></a>
+                <a (click)="removePayment(j, data)" class="btn"><i class="fa fa-trash"></i></a>
             </td>
 
             <!--<span *ngIf="soc && releseSoc">

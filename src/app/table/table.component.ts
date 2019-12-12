@@ -123,8 +123,8 @@ export class TableComponent implements OnInit {
         this.budgetComponent.changeBudgetStatus(id, status, this.btc);
     }
     
-    removePayment(j: any){
-        console.log(j);
+    removePayment(j: any, data: any){
+        this.pc.removePayment(data);
     }
     
     addBudgetItem(id: string, item: string, valorUnitario: string){

@@ -287,6 +287,26 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         return query;
     }
     
+    removePayment(data: any){
+        var self = this;
+        var i = 0;
+        this.spinner.show();
+        i = self.payments.indexOf(self.payments.find(function(value){
+            return value['id'] == data['id'];
+        }));
+        
+        this.appService.postRemovePayment({paymentId: data['id']}).subscribe(function(value){
+            console.log(value);
+            self.payments = self.payments.slice(0,i).concat(self.payments.slice(i+1,self.payments.length));
+            self.filteredPayments = self.filteredPayments.slice(0,i).concat(self.filteredPayments.slice(i+1,self.filteredPayments.length));
+            alert("Pagamento Removido");
+            self.spinner.hide();
+        });
+        
+        
+    }
+    
+    
     addNewPaymentForm(){
         this.appService.postInsertPaymentForm({query: "'" + this.paymentFormForm.get('txtPaymentForm').value + "'"}).subscribe(function(data){
              console.log(data);

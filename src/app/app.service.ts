@@ -338,6 +338,10 @@ export class AppService{
         return this.callPost('postSearchPaymentForm', {});
     }
     
+    postRemovePayment(obj: any):Observable<Object[]>{
+        return this.callPost('postRemovePayment', obj);
+    }
+    
     postSearchProject(obj: any):Observable<Object[]>{
         if(obj['type'] == "All"){
             return this.callPost('postSearchAllProjects', obj);
@@ -426,6 +430,8 @@ export class AppService{
          valor = valor.replace(",",".");
          return parseFloat(valor);
     }
+    
+    
     
     checkSessionStorage(localStorageName: string): boolean{
         if(window.sessionStorage.getItem(localStorageName) == "true"){

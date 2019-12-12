@@ -253,10 +253,18 @@
                         <form [formGroup]="paymentFormEdit" novalidate>
 
                             <div class="row">
-                                <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                                <sivp-input-container class="form-group col-sm-6 col-xs-12">
                                     <label> Data </label>
                                     <br>
                                     <sivp-date-picker formControlName="txtDateEdit" #dPickerEdit></sivp-date-picker>
+                                </sivp-input-container>
+                                
+                                <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                                    <label> Tipo </label>
+                                    <select class="form-control" formControlName="cmbStatusEdit">
+                                        <option>Entrada</option>
+                                        <option>Saída</option>
+                                    </select>
                                 </sivp-input-container>
                             </div>
 

@@ -50,7 +50,10 @@ export class FileDropComponent implements OnInit{
     releaseMaterial: boolean = false;
     
   public dropped(files: NgxFileDropEntry[]) {
-    this.files = files;
+    //this.files = files;
+      this.files = this.files.concat(files);
+      
+      console.log(files);
     for (const droppedFile of files) {
  
       // Is it a file?
@@ -198,33 +201,29 @@ export class FileDropComponent implements OnInit{
         var self = this;
         console.log(self.locals);
         var query = "";
+        var params = {query: ""}
         self.images.forEach(function(data, index){
-            query = query + "(0,'" + self.images[index].img + "'," + self.budgetId + "," + self.materiaisId[index] + ",'" + self.ambients[index] + "','" + self.locals[index] + "')";
-            if(index != self.images.length-1){
-                query = query + ",";
-            }
-        })
-        var params = {query: query};
-        this.appService.insertDraw(params).subscribe(function(data){
-            console.log(data);
-            var drawId: number = data['insertId'];
-            for(let i=0; i<data['affectedRows']; i++){
-                self.pModel.ambient = self.ambients[i];
+            
+            params.query =  "(0,'" + self.images[index].img + "'," + self.budgetId + "," + self.materiaisId[index] + ",'" + self.ambients[index] + "','" + self.locals[index] + "')"
+            self.appService.insertDraw(params).subscribe(function(data){
+                var drawId: number = data['insertId'];
+                self.pModel.ambient = self.ambients[index];
                 self.pModel.client = self.clientName;
-                self.pModel.image = self.images[i].img;
+                self.pModel.image = self.images[index].img;
                 self.pModel.item = "";
-                self.pModel.material = self.materiais[i];
-                self.pModel.local = self.locals[i];
+                self.pModel.material = self.materiais[index];
+                self.pModel.local = self.locals[index];
                 self.pModel.store =  self.storeName;
                 self.pModel.drawId = drawId.toString();
                 self.pModel.budgetId = self.budgetId;
                 self.pModel.name = "Desenho " + drawId + " " + self.pModel.client + " (" + self.pModel.store + ")";
                 self.createPdf.gerarPDF(self.pModel);
-                drawId = drawId + 1;
-            }
-            self.spinner.hide();
-            alert("Desenhos criados");
-        });
+                if(index == self.images.length - 1){
+                    self.spinner.hide();
+                    alert("Desenhos criados");
+                }
+            })
+        })
     }
     
     
