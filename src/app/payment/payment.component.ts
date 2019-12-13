@@ -277,7 +277,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         this.appService.postEditPayment(params).subscribe(function(data){
            alert("Pagamento Editado!");
             var inOut: boolean = false;
-            if(self.paymentFormEdit.get('cmbInOutEdit').value = "Entrada"){
+            if(self.paymentFormEdit.get('cmbInOutEdit').value == "Entrada"){
                 inOut = true;
             }else{
                 inOut = false;
