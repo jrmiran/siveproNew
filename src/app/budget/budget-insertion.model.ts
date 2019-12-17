@@ -13,4 +13,5 @@ export interface BudgetInsertion{
     clienteJuridico_id: number;     //faz query
     pessoa_id: number;              //faz query
     vendedor_id: number;            //faz query
+    poload: boolean;
 }

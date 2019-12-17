@@ -90,7 +90,7 @@ export class BudgetNewComponent implements OnInit {
     modalForm: FormGroup;
     
     items: Object[];
-    formin= {type: "", client: "", vendor: "", thirdy: "", date: ""};
+    formin= {type: "", client: "", vendor: "", thirdy: "", date: "", poload: false};
     budgets: BudgetNew[] = [];
     budgetsAux: BudgetNew[] = [];
     main: BudgetNewComponent = this;
@@ -134,7 +134,8 @@ export class BudgetNewComponent implements OnInit {
         clienteEmpresaa_id: 0, //this.clienteEmpresaa_id;
         clienteJuridico_id: 0,
         pessoa_id: 0, //this.pessoa_id;
-        vendedor_id: 0//this.vendedor_id;
+        vendedor_id: 0,//this.vendedor_id;
+        poload: false
     };
     budgetItems: BudgetItem[] = [];
     
@@ -595,6 +596,7 @@ export class BudgetNewComponent implements OnInit {
         this.bInsertion.tipoCliente = this.formin.type; //MODIFICAR
         this.bInsertion.valorTotal = this.mainBudget.valorTotal;
         this.bInsertion.arquiteto_id = null;
+        this.bInsertion.poload = this.formin.poload;
         if(this.formin.type == 'LOJ'){
             this.bInsertion.clienteEmpresa_id = this.client.id_Client;
             this.bInsertion.pessoa_id = null;//this.clienteEmpresa_id;
@@ -693,6 +695,7 @@ export class BudgetNewComponent implements OnInit {
         var retificado: number = 1;
         var tipoCliente: string;
         var data: string;
+        var poload = 0;
         
         data = this.bInsertion.data.replace('/','%2F');
         data = data.replace('/','%2F');
@@ -714,6 +717,11 @@ export class BudgetNewComponent implements OnInit {
         } else{
             tipoCliente = "Físico";
         }
+        if(this.bInsertion.poload){
+            poload = 1;
+        }else{
+            poload = 0;
+        }
         
         console.log(this.bInsertion.valorTotal);
         return "(" + aprovado + "," +
@@ -729,7 +737,8 @@ export class BudgetNewComponent implements OnInit {
                     this.bInsertion.clienteEmpresaa_id + "," +
                     null + "," +
                     this.bInsertion.pessoa_id + "," +
-                    this.bInsertion.vendedor_id + ")"
+                    this.bInsertion.vendedor_id + "," +
+                    poload + ")";
     }
     
     removeSeparationRows(){
@@ -831,7 +840,7 @@ export class BudgetNewComponent implements OnInit {
             descricaoSubItem: this.formBuilder.control('', [Validators.required])
       })
       
-      this.orderForm.get('txtObservacao').setValue("ORÇAMENTO SUJEITO A ALTERAÇÃO DE VALOR APÓS MEDIÇÃO E CONFERÊNCIA DO PROJETO EM LOCO" + String.fromCharCode(10) +"ORÇAMENTO VÁLIDO POR 10 DIAS"+ String.fromCharCode(10) +"CUBAS DE LOUÇA E INOX NÃO INCLUSAS NO ORÇAMENTO"+ String.fromCharCode(10) + "DESCONTO NÃO APLICÁVEL SOBRE O FRETE" + String.fromCharCode(10) + String.fromCharCode(10) +"FORMA DE PAGAMENTO: ");
+      this.orderForm.get('txtObservacao').setValue("ORÇAMENTO SUJEITO A ALTERAÇÃO DE VALOR APÓS MEDIÇÃO E CONFERÊNCIA DO PROJETO EM LOCO" + String.fromCharCode(10) +"ORÇAMENTO VÁLIDO POR 10 DIAS"+ String.fromCharCode(10) +"CUBAS DE LOUÇA E INOX NÃO INCLUSAS NO ORÇAMENTO"+ String.fromCharCode(10) + "DESCONTO NÃO APLICÁVEL SOBRE O FRETE" + String.fromCharCode(10) + String.fromCharCode(10) + "PAGAMENTO A VISTA COM 5 DE DESCONTO SENDO 70 NO ATO E 30 NA ENTREGA" + String.fromCharCode(10) + "FORMA DE PAGAMENTO: ");
       this.cbo = (this.orderForm.get('checkBoxOption') as FormArray);
       
       this.router.queryParams.subscribe(
@@ -871,7 +880,7 @@ export class BudgetNewComponent implements OnInit {
               console.log(self.thirdy);
               console.log(self.bInsertion);
               console.log(self.clientData);
-              console.log(self.clientDataObj[0]); 
+              console.log(self.clientDataObj[0]);
             self.showSpinner(false);
               self.loadPage = true;
         });

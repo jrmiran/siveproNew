@@ -159,7 +159,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         clienteEmpresaa_id: 0, //this.clienteEmpresaa_id;
         clienteJuridico_id: 0,
         pessoa_id: 0, //this.pessoa_id;
-        vendedor_id: 0//this.vendedor_id;
+        vendedor_id: 0,
+        poload: false//this.vendedor_id;
     };
     
     self = this;
@@ -1191,8 +1192,13 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
             txtDetalhe: this.formBuilder.control(''),
             txtObservacao: this.formBuilder.control(''),
             txtDiscount: this.formBuilder.control(''),
-            checkBoxOption: this.buildComodos()
+            checkBoxOption: this.buildComodos(),
+            chkPoloAd: this.formBuilder.control('')
       })
+      
+      this.orderForm.get('chkPoloAd').valueChanges.subscribe(function(data){
+          console.log(data);
+      });
       
       this.modalForm = this.formBuilder.group({
             qtdSubItem: this.formBuilder.control('', [Validators.required, Validators.pattern(self.numberValidator)]),
@@ -1250,6 +1256,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                 self.thirdyCnpj = cnpj;
                 self.thirdyCpf = cpf;
                 
+                if(self.orc[0]['poload']['data'][0] == 1){
+                    self.orderForm.get('chkPoloAd').setValue(true);
+                }else{
+                    self.orderForm.get('chkPoloAd').setValue(false);
+                }
                 
                 console.log(self.thirdyCpf);
                 console.log(self.ter);

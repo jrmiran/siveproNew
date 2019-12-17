@@ -10,6 +10,27 @@
         <div class="row">
             <form [formGroup]="filterForm" novalidate>
                 <div class="col-md-12">
+
+                    <mat-accordion>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <h3 class="box-title"><i class="fa fa-filter"></i> Filtros</h3>
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    Clique para aplicar filtros
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            <p> Parágrafo </p>
+                        </mat-expansion-panel>
+                    </mat-accordion>
+
+
+
+
+
+                    <!-- COLLAPSED BOX -->
                     <div class="box box-primary collapsed-box">
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="fa fa-filter"></i> Filtros</h3>
@@ -27,10 +48,10 @@
 
                                     <label> Data </label>
                                     <a (click)="clearDateFilter()" class="btn"><i class="fa fa-trash"> Limpar </i></a>
-                                    <input type="text" ngxDaterangepickerMd formControlName="txtDate" class="form-control" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" readonly="true"/>
+                                    <input type="text" ngxDaterangepickerMd formControlName="txtDate" class="form-control" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" readonly="true" />
                                 </sivp-input-container>
 
-                                
+
                                 <sivp-input-container class="form-group col-sm-3 col-xs-12">
                                     <label> Entrada / Saída </label>
                                     <select class="form-control" formControlName="cmbInOut">
@@ -95,6 +116,9 @@
                         <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
+                    <!-- END COLLAPSED BOX -->
+
+
                 </div>
             </form>
         </div>
@@ -115,15 +139,15 @@
                                 <li><a data-toggle="modal" class="btn pull-left" data-target="#modal-typePayment"><i class="fa fa-money"></i> Novo Tipo Pagamento </a></li>
                             </ul>
                         </div>
-                        
-                        
+
+
                     </div>
-                    <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="filteredPayments" [ids]="['id','conta','data' , 'valor', 'entrada', 'numeroCheque', 'status', 'formaPagamento_formaPagamento']" [pc]="self" [runClickRow]="true" [searchBar] = "true">
+                    <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="filteredPayments" [ids]="['id','conta','data' , 'valor', 'entrada', 'numeroCheque', 'status', 'formaPagamento_formaPagamento']" [pc]="self" [runClickRow]="true" [searchBar]="true">
                     </sivp-table>
                 </div>
             </div>
         </div>
-        
+
         <div class="row">
             <span class="pull-right">
                 <label> Total </label>
@@ -154,12 +178,12 @@
                                 <div class="row">
                                     <sivp-input-container class="form-group col-sm-12 col-xs-12">
                                         <label> Data </label>
-                                        
+
                                         <br>
                                         <sivp-date-picker formControlName="txtDate" #dPicker></sivp-date-picker>
                                     </sivp-input-container>
-                                    
-                                    
+
+
                                 </div>
 
                                 <div class="row">
@@ -258,7 +282,7 @@
                                     <br>
                                     <sivp-date-picker formControlName="txtDateEdit" #dPickerEdit></sivp-date-picker>
                                 </sivp-input-container>
-                                
+
                                 <sivp-input-container class="form-group col-sm-6 col-xs-12">
                                     <label> Tipo </label>
                                     <select class="form-control" formControlName="cmbInOutEdit">
@@ -329,7 +353,7 @@
             <!-- /.modal-dialog -->
         </div>
         <!------------------------------------------ END MODAL EDIT ----------------------------------------------------------->
-        
+
         <!----------------------------------- MODAL FORM PAYMENT --------------------------------------------------------------------->
         <div class="modal fade" id="modal-formPayment" data-backdrop="static">
             <div class="modal-dialog">
@@ -345,7 +369,7 @@
                                 <label> Forma de Pagamento </label>
                                 <input type="text" class="form-control" formControlName="txtPaymentForm">
                             </sivp-input-container>
-                            
+
                         </form>
                     </div>
                     <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
@@ -357,7 +381,7 @@
             <!-- /.modal-dialog -->
         </div>
         <!------------------------------------------ END MODAL FORM PAYMENT ----------------------------------------------------------->
-        
+
         <!----------------------------------- MODAL TYPE PAYMENT --------------------------------------------------------------------->
         <div class="modal fade" id="modal-typePayment" data-backdrop="static">
             <div class="modal-dialog">

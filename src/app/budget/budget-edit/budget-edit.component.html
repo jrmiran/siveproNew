@@ -14,6 +14,7 @@
                     <h2 class="page-header">
                         <i class="fa fa-usd"></i> Orçamento
 
+
                         <div class="btn-group pull-right" style="margin-bottom: 5px">
                             <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
 
@@ -28,9 +29,15 @@
                             </ul>
                         </div>
 
+
                         <!--<a class="btn pull-right" (click)="budgetInsertionTest()"><i class="fa fa-copy"></i> Duplicar Orçamento</a>-->
 
                     </h2>
+                    <div class="row">
+                        <div class="pull-right">
+                            <input type="checkbox" formControlName="chkPoloAd"> Polo Ad
+                        </div>
+                    </div>
 
 
                     <div class="row">
@@ -55,8 +62,8 @@
                         <p class="col-sm-10"> {{mainBudget.date}} </p>
                     </div>
                     <div class="row">
-                        <p class="col-sm-10" *ngIf="approved"><i class = "fa fa-check" style="color: green"></i> Aprovado </p>
-                        <p class="col-sm-10" *ngIf="!approved"><i class = "fa fa-close" style="color: red"></i> Rejeitado </p>
+                        <p class="col-sm-10" *ngIf="approved"><i class="fa fa-check" style="color: green"></i> Aprovado </p>
+                        <p class="col-sm-10" *ngIf="!approved"><i class="fa fa-close" style="color: red"></i> Rejeitado </p>
                     </div>
                 </div>
             </div>
@@ -260,7 +267,7 @@
                                         <label> Medida 2 </label>
                                         <input type="text" class="form-control" formControlName="medida2SubItem" currencyMask [(ngModel)]="value3" [options]="{ prefix: '', thousands: '.', decimal: ',', precision: 3 }">
                                     </sivp-input-container>
-                                    
+
                                     <!--<sivp-input-container [label]="'Descrição'" class="form-group col-sm-2 col-xs-12">
                                         <label> Medida 2 </label>
                                         <input type="text" class="form-control" formControlName="medida2SubItem" value="ddd">
@@ -298,7 +305,7 @@
                 <!-- /.modal-dialog -->
             </div>
             <!------------------------------------------ END MODAL ----------------------------------------------------------->
-            
+
             <button id="openModalChangeItem" [hidden]="true" data-toggle="modal" data-target="#modalChangeItem">Open Modal</button>
             <!----------------------------------- MODAL CHANGE ITEM --------------------------------------------------------------------->
             <div class="modal fade" id="modalChangeItem" *ngIf="currentItem >=0">
