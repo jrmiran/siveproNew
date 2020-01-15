@@ -342,6 +342,10 @@ export class AppService{
         return this.callPost('postRemovePayment', obj);
     }
     
+    postBudgetInsertionTest(obj: any){
+        return this.callPost('postInsertion', obj);
+    }
+    
     postSearchProject(obj: any):Observable<Object[]>{
         if(obj['type'] == "All"){
             return this.callPost('postSearchAllProjects', obj);

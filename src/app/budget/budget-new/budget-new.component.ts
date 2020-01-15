@@ -620,7 +620,9 @@ export class BudgetNewComponent implements OnInit {
         var self = this;
         
         return new Promise(function(resolve, reject){
-            self.appService.budgetInsertionTest(self.convertBInsertionToString()).subscribe(function(data){
+            var params = {query: self.convertBInsertionToString()};
+            self.appService.postBudgetInsertionTest(params).subscribe(function(data){
+            //self.appService.budgetInsertionTest(self.convertBInsertionToString()).subscribe(function(data){
             self.insertedBudget = data['insertId'];
         
             self.budgets.forEach(function(data){
@@ -640,47 +642,47 @@ export class BudgetNewComponent implements OnInit {
         
             self.fillStringToQuery(self.qtds, self.qtdsString, self.insertedBudget)
                 .then(function(response){
-                        self.qtdsString = response.replace(/[\/]/g,'%2F');
+                        self.qtdsString = response;
                 });
             self.fillStringToQuery(self.cods, self.codsString, self.insertedBudget)
                 .then(function(response){
-                        self.codsString = response.replace(/[\/]/g,'%2F');
+                        self.codsString = response;
                 });
             self.fillStringToQuery(self.itemss, self.itemsString, self.insertedBudget)
                 .then(function(response){
-                        self.itemsString = response.replace(/[\/]/g,'%2F');
+                        self.itemsString = response;
                 });
             self.fillStringToQuery(self.detalhes, self.detalhesString, self.insertedBudget)
                 .then(function(response){
-                        self.detalhesString = self.appService.replaceAll(response.replace(/[\/]/g,'%2F'), String.fromCharCode(10), "QUEBRADELINHA");
+                        self.detalhesString = self.appService.replaceAll(response, String.fromCharCode(10), "QUEBRADELINHA");
                 });
             self.fillStringToQuery(self.medidas, self.medidasString, self.insertedBudget)
                 .then(function(response){
-                        self.medidasString = response.replace(/[\/]/g,'%2F');
+                        self.medidasString = response;
                 });
             self.fillStringToQuery(self.comodos, self.comodosString, self.insertedBudget)
                 .then(function(response){
-                        self.comodosString = response.replace(/[\/]/g,'%2F');
+                        self.comodosString = response;
                 });
             self.fillStringToQuery(self.necessarios, self.qtdsString, self.insertedBudget)
                 .then(function(response){
-                        self.necessariosString = response.replace(/[\/]/g,'%2F');
+                        self.necessariosString = response;
                 });
             self.fillStringToQuery(self.valoresUnitarios, self.valoresUnitariosString, self.insertedBudget)
                 .then(function(response){
-                        self.valoresUnitariosString = response.replace(/[\/]/g,'%2F');
+                        self.valoresUnitariosString = response;
                 });
             self.fillStringToQuery(self.valoresTotais, self.valoresTotaisString, self.insertedBudget)
                 .then(function(response){
-                        self.valoresTotaisString = response.replace(/[\/]/g,'%2F');
+                        self.valoresTotaisString = response;
                 });
             self.fillStringToQuery(self.descontos, self.descontosString, self.insertedBudget)
                 .then(function(response){
-                        self.descontosString = response.replace(/[\/]/g,'%2F');
+                        self.descontosString = response;
                 });
             self.fillStringToQuery(self.valoresComDesconto, self.valoresComDescontoString, self.insertedBudget)
                 .then(function(response){
-                        self.valoresComDescontoString = response.replace(/[\/]/g,'%2F');
+                        self.valoresComDescontoString = response;
                 });
                 resolve("convertBudgetToString executado com sucesso!!");
             });
@@ -697,8 +699,8 @@ export class BudgetNewComponent implements OnInit {
         var data: string;
         var poload = 0;
         
-        data = this.bInsertion.data.replace('/','%2F');
-        data = data.replace('/','%2F');
+        data = this.bInsertion.data;
+       //data
         
         if(this.bInsertion.aprovado){
             aprovado = 1;
@@ -840,7 +842,7 @@ export class BudgetNewComponent implements OnInit {
             descricaoSubItem: this.formBuilder.control('', [Validators.required])
       })
       
-      this.orderForm.get('txtObservacao').setValue("ORÇAMENTO SUJEITO A ALTERAÇÃO DE VALOR APÓS MEDIÇÃO E CONFERÊNCIA DO PROJETO EM LOCO" + String.fromCharCode(10) +"ORÇAMENTO VÁLIDO POR 10 DIAS"+ String.fromCharCode(10) +"CUBAS DE LOUÇA E INOX NÃO INCLUSAS NO ORÇAMENTO"+ String.fromCharCode(10) + "DESCONTO NÃO APLICÁVEL SOBRE O FRETE" + String.fromCharCode(10) + String.fromCharCode(10) + "PAGAMENTO A VISTA COM 5 DE DESCONTO SENDO 70 NO ATO E 30 NA ENTREGA" + String.fromCharCode(10) + "FORMA DE PAGAMENTO: ");
+      this.orderForm.get('txtObservacao').setValue("ORÇAMENTO SUJEITO A ALTERAÇÃO DE VALOR APÓS MEDIÇÃO E CONFERÊNCIA DO PROJETO EM LOCO" + String.fromCharCode(10) +"ORÇAMENTO VÁLIDO POR 10 DIAS"+ String.fromCharCode(10) +"CUBAS DE LOUÇA E INOX NÃO INCLUSAS NO ORÇAMENTO"+ String.fromCharCode(10) + "DESCONTO NÃO APLICÁVEL SOBRE O FRETE" + String.fromCharCode(10) + String.fromCharCode(10) + "PAGAMENTO A VISTA COM 5% DE DESCONTO, SENDO 70% NO ATO E 30% NA ENTREGA" + String.fromCharCode(10) + "FORMA DE PAGAMENTO: ");
       this.cbo = (this.orderForm.get('checkBoxOption') as FormArray);
       
       this.router.queryParams.subscribe(
