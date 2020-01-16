@@ -611,7 +611,9 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         var self = this;
         
         return new Promise(function(resolve, reject){
-            self.appService.budgetInsertionTest(self.convertBInsertionToString()).subscribe(function(data){
+            var params = {query: self.convertBInsertionToString()};
+            self.appService.postBudgetInsertionTest(params).subscribe(function(data){
+            //self.appService.budgetInsertionTest(self.convertBInsertionToString()).subscribe(function(data){
             console.log(data);    
             self.insertedBudget = data['insertId'];
         
@@ -947,7 +949,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         self.setBudgetInsertion();
         console.log(self.bInsertion);
         this.removeSeparationRows();
-        
+        console.log("point");
         this.convertDuplicateBudgetToString().then(function(data){
 
             
@@ -1044,6 +1046,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         var retificado: number = 1;
         var tipoCliente: string;
         var data: string;
+        var poload = 0;
         
         data = this.bInsertion.data.replace('/','%2F');
         data = data.replace('/','%2F');
@@ -1065,6 +1068,11 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
         } else{
             tipoCliente = "Físico";
         }
+        if(this.bInsertion.poload){
+            poload = 1;
+        }else{
+            poload = 0;
+        }
         
         console.log(this.bInsertion.valorTotal);
         return "(" + aprovado + "," +
@@ -1080,7 +1088,8 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                     this.bInsertion.clienteEmpresaa_id + "," +
                     null + "," +
                     this.bInsertion.pessoa_id + "," +
-                    this.bInsertion.vendedor_id + ")"
+                    this.bInsertion.vendedor_id + "," +
+                    poload + ")";
     }
     
     
