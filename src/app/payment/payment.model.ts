@@ -9,4 +9,5 @@ export interface Payment{
     paymentForm: string;
     paymentType: string;
     note: string;
+    budgetId: number;
 }

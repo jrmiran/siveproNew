@@ -33,10 +33,13 @@
                     <span *ngIf="pc && id =='id'">
                         <a (click)="openModalPayment(data['id'])" class="btn"> {{data[id]}} </a>
                     </span>
+                    <span *ngIf="pc && id =='orcamento_id'">
+                        <a [routerLink]="['/budgetEdit']" [queryParams]="{id: data[id]}" class="btn"> {{data[id]}} </a>
+                    </span>
                     <span *ngIf="(sotc || ostc) && id == 'orcamento_id'">
                         <a [routerLink]="['/budgetEdit']" [queryParams]="{id: data[id]}" class="btn"> {{data[id]}} </a>
                     </span>
-                    <span *ngIf="id != 'budgetId' && !((sotc || ostc) && id == 'id') && id != 'approved' && id != 'empreita' && id != 'pedra' && id != 'terminado' && !(csc && id == 'id') && !(pc && id=='id') && !((sotc || ostc) && id == 'orcamento_id') && !(soc && id=='id') && !(spc && id == 'id')">
+                    <span *ngIf="id != 'budgetId' && !((sotc || ostc) && id == 'id') && id != 'approved' && id != 'empreita' && id != 'pedra' && id != 'terminado' && !(csc && id == 'id') && !(pc && id=='id') && !((sotc || ostc) && id == 'orcamento_id') && !(soc && id=='id') && !(spc && id == 'id') && !(pc && id =='orcamento_id')">
                         {{data[id]}}
                     </span>
                     

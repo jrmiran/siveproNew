@@ -208,6 +208,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         this.paymentsParts[this.currentPart-1].paymentForm = this.paymentForm.get('cmbPaymentForm').value;
         this.paymentsParts[this.currentPart-1].paymentType = this.paymentForm.get('cmbTypePayment').value;
         this.paymentsParts[this.currentPart-1].note = this.paymentForm.get('txtNote').value;
+        this.paymentsParts[this.currentPart-1].budgetId = this.paymentForm.get('txtBudget').value;
         
     }
     
@@ -230,7 +231,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     }
     
     newPayment(): Payment{
-        return {type: "", date: "", bill: "", part: "", value: 0, status: "", check: "", paymentForm: "", paymentType: "", note: ""};
+        return {type: "", date: "", bill: "", part: "", value: 0, status: "", check: "", paymentForm: "", paymentType: "", note: "", budgetId: 1};
     }
     
     setNewPayment(){
@@ -244,14 +245,11 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         var params = {query: this.stringQuery()};
         this.appService.postInsertPayment(params).subscribe(function(data){
             var insertId: number = data['insertId'];
-            
-            
-            
             console.log(insertId);
             console.log(self.paymentsParts);
             self.paymentsParts.forEach(function(value, index){
                 console.log(value);
-                self.filteredPayments.push({conta: value.bill, data: value.date, entrada: value.type, formaPagamento_formaPagamento: value.paymentForm, funcionario_id: null, id: insertId, numeroCheque: value.check, observacao: value.note, status: value.status, tipoPagamento_tipoPagamento: value.paymentType, valor: value.value});
+                self.filteredPayments.push({conta: value.bill, data: value.date, entrada: value.type, formaPagamento_formaPagamento: value.paymentForm, funcionario_id: null, id: insertId, numeroCheque: value.check, observacao: value.note, status: value.status, tipoPagamento_tipoPagamento: value.paymentType, valor: value.value, orcamento_id: value.budgetId});
                 insertId = insertId + 1;
             });
             alert("Pagamentos Registrados!");
@@ -268,7 +266,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         if(this.paymentFormEdit.get('cmbInOutEdit').value == "Entrada"){
             inOut = 1;   
         }
-        var params = {bill: this.paymentFormEdit.get('txtBillEdit').value, date: this.paymentFormEdit.get('txtDateEdit').value, check: this.paymentFormEdit.get('txtCheckNumberEdit').value, status: this.paymentFormEdit.get('cmbStatusEdit').value, value: this.paymentFormEdit.get('txtValueEdit').value, paymentForm: this.paymentFormEdit.get('cmbPaymentFormEdit').value, note: this.paymentFormEdit.get('txtNoteEdit').value, paymentType: this.paymentFormEdit.get('cmbTypePaymentEdit').value, id: this.paymentId, inOut: inOut};
+        var params = {bill: this.paymentFormEdit.get('txtBillEdit').value, date: this.paymentFormEdit.get('txtDateEdit').value, check: this.paymentFormEdit.get('txtCheckNumberEdit').value, status: this.paymentFormEdit.get('cmbStatusEdit').value, value: this.paymentFormEdit.get('txtValueEdit').value, paymentForm: this.paymentFormEdit.get('cmbPaymentFormEdit').value, note: this.paymentFormEdit.get('txtNoteEdit').value, paymentType: this.paymentFormEdit.get('cmbTypePaymentEdit').value, id: this.paymentId, inOut: inOut, budgetId: self.paymentFormEdit.get('txtBudgetEdit').value};
         
         var payment = this.filteredPayments.find(function(data){
            return data['id'] == self.paymentId; 
@@ -291,6 +289,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             payment['observacao'] = self.paymentFormEdit.get('txtNoteEdit').value;
             payment['tipoPagamento_tipoPagamento'] = self.paymentFormEdit.get('cmbTypePaymentEdit').value;
             payment['entrada'] = inOut;
+            payment['orcamento_id'] = self.paymentFormEdit.get('txtBudgetEdit').value;
             document.getElementById("editPayment").click();
             self.spinner.hide();
         });
@@ -302,9 +301,9 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         console.log(this.paymentsParts);
         this.paymentsParts.forEach(function(data, index){
             if(index == 0){
-                query = query + "(" + "'" + data.bill + "'" + "," + "'" + data.date + "'" + "," + data.type  + "," +  "'" + data.check + "'" + "," +  "'" + data.status +  "'" + "," +  "'" + data.value + "'" + "," +  "'" + data.paymentForm +  "'" + "," +  "'" + data.note +  "'" + "," +  "'" + data.paymentType +  "'" + ")";
+                query = query + "(" + "'" + data.bill + "'" + "," + "'" + data.date + "'" + "," + data.type  + "," +  "'" + data.check + "'" + "," +  "'" + data.status +  "'" + "," +  "'" + data.value + "'" + "," +  "'" + data.paymentForm +  "'" + "," +  "'" + data.note +  "'" + "," +  "'" + data.paymentType + "'," + data.budgetId + ")";
             } else{
-                query = query + ", (" + "'" + data.bill + "'" + "," + "'" + data.date + "'" + "," + "'" + data.type +  "'" + "," +  "'" + data.check + "'" + "," +  "'" + data.status +  "'" + "," +  "'" + data.value + "'" + "," +  "'" + data.paymentForm +  "'" + "," +  "'" + data.note +  "'" + "," +  "'" + data.paymentType +  "'" + ")";
+                query = query + ", (" + "'" + data.bill + "'" + "," + "'" + data.date + "'" + "," + "'" + data.type +  "'" + "," +  "'" + data.check + "'" + "," +  "'" + data.status +  "'" + "," +  "'" + data.value + "'" + "," +  "'" + data.paymentForm +  "'" + "," +  "'" + data.note +  "'" + "," +  "'" + data.paymentType + "'," + data.budgetId + ")";
             }
         });
         return query;
@@ -363,6 +362,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         this.paymentFormEdit.get('cmbTypePaymentEdit').setValue(paymentEdit['tipoPagamento_tipoPagamento']);
         this.paymentFormEdit.get('txtNoteEdit').setValue(paymentEdit['observacao']);
         this.paymentFormEdit.get('cmbInOutEdit').setValue(inOut);
+        this.paymentFormEdit.get('txtBudgetEdit').setValue(paymentEdit['orcamento_id']);
         
         let date: string[] = paymentEdit['data'].split('/');
         this.dPickerEdit.setDate(new Date(parseFloat(date[2]), parseFloat(date[1])-1, parseFloat(date[0])));
@@ -387,6 +387,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         txtCheckNumber: this.formBuilder.control('', []),
         cmbTypePayment: this.formBuilder.control('', [Validators.required]),
         txtNote: this.formBuilder.control('', []),
+        txtBudget: this.formBuilder.control('1', []),
     })
       
       this.paymentFormEdit = this.formBuilder.group({
@@ -398,7 +399,8 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         txtCheckNumberEdit: this.formBuilder.control('', []),
         cmbTypePaymentEdit: this.formBuilder.control('', [Validators.required]),
         txtNoteEdit: this.formBuilder.control('', []),
-        cmbInOutEdit: this.formBuilder.control('', [])
+        cmbInOutEdit: this.formBuilder.control('', []),
+        txtBudgetEdit: this.formBuilder.control('1', [])
     });
       
       this.filterForm = this.formBuilder.group({
