@@ -774,7 +774,9 @@ export class BudgetNewComponent implements OnInit {
         this.convertBudgetToString().then(function(data){
             console.log(self.convertBInsertionToString());
             //self.convertBudgetToString();
-            self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
+            var param = {budgetQuantitys: self.qtdsString, budgetAmbients: self.comodosString, budgetCodes: self.codsString, budgetDetails: self.detalhesString, budgetItems: self.itemsString, budgetMeasures: self.medidasString, budgetValues: self.valoresUnitariosString, budgetNeedings: self.necessariosString};
+            self.appService.postBudgetInsertion(param).subscribe(function(response){
+            //self.appService.budgetInsertion(self.codsString, self.comodosString, self.detalhesString, self.itemsString, self.medidasString, self.necessariosString, "(1,'0')", self.qtdsString, self.valoresUnitariosString, self.convertBInsertionToString()).subscribe(function(response){
                 console.log(response);
             });
             self.test();
