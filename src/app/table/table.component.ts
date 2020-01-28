@@ -20,6 +20,7 @@ import {ClientSearchComponent} from '../clients/client-search/client-search.comp
 import {OrderServiceTestComponent} from '../order-service-test/order-service-test.component';
 import {FormGroup, FormBuilder, Validators, FormControl, FormArray} from '@angular/forms';
 import {SearchProjectComponent} from '../search-project/search-project.component';
+import {ServiceOrderReportComponent} from '../service-order-report/service-order-report.component';
 
 @Component({
   selector: 'sivp-table',
@@ -66,10 +67,12 @@ export class TableComponent implements OnInit {
     @Input() formGroupSO: FormGroup;
     @Input() drawTable: boolean = false;
     @Input() spc: SearchProjectComponent;
+    @Input() sorc: ServiceOrderReportComponent;
+    @Input() percentageExecution: number;
     
     releseSoc: boolean = false;
-    
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
+    
     @ViewChild(TemplateRef) template: TemplateRef<any>;
     
     currentLine: number = -1;
@@ -116,6 +119,12 @@ export class TableComponent implements OnInit {
     
     openBudget(id: any){
         this.btc.openBudget(id);
+    }
+    
+    percentageToNumber(value: string){
+        console.log(value);
+        console.log("width: " + value.replace(',','.') + ";");
+        return "width: " + value.replace(',','.') + ";";
     }
     
     changeBudgetStatus(id: number, status: boolean){
@@ -291,6 +300,7 @@ export class TableComponent implements OnInit {
     }
     
     ngOnInit() {
+        var self = this;
         this.start.start();
         this.orderForm = this.formBuilder.group({
             checkBoxOption: this.buildComodos()
@@ -301,6 +311,9 @@ export class TableComponent implements OnInit {
                 console.log(this.formGroupSO);
             }
             
+        }
+        if(this.sorc){
+            console.log(self.percentageExecution);
         }
     }
 }

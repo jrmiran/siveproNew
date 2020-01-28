@@ -22,6 +22,7 @@ import {MaterialComponent} from './material/material.component';
 import {PaymentComponent} from './payment/payment.component';
 import {OrderServiceTestComponent} from './order-service-test/order-service-test.component';
 import {SearchProjectComponent} from './search-project/search-project.component';
+import {ServiceOrderReportComponent} from './service-order-report/service-order-report.component';
 
 export const ROUTES: Routes = [
     {path: '', component: LoginComponent},
@@ -45,5 +46,6 @@ export const ROUTES: Routes = [
     {path: 'materials', component: MaterialComponent},
     {path: 'payment', component: PaymentComponent},
     {path: 'serviceOrderTest', component: OrderServiceTestComponent},
-    {path: 'searchProject', component: SearchProjectComponent}
+    {path: 'searchProject', component: SearchProjectComponent},
+    {path: 'serviceOrderReport', component: ServiceOrderReportComponent}
 ]

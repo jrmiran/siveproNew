@@ -79,6 +79,7 @@ import { OrderServiceTestComponent } from './order-service-test/order-service-te
 import { SearchProjectComponent } from './search-project/search-project.component';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { ServiceOrderReportComponent } from './service-order-report/service-order-report.component';
 
 @NgModule({
   declarations: [
@@ -128,6 +129,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     PaymentComponent,
     OrderServiceTestComponent,
     SearchProjectComponent,
+    ServiceOrderReportComponent,
   ],
   imports: [
     BrowserModule,

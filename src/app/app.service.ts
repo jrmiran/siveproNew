@@ -314,6 +314,10 @@ export class AppService{
         return this.callPost(`postInsertBudgetItems`, obj);
     }
     
+    postSearchAllEmployees(): Observable<Object[]>{
+        return this.callPost(`postSearchAllEmployees`, {});
+    }
+    
     postBudgetsClient(obj: any): Observable<Object[]>{
         return this.callPost(`postBudgetsClient`, obj);
     }
@@ -369,6 +373,11 @@ export class AppService{
     postInsertPaymentType(obj: any):Observable<Object[]>{
         return this.callPost('postInsertPaymentType', obj);
     }
+    
+    postServiceOrderByEmployee():Observable<Object[]>{
+        return this.callPost('postServiceOrderByEmployee', {});
+    }
+
     
     draw(budgetId: number): Observable<Object[]>{
         return this.callQuery(`draw/${budgetId}`);
