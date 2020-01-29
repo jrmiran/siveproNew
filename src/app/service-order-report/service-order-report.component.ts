@@ -8,6 +8,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {ServiceOrderExecution} from './service-order-execution.model';
 import {EmployeeExecution} from './employee-execution.model';
+import {ServiceOrderAward} from './service-order-award.model';
+import {AwardTable} from './award-table.model';
 
 @Component({
   selector: 'sivp-service-order-report',
@@ -18,6 +20,10 @@ export class ServiceOrderReportComponent implements OnInit {
 
     constructor(private formBuilder: FormBuilder, private appService: AppService, private spinner: NgxSpinnerService) { }
     /*************** START VARIABLES ***************/
+    userName: string;
+    privilege: boolean = false;
+    administrator: boolean = false;
+    
     filterForm: FormGroup;
     employees: string[] = [];
     employeesFunctions: string[] = [];
@@ -30,6 +36,8 @@ export class ServiceOrderReportComponent implements OnInit {
     functions: string[] = [];
     release: boolean = false;
     selectedFunctions: string[] = [];
+    serviceOrderAward = {} as ServiceOrderAward;
+    awardTable: AwardTable[] = [];
     
     startDateFilter: Date;
     endDateFilter: Date;
@@ -129,12 +137,20 @@ export class ServiceOrderReportComponent implements OnInit {
         self.awardAmount = parseFloat((self.goalAmount - self.amountEmpreitaProduction).toFixed(2));
         self.award = parseFloat((self.awardAmount*0.03).toFixed(2));
         
+        self.serviceOrderAward.salesManager = parseFloat((self.goalAmount * 0.025).toFixed(2));
+        self.serviceOrderAward.productionManager = parseFloat((self.goalAmount * 0.01).toFixed(2));
+        self.serviceOrderAward.finishing = parseFloat((self.award * 0.54).toFixed(2));
+        self.serviceOrderAward.suport = parseFloat((self.award * 0.33).toFixed(2));
+        self.serviceOrderAward.auxiliary = parseFloat((self.award * 0.13).toFixed(2));
+        
         console.log(this.filteredExecutions);
         
         console.log(self.amountSo);
         console.log(self.amountStoneValue);
         console.log(self.amountEmpreitaValue);
         console.log(self.amountEmpreitaProduction);
+        
+        
         
         this.fillEmployeeExecution();
     }
@@ -178,6 +194,7 @@ export class ServiceOrderReportComponent implements OnInit {
         });
         self.employeeExecsFiltered = self.employeeExecs;
         this.checkStatusFunction();
+        self.fillAwardTable();
         console.log(self.employeeExecs);
     }
     
@@ -275,6 +292,66 @@ export class ServiceOrderReportComponent implements OnInit {
         
         console.log(self.employeeExecs);
     }
+    
+    fillAwardTable(){
+        var self = this;
+        self.awardTable = []; 
+        this.employees.forEach(function(data, index){
+            var aTable = {} as AwardTable;
+            if(self.employeesFunctions[index] == 'Gerente de Vendas'){
+                aTable.employee = data;
+                aTable.function = self.employeesFunctions[index];
+                aTable.percentagePersonal = "-";
+                aTable.percentageTotal = "-";
+                aTable.empreitaPayed = "-";
+                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat(self.serviceOrderAward.salesManager.toFixed(2)));
+                self.awardTable.push(aTable);
+            } else if(self.employeesFunctions[index] == 'Gerente de Produção'){
+                aTable.employee = data;
+                aTable.function = self.employeesFunctions[index];
+                aTable.percentagePersonal = "-";
+                aTable.percentageTotal = "-";
+                aTable.empreitaPayed = "-";
+                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat(self.serviceOrderAward.productionManager.toFixed(2)));
+                self.awardTable.push(aTable); 
+            }else if(self.employeesFunctions[index] == 'Acabador Fixo'){
+                aTable.employee = data;
+                aTable.function = self.employeesFunctions[index];
+                aTable.percentagePersonal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentagePersonal'];
+                aTable.percentageTotal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentageTotal'];
+                aTable.empreitaPayed = self.employeeExecs.find((v) => {return v['employee'] == data})['empreitaPayed'];
+                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat((self.serviceOrderAward.finishing * parseFloat(self.employeeExecs.find((v) => {return v['employee'] == data})['percentageTotal'].replace(',','.').replace('%','')) / 100).toFixed(2)));
+                self.awardTable.push(aTable); 
+            }else if(self.employeesFunctions[index] == 'Serrador' || self.employeesFunctions[index] == 'Acabador'){
+                aTable.employee = data;
+                aTable.function = self.employeesFunctions[index];
+                aTable.percentagePersonal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentagePersonal'];
+                aTable.percentageTotal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentageTotal'];
+                aTable.empreitaPayed = self.employeeExecs.find((v) => {return v['employee'] == data})['empreitaPayed'];
+                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat(self.serviceOrderAward.suport.toFixed(2)));
+                self.awardTable.push(aTable); 
+            }else if(self.employeesFunctions[index] == 'Ajudante Geral'){
+                aTable.employee = data;
+                aTable.function = self.employeesFunctions[index];
+                aTable.percentagePersonal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentagePersonal'];
+                aTable.percentageTotal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentageTotal'];
+                aTable.empreitaPayed = self.employeeExecs.find((v) => {return v['employee'] == data})['empreitaPayed'];
+                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat(self.serviceOrderAward.auxiliary.toFixed(2)));
+                self.awardTable.push(aTable); 
+            }
+        })
+        
+        self.awardTable.sort(function (a, b) {
+            if (a.function > b.function) {
+                return 1;
+            }
+            if (a.function < b.function) {
+                return -1;
+            }
+            // a must be equal to b
+            return 0;
+        });
+    }
     /************ END FUNCTIONS ******************/
     
     
@@ -283,6 +360,17 @@ export class ServiceOrderReportComponent implements OnInit {
         this.main = this;
         
         this.spinner.show();
+        
+        this.userName = window.sessionStorage.getItem('user');  
+        if(window.sessionStorage.getItem('administrator') == "1"){
+            this.administrator = true;
+            console.log(this.administrator);
+        }
+        if(window.sessionStorage.getItem('privilege') == "1"){
+            this.privilege = true;
+            console.log(this.privilege);
+        }
+        
         
         self.filterForm = self.formBuilder.group({
                 txtDate: self.formBuilder.control('', []),
