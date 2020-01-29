@@ -95,7 +95,7 @@ export class ServiceOrderReportComponent implements OnInit {
             exec.date = data['dataTermino'];
             exec.percentage = parseFloat(parseFloat(data['porcentagem']).toFixed(2));
             exec.valueSo = parseFloat(parseFloat(data['valor'].replace(',','.')).toFixed(2));
-            exec.valueExecution = parseFloat((parseFloat(normalProduction.replace(',','.')) * parseFloat(data['porcentagem']) / 100).toFixed(2));
+            exec.valueExecution = parseFloat(((parseFloat(normalProduction.replace(',','.')) -  parseFloat((stoneValue * parseFloat(data['porcentagem']) / 100).toFixed(2)))* parseFloat(data['porcentagem']) / 100).toFixed(2));
             exec.empreita = parseFloat((empreitaValue * parseFloat(data['porcentagem']) / 100).toFixed(2));
             exec.stone = parseFloat((stoneValue * parseFloat(data['porcentagem']) / 100).toFixed(2));
             exec.empreitaProduction = parseFloat((parseFloat(empreitaProduction.replace(',','.')) * parseFloat(data['porcentagem']) / 100).toFixed(2));
@@ -328,7 +328,7 @@ export class ServiceOrderReportComponent implements OnInit {
                 aTable.percentagePersonal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentagePersonal'];
                 aTable.percentageTotal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentageTotal'];
                 aTable.empreitaPayed = self.employeeExecs.find((v) => {return v['employee'] == data})['empreitaPayed'];
-                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat(self.serviceOrderAward.suport.toFixed(2)));
+                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat((self.serviceOrderAward.suport / 3).toFixed(2)));
                 self.awardTable.push(aTable); 
             }else if(self.employeesFunctions[index] == 'Ajudante Geral'){
                 aTable.employee = data;
@@ -336,7 +336,7 @@ export class ServiceOrderReportComponent implements OnInit {
                 aTable.percentagePersonal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentagePersonal'];
                 aTable.percentageTotal = self.employeeExecs.find((v) => {return v['employee'] == data})['percentageTotal'];
                 aTable.empreitaPayed = self.employeeExecs.find((v) => {return v['employee'] == data})['empreitaPayed'];
-                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat(self.serviceOrderAward.auxiliary.toFixed(2)));
+                aTable.awardValue = self.appService.converteFloatMoeda(parseFloat((self.serviceOrderAward.auxiliary / 2).toFixed(2)));
                 self.awardTable.push(aTable); 
             }
         })
