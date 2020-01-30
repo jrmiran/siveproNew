@@ -251,7 +251,7 @@
                     </mat-panel-title>
 
                 </mat-expansion-panel-header>
-                <sivp-table [name]="''" [headers]="['Funcionario', 'Função' ,'% Pessoal', '% Produção', 'Empreitas Pagas', 'Valor Premiação']" [datas]="awardTable" [ids]="['employee','function','percentagePersonal', 'percentageTotal', 'empreitaPayed', 'awardValue']" [runClickRow]="false" [sorc]="main" [searchBar]="false" [ipp]="20">
+                <sivp-table [name]="''" [headers]="['Funcionario', 'Função' ,'% Pessoal', '% Produção', 'Empreitas Pagas', 'Valor Premiação']" [datas]="awardTable" [ids]="['employee','function','percentagePersonal', 'percentageTotal', 'empreitaPayed', 'awardValue']" [runClickRow]="false" [awardTable]= 'true' [sorc]="main" [searchBar]="false" [ipp]="20">
                 </sivp-table>
             </mat-expansion-panel>
         </mat-accordion>

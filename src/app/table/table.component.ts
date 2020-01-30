@@ -69,6 +69,7 @@ export class TableComponent implements OnInit {
     @Input() spc: SearchProjectComponent;
     @Input() sorc: ServiceOrderReportComponent;
     @Input() percentageExecution: number;
+    @Input() awardTable: boolean = false;
     
     releseSoc: boolean = false;
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
