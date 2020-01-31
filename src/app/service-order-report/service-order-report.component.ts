@@ -132,7 +132,7 @@ export class ServiceOrderReportComponent implements OnInit {
             self.amountEmpreitaProduction = parseFloat((self.amountEmpreitaProduction + data['empreitaProduction']).toFixed(2));
         });
         
-        self.amountSo = parseFloat((self.amountSo + self.amountEmpreitaProduction).toFixed(2));
+        self.amountSo = parseFloat((self.amountSo + self.amountEmpreitaProduction + self.amountStoneValue).toFixed(2));
         self.goalAmount = parseFloat((self.amountSo - self.amountEmpreitaValue - self.amountStoneValue).toFixed(2));
         self.awardAmount = parseFloat((self.goalAmount - self.amountEmpreitaProduction).toFixed(2));
         self.award = parseFloat((self.awardAmount*0.03).toFixed(2));
