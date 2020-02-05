@@ -12,13 +12,12 @@
                 </div>
             </div>
             <ul class="sidebar-menu" data-widget="tree">
-                <li class="header">MAIN NAVIGATION</li>
+                <li class="header">NAVEGAÇÃO</li>
                 
                     <sivp-menu-item [name]="'Orçamento'" 
                                     [subItems]="['Novo', 'Procurar', 'Editar', 'Itens']" 
                                     [routers]="['/newBudget', '/budget', '/newBudget2', '/budgetItems']" 
                                     class="sidebar-menu"></sivp-menu-item>
-                
                 
                     <sivp-menu-item [name]="'Ordem de Serviço'" 
                                     [subItems]="['Procurar', 'Editar', 'Relatório']" 
@@ -26,8 +25,8 @@
                                     class="sidebar-menu"></sivp-menu-item>
                 
                     <sivp-menu-item [name]="'Pedido'" 
-                                    [subItems]="['Novo', 'Editar']" 
-                                    [routers]="['/comp1', '/comp']" 
+                                    [subItems]="['Consultar']" 
+                                    [routers]="['/request']" 
                                     class="sidebar-menu"></sivp-menu-item>
                
                     <sivp-menu-item [name]="'Projeto'" 
@@ -50,7 +49,6 @@
                                     [routers]="['/sellerRegister', '/sellerSearch']" 
                                     class="sidebar-menu"></sivp-menu-item>
                 
-
                     <sivp-menu-item [name]="'Pagamentos'" 
                                     [subItems]="['Consultar']" 
                                     [routers]="['/payment']" 

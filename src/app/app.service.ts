@@ -290,8 +290,16 @@ export class AppService{
         return this.callPost(`postSearchClients`, {});
     }
     
+    postSearchAllRequests(): Observable<Object[]>{
+        return this.callPost(`postSearchAllRequests`, {});
+    }
+    
     postSearchClient(obj: any): Observable<Object[]>{
         return this.callPost(`postSearchClient`, obj);
+    }
+    
+    postSearchStore(): Observable<Object[]>{
+        return this.callPost(`postSearchStore`, {});
     }
     
     postImageDraw(obj: any): Observable<Object[]>{

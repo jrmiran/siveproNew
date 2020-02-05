@@ -173,12 +173,12 @@ export class PaymentComponent implements OnInit, AfterViewInit {
                 this.dPicker.clearField();
                 this.paymentForm.get('txtDate').setValue("");
             }
-            this.paymentForm.get('txtValue').setValue(this.paymentsParts[this.currentPart].value);
-        this.paymentForm.get('cmbStatus').setValue(this.paymentsParts[this.currentPart].status);
-        this.paymentForm.get('cmbPaymentForm').setValue(this.paymentsParts[this.currentPart].paymentForm);
-        this.paymentForm.get('txtCheckNumber').setValue(this.paymentsParts[this.currentPart].check);
-        this.paymentForm.get('cmbTypePayment').setValue(this.paymentsParts[this.currentPart].paymentType);
-        this.paymentForm.get('txtNote').setValue(this.paymentsParts[this.currentPart].note);
+            //this.paymentForm.get('txtValue').setValue(this.paymentsParts[this.currentPart].value);
+        //this.paymentForm.get('cmbStatus').setValue(this.paymentsParts[this.currentPart].status);
+        //this.paymentForm.get('cmbPaymentForm').setValue(this.paymentsParts[this.currentPart].paymentForm);
+        //this.paymentForm.get('txtCheckNumber').setValue(this.paymentsParts[this.currentPart].check);
+        //this.paymentForm.get('cmbTypePayment').setValue(this.paymentsParts[this.currentPart].paymentType);
+        //this.paymentForm.get('txtNote').setValue(this.paymentsParts[this.currentPart].note);
         //---------------------------------------------------  CLIQUE NO BOTÃO ANTERIOR  ------------------------------------------------------
         }else{
             if(this.paymentsParts[this.currentPart-2].date != ""){

@@ -80,6 +80,8 @@ import { SearchProjectComponent } from './search-project/search-project.componen
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { ServiceOrderReportComponent } from './service-order-report/service-order-report.component';
+import { RequestComponent } from './request/request.component';
+import {AutocompleteLibModule} from 'angular-ng-autocomplete';
 
 @NgModule({
   declarations: [
@@ -130,6 +132,7 @@ import { ServiceOrderReportComponent } from './service-order-report/service-orde
     OrderServiceTestComponent,
     SearchProjectComponent,
     ServiceOrderReportComponent,
+    RequestComponent,
   ],
   imports: [
     BrowserModule,
@@ -157,7 +160,8 @@ import { ServiceOrderReportComponent } from './service-order-report/service-orde
     FileUploadModule,
     NgxFileDropModule,
     NgxDaterangepickerMd.forRoot(),
-    MatExpansionModule
+    MatExpansionModule,
+    AutocompleteLibModule
   ],
   providers: [
       AppService,
