@@ -17,7 +17,7 @@ import {RequestHeader} from './edit-request.model';
 })
 export class EditRequestComponent implements OnInit {
 
-    constructor(private route: ActivatedRoute, private appService: AppService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService) { }
+    constructor(private route: ActivatedRoute, public appService: AppService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService) { }
 
     /***** START VARIABLES **************/
     
