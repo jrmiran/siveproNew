@@ -2,9 +2,9 @@
 
 <section class="content" *ngIf="loadPage">
     <section class="invoice">
-        <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
+        <!--<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
             <p style="color:white;"> Aguarde </p>
-        </ngx-spinner>
+        </ngx-spinner>-->
 
 
         <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
@@ -229,6 +229,22 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="row">
+                <sivp-primary-box [size]="'col-xs-12'" [title]="'Finalizando Edição'" [icon]="'fa fa-cloud-download'">
+                    <div class="col-xs-12" style="height: 50px">
+                        <ngx-spinner [fullScreen]="false" bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
+                            <p style="color:white;"> Aguarde </p>
+                        </ngx-spinner>
+
+                        <div *ngIf="budgetEdited" class="alert alert-success alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucesso!</h4>
+                            Orçamento {{mainBudget.number}} Editado Com Sucesso.
+                        </div>
+                    </div>
+                </sivp-primary-box>
             </div>
 
             <!----------------------------------- MODAL --------------------------------------------------------------------->

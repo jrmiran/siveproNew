@@ -298,6 +298,38 @@ export class AppService{
         return this.callPost(`postSearchClient`, obj);
     }
     
+    postSearchBudgetItemByBudget(obj: any): Observable<Object[]>{
+        return this.callPost(`postSearchBudgetItemByBudget`, obj);
+    }
+    
+    postInsertRequest(obj: any): Observable<Object[]>{
+        return this.callPost(`postInsertRequest`, obj);
+    }
+    
+    postSearchDataFromRequest(obj: any): Observable<Object[]>{
+        return this.callPost(`postSearchDataFromRequest`, obj);
+    }
+    
+    postSearchBudgetItemByStoreId(obj: any): Observable<Object[]>{
+        return this.callPost(`postSearchBudgetItemByStoreId`, obj);
+    }
+    
+    postSearchPaymentFromRequest(obj: any): Observable<Object[]>{
+        return this.callPost(`postSearchPaymentFromRequest`, obj);
+    }
+    
+    postUpdateRequestStatus(obj: any): Observable<Object[]>{
+        return this.callPost(`postUpdateRequestStatus`, obj);
+    }
+    
+    postSearchBudgetByStoreId(obj: any): Observable<Object[]>{
+        return this.callPost(`postSearchBudgetByStoreId`, obj);
+    }
+    
+    postSearchAllFromRequest(obj: any): Observable<Object[]>{
+        return this.callPost(`postSearchAllFromRequest`, obj);
+    }
+    
     postSearchStore(): Observable<Object[]>{
         return this.callPost(`postSearchStore`, {});
     }
@@ -322,9 +354,14 @@ export class AppService{
         return this.callPost(`postInsertBudgetItems`, obj);
     }
     
+    postInsertPaymentOnRequest(obj: any): Observable<Object[]>{
+        return this.callPost(`postInsertPaymentOnRequest`, obj);
+    }
+    
     postSearchAllEmployees(): Observable<Object[]>{
         return this.callPost(`postSearchAllEmployees`, {});
     }
+
     
     postBudgetsClient(obj: any): Observable<Object[]>{
         return this.callPost(`postBudgetsClient`, obj);

@@ -17,17 +17,31 @@ export class RequestComponent implements OnInit {
     constructor(private appService: AppService, private spinner: NgxSpinnerService, private formBuilder: FormBuilder) { }
     
     /* START VARIABLES */
+    budgetsStore: Object[] = [];
     requests: Object[] = [];
     newRequestForm: FormGroup;
+    filterForm: FormGroup;
     stores: Object[] = [];
     keyword = 'nome';
+    self: any;
+    sizeBudgetsStore: number;
     /* END VARIABLES */
     
     
     /* START FUNCTIONS */
     selectEvent(item) {
         // do something with selected item
-        console.log(item['id']);
+        var self = this;
+        this.appService.postSearchBudgetByStoreId(item).subscribe(function(data){
+            console.log(data);
+            data.map(function(value){
+              if (value['desconto'] == null){
+                  value = '0';
+              }
+            })
+            self.budgetsStore = data;
+            self.sizeBudgetsStore = self.budgetsStore.length;
+        });
     }
 
     onChangeSearch(val: string) {
@@ -45,25 +59,17 @@ export class RequestComponent implements OnInit {
     
     ngOnInit() {
         var self = this;
-        /*this.appService.postSearchAllRequests().subscribe(function(data){
-           self.requests = data; 
-        });*/
-        this.appService.postSearchStore().subscribe(function(data){
-            self.stores = data;
-        })
+        this.self = this;
         
-        this.newRequestForm = this.formBuilder.group({
-            txtStore: this.formBuilder.control('',[]),
-            txtDate: this.formBuilder.control('',[]),
-            txtPaymentDate: this.formBuilder.control('',[]),
-            txtNote: this.formBuilder.control('',[]),
+        this.appService.postSearchAllRequests().subscribe(function(data){
+           self.requests = data;
+            self.requests.map((v) => v['valor'] = self.appService.converteFloatMoeda(v['valor']));
+        });
+        
+        
+        this.filterForm = this.formBuilder.group({
             
         });
-      
-        
-        
-        
-        
     }
 
 }

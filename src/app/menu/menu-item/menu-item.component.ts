@@ -30,11 +30,9 @@ export class MenuItemComponent implements OnInit {
       this.userName = window.sessionStorage.getItem('user');  
         if(window.sessionStorage.getItem('administrator') == "1"){
             this.administrator = true;
-            console.log(this.administrator);
         }
         if(window.sessionStorage.getItem('privilege') == "1"){
             this.privilege = true;
-            console.log(this.privilege);
         }
       
   }

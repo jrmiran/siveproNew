@@ -78,6 +78,8 @@ export class BudgetNewComponent implements OnInit {
     currentValue: number;
     descriptionChangeItem: string;
     
+    budgetEdited: boolean = false;
+    
     listTest: string[] = ['a','b','c','d'];
     listTestString: string = "(";
     insertedBudget: any;
@@ -782,7 +784,8 @@ export class BudgetNewComponent implements OnInit {
             self.test();
             console.log(data);
             self.spinner.hide();
-            self.route.navigate(['budget']);
+            //self.route.navigate(['budget']);
+            self.budgetEdited = true;
             self.transformBudgets();
             alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");
         });

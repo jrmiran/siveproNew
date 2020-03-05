@@ -7,7 +7,7 @@
     </ngx-spinner>
     <section class="invoice">
         <div class="row">
-            <form [formGroup]="newRequestForm" novalidate>
+            <form [formGroup]="filterForm" novalidate>
                 <div class="col-md-12">
                     <!-- START COLLAPSED BOX -->
                     <mat-accordion>
@@ -30,33 +30,11 @@
 
         <div class="row">
             <div class="col-sm-12 col-xs-12">
-                <div class="box box-primary">
-                    <div class="box-header">
-                        <h3 class="box-title"><i class="fa fa-usd"></i> Pedidos </h3>
-                        <div class="btn-group pull-right" style="margin-bottom: 5px">
-                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
-
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a data-toggle="modal" class="btn pull-left" data-target="#modal-default"><i class="fa fa-money"></i> Novo Pedido </a></li>
-                            </ul>
-                        </div>
-
-                    </div>
-
-                    <ng-autocomplete *ngIf="stores.length > 0" [data]="stores" [searchKeyword]="keyword" (selected)='selectEvent($event)' (inputChanged)='onChangeSearch($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate">
-                    </ng-autocomplete>
-
-                    <ng-template #itemTemplate let-item>
-                        <a [innerHTML]="item.nome"></a>
-                    </ng-template>
-
-                    <ng-template #notFoundTemplate let-notFound>
-                        <div [innerHTML]="'Nao Encontrado'"></div>
-                    </ng-template>
-
-                </div>
+                
+                <sivp-primary-box [size]="'col-sm-12 col-xs-12'" [title]="'Pedidos'" [icon]="'fa fa-dollar'">
+                    <sivp-table [datas] = "requests" [headers]="['Id', 'Loja', 'Data', 'Data Pagamento', 'Valor']" [ids]="['id', 'nomeCliente', 'data', 'dataPrevistaPagamento', 'valor']" [rc]="self"></sivp-table>
+                </sivp-primary-box>
+                
             </div>
         </div>
 

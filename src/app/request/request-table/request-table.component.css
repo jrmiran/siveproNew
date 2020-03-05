@@ -1,0 +1,27 @@
+.linhaSelecionada{
+    background-color:#9DC1FA;
+    font-weight:bold;
+}
+.linhaHover{
+    background-color:#98FB98;
+}
+.linhaSeparacao{
+    background-color:#D3D3D3;
+    font-weight:bold;
+}
+.finishing{
+    background-color:#D3D3D3;
+    font-weight:bold;
+}
+.fixFinishing{
+    background-color:#D3D3D3;
+    font-weight:bold;
+}
+.productionManager{
+    background-color:#D3D3D3;
+    font-weight:bold;
+}
+.salesManager{
+    background-color:#D3D3D3;
+    font-weight:bold;
+}

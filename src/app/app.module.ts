@@ -82,6 +82,10 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { ServiceOrderReportComponent } from './service-order-report/service-order-report.component';
 import { RequestComponent } from './request/request.component';
 import {AutocompleteLibModule} from 'angular-ng-autocomplete';
+import { NewRequestComponent } from './request/new-request/new-request.component';
+import { RequestTableComponent } from './request/request-table/request-table.component';
+import { EditRequestComponent } from './request/edit-request/edit-request.component';
+import { ExpandableBoxComponent } from './shared/expandable-box/expandable-box.component';
 
 @NgModule({
   declarations: [
@@ -133,6 +137,10 @@ import {AutocompleteLibModule} from 'angular-ng-autocomplete';
     SearchProjectComponent,
     ServiceOrderReportComponent,
     RequestComponent,
+    NewRequestComponent,
+    RequestTableComponent,
+    EditRequestComponent,
+    ExpandableBoxComponent,
   ],
   imports: [
     BrowserModule,

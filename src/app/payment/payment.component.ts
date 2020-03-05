@@ -7,6 +7,7 @@ import {DatePickerComponent} from '../shared/date-picker/date-picker.component';
 import {RadioOption} from '../shared/radio/radio-option.model';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'sivp-payment',
@@ -15,7 +16,7 @@ import { DatePipe } from '@angular/common';
 })
 export class PaymentComponent implements OnInit, AfterViewInit {
 
-  constructor(private appService: AppService, private spinner: NgxSpinnerService, private formBuilder: FormBuilder) { }
+  constructor(private appService: AppService, private spinner: NgxSpinnerService, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) { }
     
     payments: Object[] = [];
     filteredPayments: Object[] = [];
@@ -33,6 +34,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     paymentsParts: Payment[] = [];
     enableOk: boolean = false;
     paymentId: any;
+    requestId = 0;
     @ViewChild('dPicker') dPicker: DatePickerComponent;
     @ViewChild('dPickerEdit') dPickerEdit: DatePickerComponent;
     inOut: RadioOption[] = [
@@ -173,12 +175,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
                 this.dPicker.clearField();
                 this.paymentForm.get('txtDate').setValue("");
             }
-            //this.paymentForm.get('txtValue').setValue(this.paymentsParts[this.currentPart].value);
-        //this.paymentForm.get('cmbStatus').setValue(this.paymentsParts[this.currentPart].status);
-        //this.paymentForm.get('cmbPaymentForm').setValue(this.paymentsParts[this.currentPart].paymentForm);
-        //this.paymentForm.get('txtCheckNumber').setValue(this.paymentsParts[this.currentPart].check);
-        //this.paymentForm.get('cmbTypePayment').setValue(this.paymentsParts[this.currentPart].paymentType);
-        //this.paymentForm.get('txtNote').setValue(this.paymentsParts[this.currentPart].note);
         //---------------------------------------------------  CLIQUE NO BOTÃO ANTERIOR  ------------------------------------------------------
         }else{
             if(this.paymentsParts[this.currentPart-2].date != ""){
@@ -240,6 +236,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     
     submitPayments(){
         var self = this;
+        var insertOnRequest = "";
         this.spinner.show();
         this.applyChangesPayment();
         var params = {query: this.stringQuery()};
@@ -250,11 +247,25 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             self.paymentsParts.forEach(function(value, index){
                 console.log(value);
                 self.filteredPayments.push({conta: value.bill, data: value.date, entrada: value.type, formaPagamento_formaPagamento: value.paymentForm, funcionario_id: null, id: insertId, numeroCheque: value.check, observacao: value.note, status: value.status, tipoPagamento_tipoPagamento: value.paymentType, valor: value.value, orcamento_id: value.budgetId});
+                if(self.requestId > 0){
+                    insertOnRequest = insertOnRequest + "(" + self.requestId + "," + insertId + ")";
+                    if(index != self.paymentsParts.length - 1){
+                        insertOnRequest = insertOnRequest + ",";
+                    }
+                }
                 insertId = insertId + 1;
             });
+            if(self.requestId > 0){
+                self.appService.postInsertPaymentOnRequest({query: insertOnRequest}).subscribe(function(v){
+                    console.log(v);
+                })
+            }
             alert("Pagamentos Registrados!");
             document.getElementById('closeButton').click();
             self.spinner.hide();
+            if(self.requestId  > 0){
+                self.router.navigate(['request']);
+            }
         })   
     }
     
@@ -375,7 +386,18 @@ export class PaymentComponent implements OnInit, AfterViewInit {
       var self = this;
       setTimeout(()=> {self.spinner.show();}, 100)
       
-      
+      this.route.queryParams.subscribe(function(data){
+            self.requestId = parseFloat(data['id']);
+          if(data['id'] != undefined){
+            document.getElementById("openModalPaymentButton").click();
+            self.spinner.hide();
+          }else{
+              self.requestId = 0;
+          }
+
+          console.log(self.requestId);
+      })
+      console.log(self.requestId);
     this.paymentForm = this.formBuilder.group({
         rdInOut: this.formBuilder.control('', [Validators.required]),
         txtInstallment: this.formBuilder.control('', [Validators.required]),
@@ -439,8 +461,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             
             var startDateAux = datePipe.transform(startDate, 'dd/MM/yyyy');
             var endDateAux = datePipe.transform(endDate, 'dd/MM/yyyy');
-
-
+            
             var startDateAux2 = startDateAux.split('/');
             var endDateAux2 = endDateAux.split('/');
 
@@ -481,7 +502,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             self.paymentType = [""];
             data.map(function(value){
                 self.paymentType.push(value['tipoPagamento']);
-            }); 
+            });
         })
       
       var datePipe = new DatePipe('en-US');

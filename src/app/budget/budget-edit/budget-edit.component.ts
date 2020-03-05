@@ -87,6 +87,7 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
     insertedItem: number = -1000;
     
     budgetModel: Object;
+    budgetEdited: boolean = false;
     
     b: BudgetNew = {
         qtd: 0,
@@ -839,8 +840,9 @@ constructor(private formBuilder: FormBuilder, private appService: AppService, pr
                self.createPdf.gerarPDF(self.budgetsAmbient, self.mainBudget, self.thirdyCpf);
                console.log(value);
                self.spinner.hide();
-               self.router.navigate(['budget']);
+               //self.router.navigate(['budget']);
                self.updateBudgetItems();
+                self.budgetEdited = true;
                alert("ORÇAMENTO " + self.mainBudget.number + " RETIFICADO");
            });
         });

@@ -24,6 +24,8 @@ import {OrderServiceTestComponent} from './order-service-test/order-service-test
 import {SearchProjectComponent} from './search-project/search-project.component';
 import {ServiceOrderReportComponent} from './service-order-report/service-order-report.component';
 import {RequestComponent} from './request/request.component';
+import {NewRequestComponent} from './request/new-request/new-request.component';
+import {EditRequestComponent} from './request/edit-request/edit-request.component';
 
 export const ROUTES: Routes = [
     {path: '', component: LoginComponent},
@@ -49,5 +51,7 @@ export const ROUTES: Routes = [
     {path: 'serviceOrderTest', component: OrderServiceTestComponent},
     {path: 'searchProject', component: SearchProjectComponent},
     {path: 'serviceOrderReport', component: ServiceOrderReportComponent},
-    {path: 'request', component: RequestComponent}
+    {path: 'request', component: RequestComponent},
+    {path: 'newRequest', component: NewRequestComponent},
+    {path: 'editRequest', component: EditRequestComponent}
 ]

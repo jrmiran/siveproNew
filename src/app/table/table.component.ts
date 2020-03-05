@@ -21,6 +21,9 @@ import {OrderServiceTestComponent} from '../order-service-test/order-service-tes
 import {FormGroup, FormBuilder, Validators, FormControl, FormArray} from '@angular/forms';
 import {SearchProjectComponent} from '../search-project/search-project.component';
 import {ServiceOrderReportComponent} from '../service-order-report/service-order-report.component';
+import {RequestComponent} from '../request/request.component';
+import {NewRequestComponent} from '../request/new-request/new-request.component';
+import {EditRequestComponent} from '../request/edit-request/edit-request.component';
 
 @Component({
   selector: 'sivp-table',
@@ -31,13 +34,32 @@ export class TableComponent implements OnInit {
 
   constructor(private budgetComponent: BudgetService, private start: StartService, private formBuilder: FormBuilder, public uploadService: UploadComponent, private parameterService: ParameterService) { }
 
+    
+    /***************** START COMPONENTS INPUTS **************************/
+    @Input() bnc: BudgetNewComponent;
+    @Input() btc: BudgetTableComponent;
+    @Input() budgetItem: BudgetItemsComponent;
+    @Input() budgetEdit: BudgetEditComponent;
+    @Input() soc: ServiceOrderComponent;
+    @Input() sotc: ServiceOrderTableComponent;
+    @Input() fdc: FileDropComponent;
+    @Input() mc: MaterialComponent;
+    @Input() pc: PaymentComponent;
+    @Input() csc: ClientSearchComponent;
+    @Input() ostc: OrderServiceTestComponent;
+    @Input() spc: SearchProjectComponent;
+    @Input() sorc: ServiceOrderReportComponent;
+    @Input() rc: RequestComponent;
+    @Input() nrc: NewRequestComponent;
+    @Input() erc: EditRequestComponent;
+    /***************** END COMPONENTS INPUTS **************************/
+    
+    /*********************** START VARIABLE INPUTS ***********************/
     @Input() name: string;
     @Input() headers: string[];
     @Input() datas: Array<Object>;
     @Input() ids: string[];
     @Input() searchBar: string = "true";
-    @Input() bnc: BudgetNewComponent;
-    @Input() btc: BudgetTableComponent;
     @Input() buttonOption: boolean = false;
     @Input() check: string[];
     @Input() enableButton: boolean;
@@ -46,30 +68,22 @@ export class TableComponent implements OnInit {
     @Input() ipp: number = 10;
     @Input() showPagination: boolean = true;
     @Input() budgetTable: boolean = false;
-    @Input() budgetItem: BudgetItemsComponent;
-    @Input() budgetEdit: BudgetEditComponent;
     @Input() runClickRow: boolean = true;
     @Input() dropdownButton: boolean = false;
-    @Input() soc: ServiceOrderComponent;
-    @Input() sotc: ServiceOrderTableComponent;
     @Input() multipleRowsSelection: boolean = false;
     @Input() selectionButton: boolean = false;
-    @Input() fdc: FileDropComponent;
-    @Input() mc: MaterialComponent;
     @Input() fdcMaterial: boolean = false;
     @Input() removeItemOption: boolean = false;
     @Input() ambients: string[];
-    @Input() pc: PaymentComponent;
     @Input() changeItemTable: boolean = false;
-    @Input() csc: ClientSearchComponent;
-    @Input() ostc: OrderServiceTestComponent;
     @Input() formArraySO: FormArray;
     @Input() formGroupSO: FormGroup;
     @Input() drawTable: boolean = false;
-    @Input() spc: SearchProjectComponent;
-    @Input() sorc: ServiceOrderReportComponent;
     @Input() percentageExecution: number;
     @Input() awardTable: boolean = false;
+    @Input() budgetSellection: boolean = false;
+    /*********************** END VARIABLE INPUTS ***********************/
+    
     
     releseSoc: boolean = false;
     check2 = ['CHK1', 'CHK2', 'CHK3', 'CHK4'];
@@ -104,7 +118,12 @@ export class TableComponent implements OnInit {
     }
     
     openModalPayment(id: any){
-        this.pc.editPayment(id);
+        if(this.pc){
+           this.pc.editPayment(id); 
+        } else if(this.erc){
+            this.erc.editPayment(id); 
+        }
+        
     }
     
     exportPdfSo(id: number){
@@ -135,6 +154,14 @@ export class TableComponent implements OnInit {
     
     removePayment(j: any, data: any){
         this.pc.removePayment(data);
+    }
+    
+    addBudgetRequest(id: string){
+        if(this.nrc){
+            this.nrc.addBudgetRequest(id);
+        }else if(this.erc){
+            this.erc.addBudgetRequest(id);
+        }
     }
     
     addBudgetItem(id: string, item: string, valorUnitario: string){
