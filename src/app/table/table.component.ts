@@ -24,6 +24,7 @@ import {ServiceOrderReportComponent} from '../service-order-report/service-order
 import {RequestComponent} from '../request/request.component';
 import {NewRequestComponent} from '../request/new-request/new-request.component';
 import {EditRequestComponent} from '../request/edit-request/edit-request.component';
+import {NewBudgetV2Component} from '../budget-v2/new-budget-v2/new-budget-v2.component'
 
 @Component({
   selector: 'sivp-table',
@@ -52,6 +53,7 @@ export class TableComponent implements OnInit {
     @Input() rc: RequestComponent;
     @Input() nrc: NewRequestComponent;
     @Input() erc: EditRequestComponent;
+    @Input() bncv2: NewBudgetV2Component;
     /***************** END COMPONENTS INPUTS **************************/
     
     /*********************** START VARIABLE INPUTS ***********************/
@@ -82,6 +84,9 @@ export class TableComponent implements OnInit {
     @Input() percentageExecution: number;
     @Input() awardTable: boolean = false;
     @Input() budgetSellection: boolean = false;
+    @Input() addItemButton = false;
+    @Input() enableAddItemButton = false;
+    @Input() ambientsV2: string[] = [];
     /*********************** END VARIABLE INPUTS ***********************/
     
     
@@ -164,6 +169,10 @@ export class TableComponent implements OnInit {
         }
     }
     
+    addItemBudgetV2(id: any){
+        this.bncv2.addItemBudget(id);
+    }
+    
     addBudgetItem(id: string, item: string, valorUnitario: string){
         var self = this;
         console.log("entrou no addbudgeitem");
@@ -234,11 +243,24 @@ export class TableComponent implements OnInit {
         
     }
     
+    changeAmbientV2(a: string){
+        if(this.bncv2){
+            this.bncv2.changeAmbient(a);    
+        }
+    }
+    
     removeItem(i: number){
         if(this.budgetEdit){
             this.budgetEdit.removeItem(i);
         }else if(this.bnc){
             this.bnc.removeItem(i);
+        }
+        
+    }
+    
+    removeItemV2(i: number){
+        if(this.bncv2){
+            this.bncv2.removeItemBudget(i);
         }
         
     }
@@ -303,6 +325,8 @@ export class TableComponent implements OnInit {
                 }else if(this.spc){
                     console.log("SPC");
                     this.spc.setCurrentDraw(data['id']);
+                }else if(this.bncv2){
+                    this.bncv2.activateItem(data, i);
                 }
             }
             this.currentLine = i;

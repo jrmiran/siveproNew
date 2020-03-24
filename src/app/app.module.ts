@@ -86,6 +86,10 @@ import { NewRequestComponent } from './request/new-request/new-request.component
 import { RequestTableComponent } from './request/request-table/request-table.component';
 import { EditRequestComponent } from './request/edit-request/edit-request.component';
 import { ExpandableBoxComponent } from './shared/expandable-box/expandable-box.component';
+import { BudgetV2Component } from './budget-v2/budget-v2.component';
+import { NewBudgetV2Component } from './budget-v2/new-budget-v2/new-budget-v2.component';
+import { EditBudgetV2Component } from './budget-v2/edit-budget-v2/edit-budget-v2.component';
+import {BudgetV2PdfService} from './budget-v2/budget-v2-pdf.service';
 
 @NgModule({
   declarations: [
@@ -141,6 +145,9 @@ import { ExpandableBoxComponent } from './shared/expandable-box/expandable-box.c
     RequestTableComponent,
     EditRequestComponent,
     ExpandableBoxComponent,
+    BudgetV2Component,
+    NewBudgetV2Component,
+    EditBudgetV2Component,
   ],
   imports: [
     BrowserModule,
@@ -173,6 +180,7 @@ import { ExpandableBoxComponent } from './shared/expandable-box/expandable-box.c
   ],
   providers: [
       AppService,
+      BudgetV2PdfService,
       StartService,
       BudgetService,
       SpinnerService,

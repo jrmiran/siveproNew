@@ -76,13 +76,19 @@
                 </span>
 
             </td>
-
-            <td class="linhaSeparacao" [class.hide]="data['item'] != 'LINHA DE SEPARAÇÃO'" colspan=9>
-                {{data['comodo']}}
-            </td>
-
             
-
+            <td *ngIf="bncv2 && addItemButton">
+                <a class="btn btn-primary" (click)="addItemBudgetV2(data['id'])" [class.disabled]="!enableAddItemButton"><i class="fa fa-plus"></i> </a>
+            </td>
+            
+            <!--<td class="linhaSeparacao" [class.hide]="data['item'] != 'LINHA DE SEPARAÇÃO'" colspan=9>
+                {{data['comodo']}}
+            </td>-->
+            
+            <td *ngIf="bncv2" class="linhaSeparacao" [class.hide]="data['item'] != 'LINHA DE SEPARAÇÃO'" colspan=9>
+                {{data['ambient']}}
+            </td>
+            
             <!--<div>-->
             <td *ngIf="sotc || ostc">
                 <div class="btn-group pull-right" style="margin-bottom: 5px">
@@ -101,13 +107,13 @@
             </td>
             <!--</div>-->
             
-            <td *ngIf="budgetTable && removeItemOption && selectedRow ==j && data['item'] != 'LINHA DE SEPARAÇÃO'">
+            <td *ngIf="budgetTable && removeItemOption && selectedRow == j && data['item'] != 'LINHA DE SEPARAÇÃO'">
                 <div class="btn-group pull-right" style="margin-bottom: 5px">
                     <a class="btn dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-home"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li *ngFor="let a of ambients"><a class="btn" (click)="changeAmbient(a)"> {{a}} </a> </li>
+                        <li *ngFor="let a of ambientsV2"><a class="btn" (click)="changeAmbientV2(a)"> {{a}} </a> </li>
                     </ul>
                 </div>
                 <a class="btn" (click)="changeItem(j)">
@@ -140,8 +146,12 @@
                 <button (click)="openModalItem(data['id'], data['descricao'], data['valorUnitario'])" type="button" class="btn btn-primary">Alterar</button>
             </td>
 
-            <td *ngIf="removeItemOption && selectedRow ==j && data['item'] != 'LINHA DE SEPARAÇÃO'">
+            <!--<td *ngIf="removeItemOption && selectedRow ==j && data['item'] != 'LINHA DE SEPARAÇÃO'">
                 <a (click)="removeItem(j)" class="btn"><i class="fa fa-trash"></i></a>
+            </td>-->
+            
+            <td *ngIf="removeItemOption && selectedRow ==j && data['item'] != 'LINHA DE SEPARAÇÃO' && bncv2">
+                <a (click)="removeItemV2(j)" class="btn"><i class="fa fa-trash"></i></a>
             </td>
 
             <td *ngIf="selectedRow ==j && data['item'] != 'LINHA DE SEPARAÇÃO' && pc">

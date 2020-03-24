@@ -784,7 +784,7 @@ export class BudgetNewComponent implements OnInit {
             self.test();
             console.log(data);
             self.spinner.hide();
-            //self.route.navigate(['budget']);
+            self.route.navigate(['budget']);
             self.budgetEdited = true;
             self.transformBudgets();
             alert("ORÇAMENTO "+ self.insertedBudget +" PROCESSADO ");

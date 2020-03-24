@@ -117,6 +117,21 @@ export class OrderServiceTestComponent implements OnInit {
         this.dPicker.clearField();
     }
     
+    keepConnected(){
+        var self = this;
+        
+
+        
+        //for(let i=0; i<10; i++){
+            self.appService.keepConnected().subscribe(function(data){
+                    console.log(data);
+                    //console.log(i);
+                })   
+        //}
+        
+         
+    }
+    
     buildQuery(){
         if(this.validateSum() && this.modalForm.valid){
             var self = this;

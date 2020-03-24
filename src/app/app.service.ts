@@ -306,6 +306,10 @@ export class AppService{
         return this.callPost(`postInsertRequest`, obj);
     }
     
+    keepConnected(): Observable<Object[]>{
+        return this.callPost(`keepConnected`, {});
+    }
+    
     postSearchDataFromRequest(obj: any): Observable<Object[]>{
         return this.callPost(`postSearchDataFromRequest`, obj);
     }
@@ -395,6 +399,14 @@ export class AppService{
         return this.callPost('postInsertion', obj);
     }
     
+    postSearchAllStore(){
+        return this.callPost('postSearchAllStore', {});
+    }
+    
+    postSearchAllItems(){
+        return this.callPost('postSearchAllItems', {});
+    }
+    
     postSearchProject(obj: any):Observable<Object[]>{
         if(obj['type'] == "All"){
             return this.callPost('postSearchAllProjects', obj);
@@ -411,6 +423,10 @@ export class AppService{
         return this.callPost('postInsertPayment', obj);
     }
     
+     postSearchClientAndSellerByStore(obj: any):Observable<Object[]>{
+        return this.callPost('postSearchClientAndSellerByStore', obj);
+    }
+    
     postInsertPaymentForm(obj: any):Observable<Object[]>{
         return this.callPost('postInsertPaymentForm', obj);
     }
@@ -421,6 +437,10 @@ export class AppService{
     
     postServiceOrderByEmployee():Observable<Object[]>{
         return this.callPost('postServiceOrderByEmployee', {});
+    }
+    
+    postInsertBudget(obj: any):Observable<Object[]>{
+        return this.callPost('postInsertBudget', obj);
     }
 
     
@@ -503,5 +523,13 @@ export class AppService{
         if(!this.checkSessionStorage('authenticated')){
             this.router.navigate(['login']);
         }
+    }
+    
+    discountValue(value: number, discount: number): number{
+        return value - (value * (discount / 100));
+    }
+    
+    toFixed2(value: number): number{
+        return parseFloat(value.toFixed(2));
     }
 }

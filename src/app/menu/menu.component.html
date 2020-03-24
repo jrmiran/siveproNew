@@ -56,8 +56,8 @@
                                     *ngIf="privilege || parameterService.privilege"></sivp-menu-item>
 
                     <sivp-menu-item [name]="'Test Area'" 
-                                    [subItems]="['Service Order']" 
-                                    [routers]="['/serviceOrderTest']" 
+                                    [subItems]="['Service Order', 'Orçamento V2']" 
+                                    [routers]="['/serviceOrderTest', 'budgetV2']" 
                                     class="sidebar-menu"
                                     *ngIf="administrator || parameterService.administrator"></sivp-menu-item>
             </ul>

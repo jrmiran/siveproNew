@@ -1,0 +1,159 @@
+<section class="content-header">
+</section>
+<section class="content" *ngIf="release">
+    <section class="invoice">
+        <form [formGroup]="newBudgetForm">
+            <!----------------------- CABEÇALHO COM TÍTULO E INFORMAÇÕES DO ORÇAMENTO ------------------------->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header">
+                        <i class="fa fa-usd"></i> Novo Orçamento
+                    </h2>
+                    <div class="row">
+                        <label class="col-xs-1"> Cliente: </label>
+                        <p class="col-xs-11"> {{store.id}} - {{store.nome}} </p>
+
+                        <label class="col-xs-1"> Terceiro: </label>
+                        <p class="col-xs-11"> {{client.id}} - {{client.nome}} </p>
+
+                        <label class="col-xs-1"> Vendedor: </label>
+                        <p class="col-xs-11"> {{seller.id}} - {{seller.nome}} </p>
+
+                        <label class="col-xs-1"> Data: </label>
+                        <p class="col-xs-11"> {{params.date}} </p>
+                    </div>
+                </div>
+            </div>
+            <!----------------------- CABEÇALHO COM TÍTULO E INFORMAÇÕES DO ORÇAMENTO ------------------------->
+
+            <!----------------------- LINHA COM TABELA DE ITENS E AMBIENTES ------------------------->
+            <div class="row">
+                <!-- TABELA COM ITENS -->
+                <sivp-primary-box [title]="'Itens'" [size]="'col-sm-6'" [icon]="'fa fa-pencil'">
+                    <sivp-table [name]="''" [headers]="['Id', 'Item', 'Valor Unitario']" [datas]="items" [ids]="['id','descricao','valorUnitario']" [bncv2]="main" [addItemButton]="true" [runClickRow]="false" [enableAddItemButton]="enableAddItem">
+                    </sivp-table>
+                </sivp-primary-box>
+                <!-- TABELA COM ITENS -->
+                <!-- INPUT PARA ADCIONAR AMBIENTE -->
+                <sivp-primary-box [size]="'col-sm-6'" [title]="'Novo Ambiente'" [icon]="'fa fa-home'">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" formControlName="txtAmbient" onblur="this.value = ''">
+                        <span class="input-group-btn">
+                            <button (click)="addAmbient(newBudgetForm.value.txtAmbient)" type="button" class="btn btn-info btn-flat">Add</button>
+                        </span>
+                    </div>
+                </sivp-primary-box>
+                <!-- INPUT PARA ADCIONAR AMBIENTE -->
+                <!-- LISTA DE AMBIENTES -->
+                <sivp-primary-box [title]="'Ambientes'" [size]="'col-sm-6 col-xs-12'" [icon]="'fa fa-home'">
+                    <div *ngFor="let item of ambientsForm.controls; let i = index" class="checkbox" formArrayName="cbAmbients">
+                        <label>
+                            <input type="checkbox" [formControlName]="i"> {{ambients[i]}}
+                        </label>
+
+                        <a *ngIf="i > 0" class="btn text-right" (click)="removeAmbient(i)">
+                            <i class="fa fa-trash"></i> Remover
+                        </a>
+                    </div>
+                </sivp-primary-box>
+                <!--LISTA DE AMBIENTES -->
+            </div>
+            <!----------------------- LINHA COM TABELA DE ITENS E AMBIENTES ------------------------->
+            <!----------------------- TABELA COM ITENS DO ORÇAMENTO --------------------------------->
+            <div class="row" *ngIf="itemsBudget.length > 0">
+                <sivp-primary-box [title]="'Orçamento: '" [icon]="'fa fa-file'" [size]="'col-sm-12 col-xs-12'">
+                    <sivp-table [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="itemsBudget" [ids]="['qtd','cod', 'item', 'detail', 'measure', 'ambient', 'necessary', 'unitValue', 'totalValue']" [budgetTable]="true" [bncv2]="main" [ipp]="1000" [showPagination]="false" [removeItemOption]="true" [ambientsV2]="ambients">
+                    </sivp-table>
+
+                    <div class="row">
+                        <span *ngIf="budget.freightValue > 0">
+                            <label class="col-sm-10 col-xs-12 text-right"> Frete: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.freightValue)}}</p>
+                        </span>
+                        <label class="col-sm-10 col-xs-12 text-right">Valor total: </label>
+                        <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.totalValue)}}</p>
+                        <span *ngIf="budget.discount > 0">
+                            <label class="col-sm-10 col-xs-12 text-right"> Desconto: </label>
+                            <p class="col-sm-2 col-xs-12"> {{budget.discount}} %</p>
+                            <label class="col-sm-10 col-xs-12 text-right">Valor com Desconto: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.discountValue)}} </p>
+                        </span>
+
+                    </div>
+                </sivp-primary-box>
+
+                <div class="row" *ngIf="selectedItemBudget">
+                    <sivp-primary-box [title]="'Itens'" [icon]="'fa fa-pencil'" [size]="'col-sm-12 col-xs-12'">
+                        <div class="row">
+                            <sivp-input-container [label]="'Quantidade'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtQtd" placeholder="Qtd">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Necessário'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtNecessary" placeholder="Necessário">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Medida'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtMeasure" placeholder="Medida">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Valor Unitário (R$)'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtUnitValue" placeholder="Valor Unitário" currencyMask [(ngModel)]="value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                            </sivp-input-container>
+                        </div>
+
+                        <div class="row">
+                            <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
+                                <textarea class="md-textarea form-control" rows="5" placeholder="Descrição" formControlName="txtDetail"></textarea>
+                            </sivp-input-container>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a (click)="changeItemBudget()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Alterar
+                                </a>
+                            </div>
+                        </div>
+                    </sivp-primary-box>
+                </div>
+
+                <div class="row">
+                    <sivp-primary-box [title]="'Complemento'" [icon]="'fa fa-pencil'" [size]="'col-sm-12 col-xs-12'">
+                        <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
+                            <textarea class="md-textarea form-control" rows="5" placeholder="Observação" formControlName="txtNote"></textarea>
+                        </sivp-input-container>
+
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <sivp-input-container [label]="'desconto'" class="form-group pull-left">
+                                    <input type="text" class="form-control" formControlName="txtFreight" placeholder="Valor Frete" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                                </sivp-input-container>
+                            </div>
+                            <div class="col-xs-3">
+                                <a (click)="applyFreight()" class="btn btn-primary pull-left"><i class="fa fa-truck"></i> Aplicar Frete </a>
+                            </div>
+                            <div class="col-xs-3">
+                                <sivp-input-container [label]="'desconto'" class="form-group pull-left">
+                                    <input type="text" class="form-control" formControlName="txtDiscount" placeholder="Desconto (%)">
+                                </sivp-input-container>
+                            </div>
+                            <div class="col-xs-3">
+                                <a (click)="applyDiscount()" class="btn btn-primary pull-left"><i class="fa fa-money"></i> Aplicar Desconto </a>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a (click)="processBudget()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Processar Orçamento
+                                </a>
+                            </div>
+                        </div>
+                    </sivp-primary-box>
+                </div>
+
+
+            </div>
+            <!----------------------- TABELA COM ITENS DO ORÇAMENTO --------------------------------->
+        </form>
+    </section>
+</section>
