@@ -40,7 +40,6 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
     }
     
     registerOnChange(fn: any){
-        console.log(fn);
         this.onChange = fn;
     }
     

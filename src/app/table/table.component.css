@@ -26,3 +26,7 @@
     background-color:#D3D3D3;
     font-weight:bold;
 }
+.budgetItemWithServiceOrder{
+    background-color: #FFC0CB;
+    font-weight: italic;
+}

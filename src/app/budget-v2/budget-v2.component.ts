@@ -14,6 +14,8 @@ export class BudgetV2Component implements OnInit {
 
     constructor(private appService: AppService, private spinner: NgxSpinnerService, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) { }
     
+    spinnerText: string = "";
+    
     stores: any = [];
     clients: any = [];
     sellers: any = [];
@@ -36,10 +38,13 @@ export class BudgetV2Component implements OnInit {
     // -----------------------------------------    INPUT LIST FUNCTIONS -------------------------------
     selectEventStore(item) {
         var self = this;
+        this.spinnerText = "Carregando Clientes e Vendedores";
+        this.spinner.show();
         
         this.appService.postSearchClientAndSellerByStore({storeId: item['id']}).subscribe(function(data){
             self.clients = data[0];
             self.sellers = data[1];
+            self.spinner.hide();
         })
         
         this.store = item;
@@ -76,12 +81,19 @@ export class BudgetV2Component implements OnInit {
     // -----------------------------------------    INPUT LIST FUNCTIONS -------------------------------
     
     nextStep(){
-        this.params = {client: this.client, seller: this.seller, store: this.store, date: this.date};
+        this.params = {client: this.client, seller: this.seller, store: this.store, date: this.date, budget: "{}"};
+        console.log(this.params);
         this.router.navigate(['/newBudgetV2', this.params]);
     }
     
     ngOnInit() {
         var self = this;
+        setTimeout(()=>{
+            this.spinnerText = "Carregando Clientes";
+            this.spinner.show()
+        }, 10)
+        
+        this.params.budget = "{}";
         
         this.budgetForm = this.formBuilder.group({
             txtDate: this.formBuilder.control('', [Validators.required]),
@@ -98,6 +110,7 @@ export class BudgetV2Component implements OnInit {
         
         this.appService.postSearchAllStore().subscribe(function(data){
             self.stores = data;
+            self.spinner.hide();
         })
         
     }

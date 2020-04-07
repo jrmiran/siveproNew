@@ -25,7 +25,7 @@ export class BudgetV2PdfService{
                         valor: "",
                         nec: "",
                         comodo: "",
-                        valorTotalItem: 0,
+                        valorTotalItem: '0',
                         c4: ""
     };
 

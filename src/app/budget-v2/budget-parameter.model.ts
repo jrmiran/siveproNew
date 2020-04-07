@@ -3,4 +3,5 @@ export interface BudgetParameterModel{
     store: any;
     seller: any;
     date: any;
+    budget: any;
 }

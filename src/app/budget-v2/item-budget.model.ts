@@ -1,4 +1,5 @@
 export interface ItemBudgetV2{
+    id: number;
     qtd: number;
     cod: number;
     item: string;
@@ -11,4 +12,5 @@ export interface ItemBudgetV2{
     discount: number;
     discountValue: number;
     number: number;
+    serviceOrderId: number;
 }

@@ -9,6 +9,6 @@ export interface BudgetPdf{
     valor: string;
     nec: string;
     comodo: string;
-    valorTotalItem: number;
+    valorTotalItem: any;
     c4: string;
 }

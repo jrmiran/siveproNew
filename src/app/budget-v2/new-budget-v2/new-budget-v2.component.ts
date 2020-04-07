@@ -6,6 +6,8 @@ import {ItemBudgetV2} from '../item-budget.model';
 import {BudgetV2} from '../budget-v2.model';
 import {BudgetV2PdfService} from '../budget-v2-pdf.service';
 import {ItemByAmbient} from '../item-by-ambient.model';
+import {ModalComponent} from '../../shared/modal/modal.component';
+import {NgxSpinnerService} from 'ngx-spinner';
 
 @Component({
   selector: 'sivp-new-budget-v2',
@@ -14,30 +16,38 @@ import {ItemByAmbient} from '../item-by-ambient.model';
 })
 export class NewBudgetV2Component implements OnInit {
 
-    constructor(private route: ActivatedRoute, private appService: AppService, private formBuilder: FormBuilder, private budgetPdf: BudgetV2PdfService) { }
+    constructor(private route: ActivatedRoute, private appService: AppService, private formBuilder: FormBuilder, private budgetPdf: BudgetV2PdfService, private spinner: NgxSpinnerService) { }
     //PARAMS-------------
     store: any;
     client: any;
     seller: any;
     params: any;
+    itemsBudgetParam: any;
+    serviceOrders: any;
     // ------------------
     
     // VARIABLES -------------------
+    serviceOrderParams: any;
+    spinnerText: string = "";
     release = false;
     items: Object[] = [];
     main: any;
     ambients: string[] = [''];
+    ambientsEdit: string[] = [];
     selectedAmbients: string[] = [];
     newBudgetForm: FormGroup;
     ambientsForm: FormArray;
     itemsBudget: ItemBudgetV2[] = [];
-    discount: number = 0;
+    newItemsBudget: ItemBudgetV2[] = [];
+    oldItemsBudget: ItemBudgetV2[] = [];
     enableAddItem: boolean = false;
     selectedItemBudget: ItemBudgetV2;
-    budget = {} as BudgetV2;
+    budget: BudgetV2;
     freightValue: number = 0;
     itemByAmbient: ItemByAmbient[] = [];
+    modal = {} as ModalComponent;
     noteText = "ORÇAMENTO SUJEITO A ALTERAÇÃO DE VALOR APÓS MEDIÇÃO E CONFERÊNCIA DO PROJETO EM LOCO" + String.fromCharCode(10) +"ORÇAMENTO VÁLIDO POR 10 DIAS"+ String.fromCharCode(10) +"CUBAS DE LOUÇA E INOX NÃO INCLUSAS NO ORÇAMENTO"+ String.fromCharCode(10) + "DESCONTO NÃO APLICÁVEL SOBRE O FRETE" + String.fromCharCode(10) + "PARA DEKTON, QUARTZO E CORIAN: VALOR SUJEITO A ALTERAÇÃO EM FUNÇÃO DA TAXA DE CÂMBIO DO DÓLAR OU EURO" + String.fromCharCode(10) + String.fromCharCode(10) + "PAGAMENTO A VISTA COM 5% DE DESCONTO, SENDO 70% NO ATO E 30% NA ENTREGA" + String.fromCharCode(10) + "FORMA DE PAGAMENTO: ";
+    budgetType = "";
     // ------------------------------
     
     // FUNÇÃO DO BOTÃO NA TABELA DE ITENS QUE ADCIONA UM ITEM AO ORÇAMENTO ----------------------------
@@ -45,20 +55,25 @@ export class NewBudgetV2Component implements OnInit {
         var self = this;
         self.selectedAmbients.forEach(function(data){
             var item = {} as ItemBudgetV2;
+            item.id = 0;
             item.unitValue = self.appService.converteMoedaFloat(self.items.find((v) => {return v['id'] == itemId})['valorUnitario']);
             item.totalValue = item.unitValue;
-            item.discountValue = self.appService.discountValue(item.totalValue, self.discount);
+            item.discountValue = self.appService.discountValue(item.totalValue, self.budget.discount);
             item.item = self.items.find((v) => {return v['id'] == itemId})['descricao'];
             item.ambient = data;
             item.cod = itemId;
-            item.discount = self.discount;
+            item.discount = self.budget.discount;
             item.detail = '';
             item.measure = '';
             item.necessary = '';
             item.number = 0;
             item.qtd = 1;
+            item.serviceOrderId = 0;
 
             self.itemsBudget.push(item);
+            if(self.budgetType == "Edit"){
+                self.newItemsBudget.push(item);
+            }
             
             self.budget.totalValue = self.appService.toFixed2(self.budget.totalValue + item.totalValue);
             self.budget.discountValue = self.appService.toFixed2(self.budget.discountValue + item.discountValue);
@@ -73,6 +88,12 @@ export class NewBudgetV2Component implements OnInit {
         this.budget.discountValue = this.appService.toFixed2(this.budget.discountValue - this.selectedItemBudget.discountValue);
         
         this.itemsBudget = this.itemsBudget.slice(0,i).concat(this.itemsBudget.slice(i+1,this.itemsBudget.length));
+        
+        this.newItemsBudget = this.newItemsBudget.filter((v)=>{v != this.selectedItemBudget});
+        
+        if(this.budgetType == "Edit"){
+            this.oldItemsBudget.push(this.selectedItemBudget);
+        }
     }
     // -------------------------------------------------------------------------------------------------
     // FUNÇÕES QUE ADCIONAM E REMOVEM AMBIENTES NA LISTA DE AMBIENTES, SÃO CHAMADAS PELA TABLE -------
@@ -99,13 +120,14 @@ export class NewBudgetV2Component implements OnInit {
     // ------------------------------------------------------------------------------------------------
     // FUNÇÃO QUE ATIVA ITEM AO CLICAR NA TABELA ------------------------------------------------------
     activateItem(data: any, i: number){
-        //this.selectedItemBudget = this.itemsBudget.find((v) => {return v == data});
         this.selectedItemBudget = this.itemsBudget[i];
-        this.newBudgetForm.get('txtQtd').setValue(this.selectedItemBudget.qtd);
-        this.newBudgetForm.get('txtNecessary').setValue(this.selectedItemBudget.necessary);
-        this.newBudgetForm.get('txtMeasure').setValue(this.selectedItemBudget.measure);
-        this.newBudgetForm.get('txtUnitValue').setValue(this.selectedItemBudget.unitValue);
-        this.newBudgetForm.get('txtDetail').setValue(this.selectedItemBudget.detail);
+        setTimeout(()=>{
+            this.newBudgetForm.get('txtQtd').setValue(this.selectedItemBudget.qtd);
+            this.newBudgetForm.get('txtNecessary').setValue(this.selectedItemBudget.necessary);
+            this.newBudgetForm.get('txtMeasure').setValue(this.selectedItemBudget.measure);
+            this.newBudgetForm.get('txtUnitValue').setValue(this.selectedItemBudget.unitValue);
+            this.newBudgetForm.get('txtDetail').setValue(this.selectedItemBudget.detail);  
+        }, 10);
         
     }
     // ------------------------------------------------------------------------------------------------
@@ -121,8 +143,8 @@ export class NewBudgetV2Component implements OnInit {
         this.selectedItemBudget.unitValue = this.newBudgetForm.get('txtUnitValue').value;
         this.selectedItemBudget.detail = this.newBudgetForm.get('txtDetail').value;
         //ATUALIZA VALORES DO ITEM
-        this.selectedItemBudget.totalValue = this.selectedItemBudget.qtd * this.selectedItemBudget.unitValue
-        this.selectedItemBudget.discountValue = this.appService.discountValue(this.selectedItemBudget.totalValue, this.discount);
+        this.selectedItemBudget.totalValue = this.appService.toFixed2(this.selectedItemBudget.qtd * this.selectedItemBudget.unitValue);
+        this.selectedItemBudget.discountValue = this.appService.toFixed2(this.appService.discountValue(this.selectedItemBudget.totalValue, this.budget.discount));
         //ATUALIZA VALORES DO ORÇAMENTO
         this.budget.totalValue = this.appService.toFixed2(this.budget.totalValue + this.selectedItemBudget.totalValue);
         this.budget.discountValue = this.appService.toFixed2(this.budget.discountValue + this.selectedItemBudget.discountValue);
@@ -131,16 +153,16 @@ export class NewBudgetV2Component implements OnInit {
     // FUNÇÃO DO BOTÃO 'APLICAR DESCONTO' QUE APLICA O DESCONTO NO ORÇAMENTO --------------------------
     applyDiscount(){
         var self = this;
-        this.discount = parseFloat(this.newBudgetForm.get('txtDiscount').value);
+        this.budget.discount = parseFloat(this.newBudgetForm.get('txtDiscount').value);
         this.itemsBudget.forEach(function(data){
-            data.discount = self.discount;
-            data.discountValue = self.appService.discountValue(data.totalValue, self.discount);
+            data.discount = self.budget.discount;
+            data.discountValue = self.appService.discountValue(data.totalValue, self.budget.discount);
         });
-        this.budget.discount = this.discount;
-        this.budget.discountValue = this.appService.toFixed2(this.appService.discountValue(this.budget.totalValue - this.budget.freightValue, this.discount));
+        
+        this.budget.discountValue = this.appService.toFixed2(this.appService.discountValue(this.budget.totalValue - this.budget.freightValue, this.budget.discount));
     }
     // ------------------------------------------------------------------------------------------------
-    // FUNÇÃO DO BOTÃO 'APLICAR FRETE' QUE APLICA O VALOR DE FRETE ------------------------------------
+    // FUNÇÃO DO BOTÃO 'APLICAR FRETE' QUE APLICA O VALOR DE FRETE AO ORÇAMENTO -----------------------
     applyFreight(){
         this.budget.totalValue = this.budget.totalValue - this.freightValue;
         this.freightValue = parseFloat(this.newBudgetForm.get('txtFreight').value);
@@ -151,14 +173,38 @@ export class NewBudgetV2Component implements OnInit {
     // FUNÇÃO DO BOTÃO 'PROCESSAR ORÇAMENTO' QUE COLOCA O ORÇAMENTO NO BANCO DE DADOS -----------------
     processBudget(){
         var self = this;
+        
+        this.spinnerText = "Processando Orçamento...";
+        this.spinner.show();
+        
+        self.budget.retificated = self.budget.retificated + 1;
         var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"})};
         this.separeteItemByAmbient();
-        console.log(params);
+        
         this.appService.postInsertBudget(params).subscribe(function(data){
             console.log(data);
             self.budget.id = data[0]['insertId'];
-            self.budget.retificated = 1;
             self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller);
+            self.spinner.hide();
+        });
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO DO BOTÃO 'EDITAR ORÇAMENTO' QUE EDITA O ORÇAMENTO ---------------------------------------
+    editBudget(){
+        var self = this;
+        
+        this.spinnerText = "Editando Orçamento...";
+        this.spinner.show();
+        
+        self.budget.retificated = self.budget.retificated + 1;
+        var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"}), newItemsBudget: this.newItemsBudget, oldItemsBudget: this.oldItemsBudget};
+        
+        this.separeteItemByAmbient();
+        
+        this.appService.postEditBudget(params).subscribe(function(data){
+            console.log(data);
+            self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller);
+            self.spinner.hide();
         });
     }
     // ------------------------------------------------------------------------------------------------
@@ -166,6 +212,7 @@ export class NewBudgetV2Component implements OnInit {
     separeteItemByAmbient(){
         var self = this;
         var ambients: string[] = [];
+        
         this.itemsBudget.forEach(function(data){
            if(data.item != "LINHA DE SEPARAÇÃO"){
                if(ambients.indexOf(data.ambient) < 0){
@@ -186,6 +233,7 @@ export class NewBudgetV2Component implements OnInit {
             self.itemByAmbient.push(items);
         })
         
+        self.ambientsEdit = ambients;
         console.log(self.itemByAmbient);
     }
     // ------------------------------------------------------------------------------------------------
@@ -213,33 +261,161 @@ export class NewBudgetV2Component implements OnInit {
         })
     }
     // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO DO BOTÃO 'OK' DO MODAL PARA MODIFICAR ITEM DO ORÇAMENTO ---------------------------------
+    okButtonModal(event){
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO PARA MODIFICAÇÃO DE ITEM DO ORÇAMENTO ---------------------------------------------------
+    changeItem(data: any){
+        this.selectedItemBudget.cod = data['id'];
+        this.selectedItemBudget.item = data['descricao'];
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO QUE ATIVA O MODAL PARA ALTERAR ITEM (ATIVADO PELA TABLE) --------------------------------
+    openModalChangeItem(i: number){
+        this.selectedItemBudget = this.itemsBudget[i];
+        document.getElementById('openModalChangeItem').click();
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO QUE ATRIBUI VALORES DE ITEMSBUDGET RECEBIDOS POR PARAMETRO ------------
+    assignItemsBudget(){
+        this.itemsBudgetParam.forEach((v)=>{
+            var item = {} as ItemBudgetV2;
+            item.id = v['id'];
+            item.qtd = parseFloat(v['quantidade']);
+            item.cod = v['codigo'];
+            item.item = v['item'];
+            item.detail = v['detalhe'];
+            item.measure = v['medida'];
+            item.ambient = v['comodo'];
+            item.necessary = v['necessario'];
+            item.unitValue = this.appService.toFixed2(parseFloat(v['valorUnitario']));
+            item.totalValue = this.appService.toFixed2(parseFloat(v['valorTotal']));
+            item.discount = parseFloat(v['desconto']);
+            item.discountValue = this.appService.toFixed2(parseFloat(v['valorComDesconto']));
+            item.number = v['numero'];
+            item.serviceOrderId = this.serviceOrders.find((d)=>{return d['itemOrcamento_id'] == item.id}) ? parseFloat(this.serviceOrders.find((d)=>{return d['itemOrcamento_id'] == item.id})['id']) : 0;
+            this.itemsBudget.push(item);
+        });
+        console.log(this.itemsBudget);
+        this.addSeparationRows();
+        this.separeteItemByAmbient();
+        this.ambientsEdit.forEach((v) => {
+            this.addAmbient(v);
+        })
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO DO BOTÃO "GERAR PDF" DA EDIÇÃO DE ORÇAMENTO ---------------------------------------------
+    generatePDF(){
+        this.budgetPdf.generatePDF(this.itemByAmbient, this.budget, this.store, this.client, this.seller);
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO DO BOTÃO "DUPLICAR ORÇAMENTO" DA EDIÇÃO DE ORÇAMENTO ------------------------------------
+    duplicateBudget(){
+        var self = this;
+        this.spinnerText = "Dupllicando Orçamento ...";
+        this.spinner.show();
+        this.budget.retificated = 1;
+        var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"})};
+        
+        this.appService.postInsertBudget(params).subscribe(function(data){
+            console.log(data);
+            self.budget.id = data[0]['insertId'];
+            alert("Orçamento duplicado com o número " + self.budget.id);
+            self.spinner.hide();
+        });
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO DO BOTÃO "APROVAR" OU "REJEITAR" DA EDIÇÃO DE ORÇAMENTO ---------------------------------
+    changeBudgetStatus(status: boolean){
+        this.spinner.show();
+        var self = this;
+        var params = {budgetId: this.budget.id, status: status? 1 : 0};
+        this.appService.postEditBudgetStatus(params).subscribe(function(data){
+            self.budget.approved = status? 1 : 0;
+            if(status){
+                alert("Orçamento aprovado");
+            }else{
+                alert("Orçamento Rejeitado");
+            }
+            self.spinner.hide();
+        });
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO DO BOTÃO "ORDEM DE SERVIÇO" DA EDIÇÃO DE ORÇAMENTO --------------------------------------
+    navigateServiceOrder(){
+        this.serviceOrderParams = {budget: JSON.stringify(this.budget), 
+                                   itemsBudget: JSON.stringify(this.getItemsBudgetNoSeparation()), 
+                                   client: JSON.stringify(this.client), 
+                                   store: JSON.stringify(this.store),
+                                   seller: JSON.stringify(this.seller)};
+        
+        setTimeout(() => {
+            document.getElementById('serviceOrderButton').click();
+        },1000);
+        
+    }
+    // ------------------------------------------------------------------------------------------------
+    // FUNÇÃO QUE RETORNA ITEMS DO ORÇAMENTO SEM SEPARAÇÃO DE LINHA -----------------------------------
+    getItemsBudgetNoSeparation(){
+        return this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"});
+    }
+    // ------------------------------------------------------------------------------------------------
+    
+    //
+    yesConfirmationBox(){
+        
+    }
+    //
+    
+    //
+    noConfirmationBox(){
+        
+    }
+    //
     ngOnInit() {
         var self = this;
         this.main = this;
         this.ambientsForm = this.formBuilder.array([new FormControl(false)]);
-
+        this.spinnerText = "Carregando Itens";
+        this.spinner.show();
         // ------------------ START ASSIGN PARAMETERS ------------------------
         this.route.queryParams.subscribe(
             (queryParams: any) =>{
                 self.params = queryParams;
+                
                 self.store = JSON.parse(self.params['store']);
                 self.client = JSON.parse(self.params['client']);
                 self.seller = JSON.parse(self.params['seller']);
+                if(self.params['budget']){
+                    self.budget = JSON.parse(self.params['budget']);
+                    self.budgetType = "Edit";
+                    
+                }
+                if(self.params['itemsBudget']){
+                    self.itemsBudgetParam = JSON.parse(self.params['itemsBudget']);
+                    self.serviceOrders = JSON.parse(self.params['serviceOrders']);
+                    self.assignItemsBudget();
+                }
                 self.release = true;
+                
                 // ------------------ START INITIALIZE BUDGET VAR --------------------
-                self.budget.id = 0;
-                self.budget.approved = 0;
-                self.budget.date = self.params['date'];
-                self.budget.discount = 0;
-                self.budget.note = self.noteText;
-                self.budget.retificated = 0;
-                self.budget.totalValue = 0;
-                self.budget.storeId = self.store['id'];
-                self.budget.clientId = self.client['id'];
-                self.budget.sellerId = self.seller['id'];
-                self.budget.poloAd = 0;
-                self.budget.discountValue = 0;
-                self.budget.freightValue = 0;
+                if(self.params['budget'] == "{}"){
+                    self.budgetType = "New";
+                    self.budget.id = 0;
+                    self.budget.approved = 0;
+                    self.budget.date = self.params['date'];
+                    self.budget.discount = 0;
+                    self.budget.note = self.noteText;
+                    self.budget.retificated = 0;
+                    self.budget.totalValue = 0;
+                    self.budget.storeId = self.store['id'];
+                    self.budget.clientId = self.client['id'];
+                    self.budget.sellerId = self.seller['id'];
+                    self.budget.poloAd = 0;
+                    self.budget.discountValue = 0;
+                    self.budget.freightValue = 0;
+                }
                 // ------------------ END INITIALIZE BUDGET VAR ----------------------
             }
         );
@@ -248,6 +424,7 @@ export class NewBudgetV2Component implements OnInit {
         // ------------------ START LOAD ITEMS ------------------------
         this.appService.postSearchAllItems().subscribe(function(data){
             self.items = data;
+            self.spinner.hide();
         });
         // ------------------ END LOAD ITEMS ------------------------
         
@@ -266,8 +443,7 @@ export class NewBudgetV2Component implements OnInit {
         });
         
         this.newBudgetForm.get('txtNote').setValue(this.noteText);
-        
-        
+
         this.newBudgetForm.get('cbAmbients').valueChanges.subscribe(function(data){
             self.selectedAmbients = [];
             data.forEach((v, index) => {

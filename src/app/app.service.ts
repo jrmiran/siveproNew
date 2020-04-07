@@ -9,6 +9,7 @@ import "rxjs/add/operator/map";
 import 'rxjs/add/operator/catch';
 import {BudgetInsertion} from './budget/budget-insertion.model';
 import { ActivatedRoute, Router } from '@angular/router';
+import { formatCurrency, getCurrencySymbol } from '@angular/common';
 
 @Injectable()
 export class AppService{
@@ -442,7 +443,35 @@ export class AppService{
     postInsertBudget(obj: any):Observable<Object[]>{
         return this.callPost('postInsertBudget', obj);
     }
-
+    
+    postEditBudget(obj: any):Observable<Object[]>{
+        return this.callPost('postEditBudget', obj);
+    }
+    
+    postEditBudgetStatus(obj: any):Observable<Object[]>{
+        return this.callPost('postEditBudgetStatus', obj);
+    }
+    
+    postSearchBudget(obj: any):Observable<Object[]>{
+        return this.callPost('postSearchBudget', obj);
+    }
+    
+    postSearchServiceOrderByBudget(obj: any):Observable<Object[]>{
+        return this.callPost('postSearchServiceOrderByBudget', obj);
+    }
+    
+    postInsertServiceOrder(obj: any):Observable<Object[]>{
+        return this.callPost('postInsertServiceOrder', obj);
+    }
+    
+    postSearchAllServiceOrders():Observable<Object[]>{
+        return this.callPost('postSearchAllServiceOrders', {});
+    }
+    
+    postInsertExecutionServiceOrder(obj: any):Observable<Object[]>{
+        return this.callPost('postInsertExecutionServiceOrder', obj);
+    }
+    
     
     draw(budgetId: number): Observable<Object[]>{
         return this.callQuery(`draw/${budgetId}`);
@@ -455,7 +484,15 @@ export class AppService{
     insertDraw(obj: any): Observable<Object[]>{
         return this.callPost(`postInsertDraw`, obj);
     }
+    
     converteFloatMoeda(valor: any){
+        return formatCurrency(valor, 'pt-BR' , "R$") as any;
+    }
+    
+    converteFloatMoedaAntigo(valor: any){
+        
+        
+        
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();
       valor = ""+valor;

@@ -1,0 +1,65 @@
+<section class="content-header"></section>
+
+<section class="content">
+    <section class="invoice">
+        <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
+            <p style="color:white;"> Aguarde </p>
+        </ngx-spinner>
+
+        <form [formGroup]="newServiceOrderForm" novalidate>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header">
+                        <i class="fa fa-wrench"></i> Ordem de Serviço
+                        <a class="btn pull-right" data-toggle="modal" data-target="#modalId"><i class="fa fa-plus"></i> Adicionar OS</a>
+                    </h2>
+
+                    <div class="row">
+                        <label class="col-sm-2"> Orçamento: </label>
+                        <p class="col-sm-10"> {{budget.id}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"> Loja: </label>
+                        <p class="col-sm-10"> {{store.nome}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-2"> Terceiro: </label>
+                        <p class="col-xs-10"> {{client.nome}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-2"> Vendedor: </label>
+                        <p class="col-xs-10"> {{seller.nome}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"> Data: </label>
+                        <p class="col-sm-10"> {{budget.date}} </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-pencil"></i>
+                            <h3 class="box-title"> Ordens de Serviço:</h3>
+                            <a class="btn pull-right"><i class="fa fa-print"></i> Imprimir </a>
+                        </div>
+                        <sivp-table *ngIf="serviceOrders.length > 0" [name]="''" [headers]="['ID', 'Loja', 'Cliente', 'Qtd.', 'Item', 'Medida', 'Ambiente']" [searchBar]="false" [datas]="serviceOrders" [ids]="['id','loja', 'cliente', 'quantidade', 'item', 'medida', 'comodo']" [ipp]="1000" [showPagination]="false" [soc]="self" [multipleRowsSelection]="false" [runClickRow]="false" (okClick)="okButtonModal($event)">
+                        </sivp-table>
+
+                        <label *ngIf="serviceOrders.length == 0"> Não há ordens de serviço geradas para este orçamento </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-------------------- MODAL COM TABELA DE SELEÇÃO DE ITENS A SER ADICIONADOS NA OS -------------------->
+            <sivp-modal [id]="'modalId'" [icon]="'fa fa-pencil'" [title]="'Seleção de itens'" (okClick)="okButtonModal($event)">
+                <sivp-table [name]="''" [headers]="['Cod', 'Qtd', 'Item', 'Detalhe', 'Ambiente', 'Valor Total']" [datas]="itemsBudget" [ids]="['cod', 'qtd', 'item','detail', 'ambient', 'totalValue']" [socv2]="main" [runClickRow]="true" [showPagination]="false" [multipleRowsSelection] = "true" [ipp]="10000" [selectionButton]="true" [searchBar]="false">
+                </sivp-table>
+            </sivp-modal>
+            <!-------------------- MODAL COM TABELA DE SELEÇÃO DE ITENS A SER ADICIONADOS NA OS -------------------->
+
+        </form>
+    </section>
+</section>

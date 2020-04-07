@@ -46,7 +46,6 @@ import { AutoCompleteComponent } from './shared/auto-complete/auto-complete.comp
 import {NgxMaskModule} from 'ngx-mask-2';
 import { TextMaskModule } from 'angular2-text-mask';
 import { CurrencyMaskModule } from "ng2-currency-mask";
-import { ModalComponent } from './modal/modal.component';
 import { BudgetItemsComponent } from './budget/budget-items/budget-items.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
@@ -90,6 +89,19 @@ import { BudgetV2Component } from './budget-v2/budget-v2.component';
 import { NewBudgetV2Component } from './budget-v2/new-budget-v2/new-budget-v2.component';
 import { EditBudgetV2Component } from './budget-v2/edit-budget-v2/edit-budget-v2.component';
 import {BudgetV2PdfService} from './budget-v2/budget-v2-pdf.service';
+import {ModalComponent} from './shared/modal/modal.component';
+
+import {LOCALE_ID} from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+import { ServiceOrderV2Component } from './service-order-v2/service-order-v2.component';
+import { ServiceOrderTableV2Component } from './service-order-v2/service-order-table-v2/service-order-table-v2.component';
+import { ConfirmationBoxComponent } from './shared/confirmation-box/confirmation-box.component';
+registerLocaleData(localePt);
+
+
+
+
 
 @NgModule({
   declarations: [
@@ -117,7 +129,6 @@ import {BudgetV2PdfService} from './budget-v2/budget-v2-pdf.service';
     DatePickerComponent,
     CreatePdfComponent,
     AutoCompleteComponent,
-    ModalComponent,
     BudgetItemsComponent,
     SpinnerComponent,
     ClientRegisterComponent,
@@ -148,6 +159,10 @@ import {BudgetV2PdfService} from './budget-v2/budget-v2-pdf.service';
     BudgetV2Component,
     NewBudgetV2Component,
     EditBudgetV2Component,
+    ModalComponent,
+    ServiceOrderV2Component,
+    ServiceOrderTableV2Component,
+    ConfirmationBoxComponent
   ],
   imports: [
     BrowserModule,
@@ -189,7 +204,7 @@ import {BudgetV2PdfService} from './budget-v2/budget-v2-pdf.service';
       UploadComponent,
       CreatePdfSOComponent,
       CreatePdfProjectComponent,
-      {provide: MAT_DATE_LOCALE, useValue: 'pt-BR'},
+      {provide: LOCALE_ID, useValue: 'pt-BR'},
   ],
   bootstrap: [AppComponent]
 })

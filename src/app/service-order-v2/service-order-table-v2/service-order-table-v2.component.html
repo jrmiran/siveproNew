@@ -1,0 +1,58 @@
+<section class="content-header">
+</section>
+
+<section class="content">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p style="color: white"> {{spinnerText}} </p>
+    </ngx-spinner>
+    <section class="invoice">
+
+        <sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente', 'Qtd','Item', 'Detalhe', 'Ambiente', 'Valor c/ Desc.']" [datas]="serviceOrders" [ids]="['id','orcamento','loja' ,'cliente', 'quantidade','item','detalhe','comodo','valorComDesconto']" [runClickRow]="false" [sotcv2]="self">
+        </sivp-table>
+
+
+
+    </section>
+</section>
+
+<!-- MODAL DE ALTERAÇÃO DE ORDEM DE SERVIÇO -->
+<button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modalId">Open Modal</button>
+<sivp-modal *ngIf="releaseModal" [id]="'modalId'" [icon]="'fa fa-pencil'" [title]="'Alteração Ordem de Serviço'" (okClick)="submitServiceOrderExecution($event)" [enableOkButton]="enableOkButton">
+    <form [formGroup]="serviceOrderForm" novalidate>
+
+        <div class="row">
+            <!---------------------LISTA DE FUNCIONÁRIOS ------------------------->
+            <sivp-primary-box [title]="'Funcionário'" [size]="'col-sm-6 col-xs-12'" [icon]="'fa fa-user'">
+                <div *ngFor="let item of employeesForm.controls; let i = index" class="checkbox" formArrayName="cbEmployees">
+                    <div class="row" [formGroupName]="i">
+                        <div class="col-sm-4">
+                            <label><input type="checkbox" [formControlName]="'employeeName'"> {{employees[i].name}}</label>
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control input-sm pull-right" placeholder="%" [formControlName]="'employeeShare'" [class.hide]="!showInputs[i]">
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control input-sm pull-right" placeholder="Empreita" [formControlName]="'employeeEmpreita'" [class.hide]="!showInputs[i]" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ','}">
+                        </div>
+                    </div>
+                </div>
+            </sivp-primary-box>
+            <!---------------------LISTA DE FUNCIONÁRIOS ------------------------->
+
+            <!--------------------- DATA ------------------------->
+            <sivp-primary-box [title]="'Data'" [size]="'col-sm-6 col-xs-12'" [icon]="'fa fa-calendar'">
+                <sivp-date-picker formControlName="txtDate"></sivp-date-picker>
+            </sivp-primary-box>
+            <!--------------------- DATA ------------------------->
+
+            <!--------------------- CHECKBOX PEDRA ------------------------->
+            <sivp-primary-box [title]="'Material'" [size]="'col-sm-6 col-xs-12'" [icon]="'fa fa-pencil'">
+                <label><input type="checkbox" [formControlName]="'cbStone'"> Mármore/Granito </label>
+                <input [class.hide]="!showStoneValueInput" type="text" class="form-control input-sm pull-left" placeholder="Valor Mármore/Granito" [formControlName]="'stoneValue'" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ','}">
+            </sivp-primary-box>
+            <!--------------------- CHECKBOX PEDRA ------------------------->
+        </div>
+
+    </form>
+</sivp-modal>
+<!-- MODAL DE ALTERAÇÃO DE ORDEM DE SERVIÇO -->

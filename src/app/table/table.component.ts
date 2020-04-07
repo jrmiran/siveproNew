@@ -25,6 +25,11 @@ import {RequestComponent} from '../request/request.component';
 import {NewRequestComponent} from '../request/new-request/new-request.component';
 import {EditRequestComponent} from '../request/edit-request/edit-request.component';
 import {NewBudgetV2Component} from '../budget-v2/new-budget-v2/new-budget-v2.component'
+import { ActivatedRoute, Router } from '@angular/router';
+import {BudgetV2} from '../budget-v2/budget-v2.model';
+import {BudgetParameterModel} from '../budget-v2/budget-parameter.model';
+import {ServiceOrderV2Component} from '../service-order-v2/service-order-v2.component';
+import {ServiceOrderTableV2Component} from '../service-order-v2/service-order-table-v2/service-order-table-v2.component';
 
 @Component({
   selector: 'sivp-table',
@@ -33,7 +38,7 @@ import {NewBudgetV2Component} from '../budget-v2/new-budget-v2/new-budget-v2.com
 })
 export class TableComponent implements OnInit {
 
-  constructor(private budgetComponent: BudgetService, private start: StartService, private formBuilder: FormBuilder, public uploadService: UploadComponent, private parameterService: ParameterService) { }
+  constructor(private budgetComponent: BudgetService, private start: StartService, private formBuilder: FormBuilder, public uploadService: UploadComponent, private parameterService: ParameterService, private appService: AppService, private router: Router) { }
 
     
     /***************** START COMPONENTS INPUTS **************************/
@@ -54,6 +59,8 @@ export class TableComponent implements OnInit {
     @Input() nrc: NewRequestComponent;
     @Input() erc: EditRequestComponent;
     @Input() bncv2: NewBudgetV2Component;
+    @Input() socv2: ServiceOrderV2Component;
+    @Input() sotcv2: ServiceOrderTableV2Component;
     /***************** END COMPONENTS INPUTS **************************/
     
     /*********************** START VARIABLE INPUTS ***********************/
@@ -104,6 +111,7 @@ export class TableComponent implements OnInit {
     count: number = 0;
     flag: boolean = true;
     selectedRow: number = -1;
+    paramsEditBudget: any;
     
     selectAll(){    
         var self = this;
@@ -112,11 +120,17 @@ export class TableComponent implements OnInit {
             if(this.soc){
                 this.soc.clickRow(this.selectedRows);
             }
+            if(this.socv2){
+                this.socv2.clickRow(this.selectedRows);
+            }
         } else{
             this.datas.forEach(function(data, index){
                  self.selectedRows.push(index);
                 if(self.soc){
                     self.soc.clickRow(self.selectedRows);
+                }
+                if(self.socv2){
+                    self.socv2.clickRow(self.selectedRows);
                 }
             });
         }
@@ -139,7 +153,6 @@ export class TableComponent implements OnInit {
         return "Este é um retorno" + id;
     }
     showServiceOrderModal(){
-        console.log("Service Order Modal");
     }
     
     openBudget(id: any){
@@ -147,13 +160,12 @@ export class TableComponent implements OnInit {
     }
     
     percentageToNumber(value: string){
-        console.log(value);
-        console.log("width: " + value.replace(',','.') + ";");
+
         return "width: " + value.replace(',','.') + ";";
     }
     
     changeBudgetStatus(id: number, status: boolean){
-        console.log(id);
+
         this.budgetComponent.changeBudgetStatus(id, status, this.btc);
     }
     
@@ -169,23 +181,26 @@ export class TableComponent implements OnInit {
         }
     }
     
+    
+    
     addItemBudgetV2(id: any){
         this.bncv2.addItemBudget(id);
     }
     
+    openModalChangeSO(data: any){
+        this.sotcv2.openModalChangeSO(data);    
+    }
+    
     addBudgetItem(id: string, item: string, valorUnitario: string){
         var self = this;
-        console.log("entrou no addbudgeitem");
+
         if(self.bnc){
-            console.log("Entrou no if linha 58");
             self.bnc.setValue();
         } else if(self.budgetEdit){
-            console.log("Entrou no else if linha 60");
             self.budgetEdit.setValue();
         }
         
         this.comodos.forEach(function(comodo){
-            console.log("entrou no for each");
             self.b = {
             qtd: 1,
             cod: id,
@@ -200,10 +215,8 @@ export class TableComponent implements OnInit {
             valorComDesconto: 0    
         }
         if(self.bnc){
-            console.log("Entrou no if");
            self.budgetComponent.addItemBudget(self.b, self.bnc);
         }else if(self.budgetEdit){
-            console.log("Entrou no else if");
             self.budgetComponent.addItemEditBudget(self.b, self.budgetEdit);
         }
         });
@@ -271,23 +284,29 @@ export class TableComponent implements OnInit {
         }else if(this.bnc){
             this.bnc.changeItemBudget(i);
         }
-        
+        if(this.budgetEdit){
+            this.budgetEdit.changeItemBudget(i);
+        }else if(this.bncv2){
+            this.bncv2.openModalChangeItem(i);
+        }
     }
     
     eventRow(i:number, data: string){
         if(this.runClickRow && data['item'] != "LINHA DE SEPARAÇÃO"){
             this.selectedRow = i;
             if(!this.multipleRowsSelection){
-                console.log("1");
                 this.selectedRows = [];
             }
             if(this.selectedRows.indexOf(i) != -1){
-                console.log("2");
                 this.selectedRows = this.selectedRows.slice(0,this.selectedRows.indexOf(i)).concat(this.selectedRows.slice(this.selectedRows.indexOf(i)+1,this.selectedRows.length));
-                //this.selectedRows = this.selectedRows.splice(this.selectedRows.indexOf(i));
+                if(this.socv2){
+                    this.socv2.clickRow(this.selectedRows);
+                }
             } else{
-                console.log("3");
                 this.selectedRows.push(i);
+                if(this.socv2){
+                    this.socv2.clickRow(this.selectedRows);
+                }
             }
             
             if(this.changeItemTable){
@@ -296,21 +315,23 @@ export class TableComponent implements OnInit {
                 }else if(this.budgetEdit){
                     this.budgetEdit.clickRowChangeItem(data['descricao']);
                 }
+                
+                if(this.bncv2){
+                    this.bncv2.changeItem(data);
+                }else if(this.budgetEdit){
+                    this.budgetEdit.clickRowChangeItem(data['descricao']);
+                }
             } else{
                 if(this.bnc){
-                    console.log("bnc");
                     this.bnc.clickRow(i);
                 }else if(this.itemButton){
-                    console.log("itemButton");
                     this.budgetItem.clickRow(i);
                 }else if(this.budgetEdit){
-                    console.log("budgetEdit");
                     this.budgetEdit.clickRow(i);
                 }else if(this.soc){
                     this.soc.clickRow(this.selectedRows);
                 }else if(this.fdc){
                     if(!this.drawTable){
-                        console.log("FDC");
                         if(!this.fdcMaterial){
                             this.fdc.clickRow(i);
                         } else{
@@ -320,10 +341,8 @@ export class TableComponent implements OnInit {
                         this.fdc.clickRowDraw(i);
                     }
                 }else if(this.mc){
-                    console.log("MC");
                     this.mc.clickRow(i);
                 }else if(this.spc){
-                    console.log("SPC");
                     this.spc.setCurrentDraw(data['id']);
                 }else if(this.bncv2){
                     this.bncv2.activateItem(data, i);
@@ -331,6 +350,42 @@ export class TableComponent implements OnInit {
             }
             this.currentLine = i;
         }
+    }
+    
+    openEditBudget(data: any){
+        var self = this;
+        var budget = {} as BudgetV2;
+        var store: any;
+        var client: any;
+        var seller: any;
+        var itemsBudget: any;
+        var serviceOrders: any;
+        this.appService.postSearchBudget({budgetId: data['budgetId']}).subscribe(function(v){
+            budget.approved = v[1][0]['aprovado']['data'][0];
+            budget.clientId = v[1][0]['clienteEmpresaa_id'];
+            budget.date = v[1][0]['data'];
+            budget.discount = parseFloat(v[1][0]['desconto']);
+            budget.totalValue = parseFloat(v[1][0]['valorTotal']);
+            budget.discountValue = self.appService.discountValue(budget.totalValue, budget.discount);
+            budget.freightValue = 0;
+            budget.id = v[1][0]['id'];
+            budget.note = v[1][0]['observacao'];
+            budget.poloAd = v[1][0]['poload']['data'][0];
+            budget.retificated = v[1][0]['retificado'];
+            budget.sellerId = v[1][0]['vendedor_id'];
+            budget.storeId = v[1][0]['clienteJuridico_id'];
+            
+            store = v[2][0];
+            client = v[3][0];
+            seller = v[4][0];
+            itemsBudget = v[5];
+            serviceOrders = v[6];
+            
+            self.paramsEditBudget = {store: JSON.stringify(store), client: JSON.stringify(client), seller: JSON.stringify(seller), budget: JSON.stringify(budget), itemsBudget: JSON.stringify(itemsBudget), serviceOrders: JSON.stringify(serviceOrders)};
+            setTimeout(() =>{
+                document.getElementById('openEditBudget').click();
+            }, 100);
+        })
     }
     
     showSpcDraw(id: any){
@@ -351,6 +406,8 @@ export class TableComponent implements OnInit {
         return this.formBuilder.array(values); 
     }
     
+    
+    
     ngOnInit() {
         var self = this;
         this.start.start();
@@ -360,12 +417,10 @@ export class TableComponent implements OnInit {
         if(this.soc){
             if(this.formGroupSO){
                 this.releseSoc = true;
-                console.log(this.formGroupSO);
             }
             
         }
         if(this.sorc){
-            console.log(self.percentageExecution);
         }
     }
 }

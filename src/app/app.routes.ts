@@ -28,6 +28,8 @@ import {NewRequestComponent} from './request/new-request/new-request.component';
 import {EditRequestComponent} from './request/edit-request/edit-request.component';
 import {BudgetV2Component} from './budget-v2/budget-v2.component';
 import {NewBudgetV2Component} from './budget-v2/new-budget-v2/new-budget-v2.component';
+import {ServiceOrderV2Component} from './service-order-v2/service-order-v2.component';
+import {ServiceOrderTableV2Component} from './service-order-v2/service-order-table-v2/service-order-table-v2.component';
 
 export const ROUTES: Routes = [
     {path: '', component: LoginComponent},
@@ -57,5 +59,7 @@ export const ROUTES: Routes = [
     {path: 'newRequest', component: NewRequestComponent},
     {path: 'editRequest', component: EditRequestComponent},
     {path: 'budgetV2', component: BudgetV2Component},
-    {path: 'newBudgetV2', component: NewBudgetV2Component}
+    {path: 'newBudgetV2', component: NewBudgetV2Component},
+    {path: 'serviceOrderV2', component: ServiceOrderV2Component},
+    {path: 'serviceOrderTableV2', component: ServiceOrderTableV2Component}
 ]
