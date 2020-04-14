@@ -9,7 +9,7 @@
         <!----------------------- CARREGA ORÇAMENTOS QUE NÃO ESTÃO NO BUFFER ----------------------->
         <a class="btn pull-right" (click)="loadBudgets()"><i class="fa fa-download"></i> Carregar Orçamentos </a>
         <!----------------------- CARREGA ORÇAMENTOS QUE NÃO ESTÃO NO BUFFER ----------------------->
-        <sivp-table [name]="'Orçamento'" [headers]="['Id', 'Cliente', 'Terceiro', 'Data', 'Valor', 'Aprovado']" [datas]="buds" [ids]="['budgetId','clientName','storeClient' ,'date', 'value', 'approved']" [btc]="self" [dropdownButton]="true" [runClickRow]="false">
+        <sivp-table [name]="'Orçamento'" [headers]="['Id', 'Cliente', 'Terceiro', 'Data', 'Valor', 'Aprovado', 'Edit Old']" [datas]="buds" [ids]="['budgetId','clientName','storeClient' ,'date', 'value', 'approved', 'editOld']" [btc]="self" [dropdownButton]="true" [runClickRow]="false">
         </sivp-table>
     </section>
 </section>

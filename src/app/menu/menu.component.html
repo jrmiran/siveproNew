@@ -14,16 +14,26 @@
             <ul class="sidebar-menu" data-widget="tree">
                 <li class="header">NAVEGAÇÃO</li>
                 
-                    <sivp-menu-item [name]="'Orçamento'" 
+                    <!--<sivp-menu-item [name]="'Orçamento'" 
                                     [subItems]="['Novo', 'Procurar', 'Editar', 'Itens']" 
                                     [routers]="['/newBudget', '/budget', '/newBudget2', '/budgetItems']" 
+                                    class="sidebar-menu"></sivp-menu-item>-->
+                
+                    <sivp-menu-item [name]="'Orçamento'" 
+                                    [subItems]="['Novo', 'Procurar', 'Itens']" 
+                                    [routers]="['/budgetV2', '/budget', '/budgetItems']" 
                                     class="sidebar-menu"></sivp-menu-item>
                 
-                    <sivp-menu-item [name]="'Ordem de Serviço'" 
+                    <!--<sivp-menu-item [name]="'Ordem de Serviço'" 
                                     [subItems]="['Procurar', 'Editar', 'Relatório']" 
                                     [routers]="['/serviceOrderTable', '/serviceOrderEdit', '/serviceOrderReport']" 
-                                    class="sidebar-menu"></sivp-menu-item>
+                                    class="sidebar-menu"></sivp-menu-item>-->
                 
+                    <sivp-menu-item [name]="'Ordem de Serviço'" 
+                                    [subItems]="['Procurar', 'Relatório', 'OS Old', 'Relatório Old']" 
+                                    [routers]="['/serviceOrderTableV2','serviceOrderReportV2', '/serviceOrderTable', '/serviceOrderReport']" 
+                                    class="sidebar-menu"></sivp-menu-item>
+                    
                     <sivp-menu-item [name]="'Pedido'" 
                                     [subItems]="['Novo', 'Consultar']" 
                                     [routers]="['newRequest', '/request']" 
@@ -56,8 +66,8 @@
                                     *ngIf="privilege || parameterService.privilege"></sivp-menu-item>
 
                     <sivp-menu-item [name]="'Test Area'" 
-                                    [subItems]="['Service Order', 'Orçamento V2']" 
-                                    [routers]="['/serviceOrderTableV2', 'budgetV2']" 
+                                    [subItems]="['Service Order', 'Orçamento V2', 'Relatório OS']" 
+                                    [routers]="['/serviceOrderTableV2', 'budgetV2', '/serviceOrderReportV2']" 
                                     class="sidebar-menu"
                                     *ngIf="administrator || parameterService.administrator"></sivp-menu-item>
             </ul>

@@ -30,6 +30,7 @@ import {BudgetV2Component} from './budget-v2/budget-v2.component';
 import {NewBudgetV2Component} from './budget-v2/new-budget-v2/new-budget-v2.component';
 import {ServiceOrderV2Component} from './service-order-v2/service-order-v2.component';
 import {ServiceOrderTableV2Component} from './service-order-v2/service-order-table-v2/service-order-table-v2.component';
+import {ServiceOrderReportV2Component} from './service-order-report-v2/service-order-report-v2.component';
 
 export const ROUTES: Routes = [
     {path: '', component: LoginComponent},
@@ -61,5 +62,6 @@ export const ROUTES: Routes = [
     {path: 'budgetV2', component: BudgetV2Component},
     {path: 'newBudgetV2', component: NewBudgetV2Component},
     {path: 'serviceOrderV2', component: ServiceOrderV2Component},
+    {path: 'serviceOrderReportV2', component: ServiceOrderReportV2Component},
     {path: 'serviceOrderTableV2', component: ServiceOrderTableV2Component}
 ]

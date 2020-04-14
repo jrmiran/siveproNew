@@ -16,7 +16,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 })
 export class NewBudgetV2Component implements OnInit {
 
-    constructor(private route: ActivatedRoute, private appService: AppService, private formBuilder: FormBuilder, private budgetPdf: BudgetV2PdfService, private spinner: NgxSpinnerService) { }
+    constructor(private route: ActivatedRoute, private router: Router, private appService: AppService, private formBuilder: FormBuilder, private budgetPdf: BudgetV2PdfService, private spinner: NgxSpinnerService) { }
     //PARAMS-------------
     store: any;
     client: any;
@@ -48,6 +48,8 @@ export class NewBudgetV2Component implements OnInit {
     modal = {} as ModalComponent;
     noteText = "ORÇAMENTO SUJEITO A ALTERAÇÃO DE VALOR APÓS MEDIÇÃO E CONFERÊNCIA DO PROJETO EM LOCO" + String.fromCharCode(10) +"ORÇAMENTO VÁLIDO POR 10 DIAS"+ String.fromCharCode(10) +"CUBAS DE LOUÇA E INOX NÃO INCLUSAS NO ORÇAMENTO"+ String.fromCharCode(10) + "DESCONTO NÃO APLICÁVEL SOBRE O FRETE" + String.fromCharCode(10) + "PARA DEKTON, QUARTZO E CORIAN: VALOR SUJEITO A ALTERAÇÃO EM FUNÇÃO DA TAXA DE CÂMBIO DO DÓLAR OU EURO" + String.fromCharCode(10) + String.fromCharCode(10) + "PAGAMENTO A VISTA COM 5% DE DESCONTO, SENDO 70% NO ATO E 30% NA ENTREGA" + String.fromCharCode(10) + "FORMA DE PAGAMENTO: ";
     budgetType = "";
+    indexItemToRemove: number = 0;
+    serviceOrdersToRemove: number[] = [];
     // ------------------------------
     
     // FUNÇÃO DO BOTÃO NA TABELA DE ITENS QUE ADCIONA UM ITEM AO ORÇAMENTO ----------------------------
@@ -93,6 +95,19 @@ export class NewBudgetV2Component implements OnInit {
         
         if(this.budgetType == "Edit"){
             this.oldItemsBudget.push(this.selectedItemBudget);
+        }
+        if(this.selectedItemBudget.serviceOrderId != 0){
+            this.serviceOrdersToRemove.push(this.selectedItemBudget.serviceOrderId);
+        }    
+    }
+    // -------------------------------------------------------------------------------------------------
+    // FUNÇÃO CHAMADA PELA TABLE AO CLICAR NO BOTÃO DE EXCLUSÃO DE ITEM --------------------------------
+    removeClickButton(i: number){
+        if(this.itemsBudget[i].serviceOrderId != 0){
+            this.indexItemToRemove = i;
+            document.getElementById('openConfirmation').click();
+        }else{
+            this.removeItemBudget(i);
         }
     }
     // -------------------------------------------------------------------------------------------------
@@ -186,6 +201,7 @@ export class NewBudgetV2Component implements OnInit {
             self.budget.id = data[0]['insertId'];
             self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller);
             self.spinner.hide();
+            self.router.navigate(['/budget']);
         });
     }
     // ------------------------------------------------------------------------------------------------
@@ -197,7 +213,7 @@ export class NewBudgetV2Component implements OnInit {
         this.spinner.show();
         
         self.budget.retificated = self.budget.retificated + 1;
-        var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"}), newItemsBudget: this.newItemsBudget, oldItemsBudget: this.oldItemsBudget};
+        var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"}), newItemsBudget: this.newItemsBudget, oldItemsBudget: this.oldItemsBudget, serviceOrdersToRemove: this.serviceOrdersToRemove};
         
         this.separeteItemByAmbient();
         
@@ -205,6 +221,7 @@ export class NewBudgetV2Component implements OnInit {
             console.log(data);
             self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller);
             self.spinner.hide();
+            self.router.navigate(['/budget']);
         });
     }
     // ------------------------------------------------------------------------------------------------
@@ -316,6 +333,7 @@ export class NewBudgetV2Component implements OnInit {
         this.spinnerText = "Dupllicando Orçamento ...";
         this.spinner.show();
         this.budget.retificated = 1;
+        this.budget.approved = 0;
         var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"})};
         
         this.appService.postInsertBudget(params).subscribe(function(data){
@@ -323,6 +341,7 @@ export class NewBudgetV2Component implements OnInit {
             self.budget.id = data[0]['insertId'];
             alert("Orçamento duplicado com o número " + self.budget.id);
             self.spinner.hide();
+            self.router.navigate(['/budget']);
         });
     }
     // ------------------------------------------------------------------------------------------------
@@ -362,22 +381,21 @@ export class NewBudgetV2Component implements OnInit {
     }
     // ------------------------------------------------------------------------------------------------
     
-    //
-    yesConfirmationBox(){
-        
+    // FUNÇÃO DO BOTÃO 'SIM' DO MODAL DE CONFIRMAÇÃO PARA REMOVER ITEM --------------------------------
+    yesConfirmationBox(e){
+        this.removeItemBudget(this.indexItemToRemove);
     }
-    //
+    // ------------------------------------------------------------------------------------------------
     
-    //
-    noConfirmationBox(){
-        
-    }
-    //
+    // FUNÇÃO DO BOTÃO 'NÃO' DO MODAL DE CONFIRMAÇÃO PARA REMOVER ITEM --------------------------------
+    noConfirmationBox(e){}
+    // ------------------------------------------------------------------------------------------------
+    
     ngOnInit() {
         var self = this;
         this.main = this;
         this.ambientsForm = this.formBuilder.array([new FormControl(false)]);
-        this.spinnerText = "Carregando Itens";
+        this.spinnerText = "Carregando Itens ...";
         this.spinner.show();
         // ------------------ START ASSIGN PARAMETERS ------------------------
         this.route.queryParams.subscribe(

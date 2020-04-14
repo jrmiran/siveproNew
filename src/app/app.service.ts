@@ -460,6 +460,10 @@ export class AppService{
         return this.callPost('postSearchServiceOrderByBudget', obj);
     }
     
+    postSearchAllExecutionServiceOrder():Observable<Object[]>{
+        return this.callPost('postSearchAllExecutionServiceOrder', {});
+    }
+    
     postInsertServiceOrder(obj: any):Observable<Object[]>{
         return this.callPost('postInsertServiceOrder', obj);
     }

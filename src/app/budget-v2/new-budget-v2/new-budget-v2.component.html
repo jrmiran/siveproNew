@@ -31,7 +31,7 @@
 
                     <div class="row">
                         <label class="col-xs-1" *ngIf="budgetType=='Edit'"> Id: </label>
-                        <p class="col-xs-11"> {{budget.id}} </p>
+                        <p class="col-xs-11" *ngIf="budgetType=='Edit'"> {{budget.id}} </p>
 
                         <label class="col-xs-1"> Cliente: </label>
                         <p class="col-xs-11"> {{store.id}} - {{store.nome}} </p>
@@ -199,10 +199,10 @@
         <!-------------------- MODAL PARA MODIFICAR ITEM DO ORÇAMENTO CHAMADO PELA TABLE -------------------->
 
         <!--------------------- CONFIRMATION BOX PARA EXCLUSÃO DE ITEM COM ORDEM DE SERVIÇO ------------------>
-        <a data-toggle="modal" [class.hide]="false" class="btn btn-danger" data-target="#confirmationBox" id="openConfirmation"> confirmation! </a>
+        <a data-toggle="modal" [class.hide]="true" class="btn btn-danger" data-target="#confirmationBox" id="openConfirmation"> confirmation! </a>
         <sivp-confirmation-box (yesClick)="yesConfirmationBox($event)" (noClick)="noConfirmationBox($event)" [id]="'confirmationBox'">
-            <p>Este item possui uma ordem de serviço, a exclusão dele incide na exclusão de sua ordem de serviço. Deseja excluir?</p>
-
+            <p>Este item possui uma ordem de serviço, a exclusão dele incide na exclusão de sua ordem de serviço.</p>
+            <h4><em><strong>Deseja Excluir?</strong></em></h4>
         </sivp-confirmation-box>
         <!--------------------- CONFIRMATION BOX PARA EXCLUSÃO DE ITEM COM ORDEM DE SERVIÇO ------------------>
 

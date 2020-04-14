@@ -30,6 +30,7 @@ import {BudgetV2} from '../budget-v2/budget-v2.model';
 import {BudgetParameterModel} from '../budget-v2/budget-parameter.model';
 import {ServiceOrderV2Component} from '../service-order-v2/service-order-v2.component';
 import {ServiceOrderTableV2Component} from '../service-order-v2/service-order-table-v2/service-order-table-v2.component';
+import {ServiceOrderReportV2Component} from '../service-order-report-v2/service-order-report-v2.component';
 
 @Component({
   selector: 'sivp-table',
@@ -61,6 +62,7 @@ export class TableComponent implements OnInit {
     @Input() bncv2: NewBudgetV2Component;
     @Input() socv2: ServiceOrderV2Component;
     @Input() sotcv2: ServiceOrderTableV2Component;
+    @Input() sorcv2: ServiceOrderReportV2Component;
     /***************** END COMPONENTS INPUTS **************************/
     
     /*********************** START VARIABLE INPUTS ***********************/
@@ -273,7 +275,7 @@ export class TableComponent implements OnInit {
     
     removeItemV2(i: number){
         if(this.bncv2){
-            this.bncv2.removeItemBudget(i);
+            this.bncv2.removeClickButton(i);
         }
         
     }

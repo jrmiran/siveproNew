@@ -1,0 +1,52 @@
+<section class="content-header">
+</section>
+
+<section class="content">
+    <section class="invoice">
+        <form [formGroup]="reportForm">
+            <div class="row">
+
+                <sivp-primary-box [title]="'Filtros'" [icon]="'fa fa-filter'" [size]="'col-md-12'">
+                    <label> Data Término </label>
+                    <input class="col-md-6" type="text" ngxDaterangepickerMd formControlName="txtDate" class="form-control" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" readonly="true" />
+                </sivp-primary-box>
+
+                <div class="row" style="margin-bottom: 10px"></div>
+                <sivp-expandable-box [title]="'Visão Geral'" [icon]="'fa fa-pie-chart'">
+                    <sivp-color-box [title]="'PRODUÇÃO TOTAL'" [content]="appService.converteFloatMoeda(reportData.totalProduction)" [size]="'col-md-6'" [color]="'blue'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'CUSTO GRANITO'" [content]="appService.converteFloatMoeda(reportData.stoneCost)" [size]="'col-md-6'" [color]="'blue'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'PRODUÇÃO EMPREITA'" [content]="appService.converteFloatMoeda(reportData.empreitaProduction)" [size]="'col-md-6'" [color]="'blue'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'PAGAMENTO EMPREITA'" [content]="appService.converteFloatMoeda(reportData.empreitaPayment)" [size]="'col-md-6'" [color]="'blue'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'TOTAL META'" [content]="appService.converteFloatMoeda(reportData.totalGoal)" [size]="'col-md-4'" [color]="'green'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'TOTAL PREMIAÇÃO'" [content]="appService.converteFloatMoeda(reportData.totalAward)" [size]="'col-md-4'" [color]="'green'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'PREMIAÇÃO (3%)'" [content]="appService.converteFloatMoeda(reportData.awardValue)" [size]="'col-md-4'" [color]="'green'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'COMISSÃO GERENTE DE VENDAS'" [content]="appService.converteFloatMoeda(reportData.salesManagerAward)" [size]="'col-md-6'" [color]="'red'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'COMISSÃO GERENTE DE PRODUÇÃO'" [content]="appService.converteFloatMoeda(reportData.productionManagerAward)" [size]="'col-md-6'" [color]="'red'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'ACABADORES'" [content]="appService.converteFloatMoeda(reportData.finishingValue)" [size]="'col-md-4'" [color]="'red'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'SUPORTE'" [content]="appService.converteFloatMoeda(reportData.supportValue)" [size]="'col-md-4'" [color]="'red'" [icon]="'fa fa-usd'"></sivp-color-box>
+
+                    <sivp-color-box [title]="'AUXILIARES'" [content]="appService.converteFloatMoeda(reportData.auxiliaryValue)" [size]="'col-md-4'" [color]="'red'" [icon]="'fa fa-usd'"></sivp-color-box>
+                </sivp-expandable-box>
+                <div class="row" style="margin-bottom: 10px"></div>
+                <sivp-expandable-box [title]="'Premiações'" [icon]="'fa fa-usd'">
+                    <sivp-table [datas]="employeeAwards" [headers]="['Funcionário', '% Pessoal', '% Produção', 'Produção Normal', 'Produção Empreita', 'Empreitas Pagas', 'Premiação']" [ids]="['employeeName', 'personalPercentage', 'productionPercentage', 'normalProduction', 'empreitaProduction', 'payedEmpreita', 'awardValue']" [sorcv2]="main" [searchBar]="false" [showPagination]="false" [ipp]="9999">
+                    </sivp-table>
+                </sivp-expandable-box>
+
+            </div>
+        </form>
+    </section>
+</section>
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+    <p style="color: white"> {{spinnerText}} </p>
+</ngx-spinner>

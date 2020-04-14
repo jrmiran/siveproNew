@@ -97,6 +97,8 @@ import localePt from '@angular/common/locales/pt';
 import { ServiceOrderV2Component } from './service-order-v2/service-order-v2.component';
 import { ServiceOrderTableV2Component } from './service-order-v2/service-order-table-v2/service-order-table-v2.component';
 import { ConfirmationBoxComponent } from './shared/confirmation-box/confirmation-box.component';
+import { ServiceOrderReportV2Component } from './service-order-report-v2/service-order-report-v2.component';
+import { ColorBoxComponent } from './shared/color-box/color-box.component';
 registerLocaleData(localePt);
 
 
@@ -162,7 +164,9 @@ registerLocaleData(localePt);
     ModalComponent,
     ServiceOrderV2Component,
     ServiceOrderTableV2Component,
-    ConfirmationBoxComponent
+    ConfirmationBoxComponent,
+    ServiceOrderReportV2Component,
+    ColorBoxComponent
   ],
   imports: [
     BrowserModule,
