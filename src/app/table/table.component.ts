@@ -39,7 +39,7 @@ import {ServiceOrderReportV2Component} from '../service-order-report-v2/service-
 })
 export class TableComponent implements OnInit {
 
-  constructor(private budgetComponent: BudgetService, private start: StartService, private formBuilder: FormBuilder, public uploadService: UploadComponent, private parameterService: ParameterService, private appService: AppService, private router: Router) { }
+  constructor(private budgetComponent: BudgetService, private start: StartService, private formBuilder: FormBuilder, public uploadService: UploadComponent, private parameterService: ParameterService, public appService: AppService, private router: Router) { }
 
     
     /***************** START COMPONENTS INPUTS **************************/

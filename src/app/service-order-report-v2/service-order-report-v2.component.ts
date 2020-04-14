@@ -14,7 +14,7 @@ import {EmployeeAward} from './employee-award.model';
 })
 export class ServiceOrderReportV2Component implements OnInit {
 
-    constructor(private appService: AppService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService) { }
+    constructor(public appService: AppService, private formBuilder: FormBuilder, private spinner: NgxSpinnerService) { }
     
     // PARAMS ------------
     serviceOrders: Object[] = [];

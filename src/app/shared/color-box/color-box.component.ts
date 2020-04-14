@@ -14,6 +14,7 @@ export class ColorBoxComponent implements OnInit {
     @Input() icon: string = 'fa fa-pencil';
     @Input() title: string = '';
     @Input() content: string = '';
+    @Input() href: string = '';
     
     ngOnInit() {
         this.color = 'info-box bg-' + this.color;  

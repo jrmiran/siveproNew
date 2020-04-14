@@ -16,7 +16,7 @@ import {NgxSpinnerService} from 'ngx-spinner';
 })
 export class NewBudgetV2Component implements OnInit {
 
-    constructor(private route: ActivatedRoute, private router: Router, private appService: AppService, private formBuilder: FormBuilder, private budgetPdf: BudgetV2PdfService, private spinner: NgxSpinnerService) { }
+    constructor(private route: ActivatedRoute, private router: Router, public appService: AppService, private formBuilder: FormBuilder, private budgetPdf: BudgetV2PdfService, private spinner: NgxSpinnerService) { }
     //PARAMS-------------
     store: any;
     client: any;
