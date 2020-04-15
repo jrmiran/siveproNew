@@ -324,6 +324,8 @@ export class NewBudgetV2Component implements OnInit {
     // ------------------------------------------------------------------------------------------------
     // FUNÇÃO DO BOTÃO "GERAR PDF" DA EDIÇÃO DE ORÇAMENTO ---------------------------------------------
     generatePDF(){
+        this.separeteItemByAmbient();
+        console.log(this.itemByAmbient);
         this.budgetPdf.generatePDF(this.itemByAmbient, this.budget, this.store, this.client, this.seller);
     }
     // ------------------------------------------------------------------------------------------------
@@ -407,8 +409,8 @@ export class NewBudgetV2Component implements OnInit {
                 self.seller = JSON.parse(self.params['seller']);
                 if(self.params['budget']){
                     self.budget = JSON.parse(self.params['budget']);
+                    self.budget.note = self.appService.replaceAll(self.budget.note, "QUEBRADELINHA", String.fromCharCode(10));
                     self.budgetType = "Edit";
-                    
                 }
                 if(self.params['itemsBudget']){
                     self.itemsBudgetParam = JSON.parse(self.params['itemsBudget']);
@@ -460,8 +462,8 @@ export class NewBudgetV2Component implements OnInit {
             txtDiscount: this.formBuilder.control('')
         });
         
-        this.newBudgetForm.get('txtNote').setValue(this.noteText);
-
+        self.newBudgetForm.get('txtNote').setValue(self.budget.note);
+        
         this.newBudgetForm.get('cbAmbients').valueChanges.subscribe(function(data){
             self.selectedAmbients = [];
             data.forEach((v, index) => {

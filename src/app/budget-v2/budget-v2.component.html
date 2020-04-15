@@ -37,7 +37,7 @@
                 <sivp-primary-box [title]="'Cliente'" [size]="'col-xs-6'" [icon]="'fa fa-user'">
                     <div class="row">
                         <sivp-input-container class="form-group col-sm-12 col-xs-12">
-                            <ng-autocomplete [data]="clients" [searchKeyword]="keywordClient" (selected)='selectEventClient($event)' (inputChanged)='onChangeSearch($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate" [formControlName]="'txtClient'">
+                            <ng-autocomplete [data]="clients" [searchKeyword]="keywordClient" (selected)='selectEventClient($event)' (inputChanged)='onChangeSearchClient($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate" [formControlName]="'txtClient'">
                             </ng-autocomplete>
 
                             <ng-template #itemTemplate let-item>
@@ -55,7 +55,7 @@
                 <sivp-primary-box [title]="'Vendedor'" [size]="'col-xs-6'" [icon]="'fa fa-user'">
                     <div class="row">
                         <sivp-input-container class="form-group col-sm-12 col-xs-12">
-                            <ng-autocomplete [data]="sellers" [searchKeyword]="keywordSeller" (selected)='selectEventSeller($event)' (inputChanged)='onChangeSearch($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate" [formControlName]="'txtSeller'">
+                            <ng-autocomplete [data]="sellers" [searchKeyword]="keywordSeller" (selected)='selectEventSeller($event)' (inputChanged)='onChangeSearchSeller($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate" [formControlName]="'txtSeller'">
                             </ng-autocomplete>
 
                             <ng-template #itemTemplate let-item>

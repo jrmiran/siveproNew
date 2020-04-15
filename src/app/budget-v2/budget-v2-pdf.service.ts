@@ -294,6 +294,7 @@ export class BudgetV2PdfService{
         
         //******************************************************* BUDGET ITEMS + AMBIENT CELLS **************************************************
         items.forEach(function(data){
+            rows = [];
             row[0].cmd  = data.ambient;
             console.log(data.ambientValue);
             

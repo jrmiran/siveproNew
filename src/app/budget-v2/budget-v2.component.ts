@@ -72,11 +72,10 @@ export class BudgetV2Component implements OnInit {
         this.params.client = '';
         this.budgetForm.get('txtClient').setValue('');
     }
-
-    onFocused(e){
-        // do something when input is focused
-        console.log(e); 
-    }
+    
+    onChangeSearchSeller(val: string) {}   
+    onChangeSearchClient(val: string) {}
+    onFocused(e){}
     
     // -----------------------------------------    INPUT LIST FUNCTIONS -------------------------------
     
