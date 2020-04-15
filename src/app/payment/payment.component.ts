@@ -103,9 +103,14 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             && self.filterDataDate(data, 'data', self.startDateFilter, self.endDateFilter);;
         });
         self.setTotalValue();
+        console.log(this.filteredPayments);
+        console.log(this.payments);
     }
     
     filterData(data: any, param:string, value: any, contains?: boolean){
+        if(param == 'valor' && value == 'R$ 0,00'){
+            return true;
+        }
         if(param == "entrada"){
             if(value == ""){
                 return true;
