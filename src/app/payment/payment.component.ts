@@ -368,10 +368,9 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             inOut = "Saída";
         }
         
-        
         this.paymentFormEdit.get('txtDateEdit').setValue(paymentEdit['data']);
         this.paymentFormEdit.get('txtBillEdit').setValue(paymentEdit['conta']);
-        this.paymentFormEdit.get('txtValueEdit').setValue(this.appService.converteMoedaFloat(paymentEdit['valor']));
+        this.paymentFormEdit.get('txtValueEdit').setValue(parseFloat(paymentEdit['valor'].substring(3).replace('.','').replace(',','.')));
         this.paymentFormEdit.get('cmbStatusEdit').setValue(paymentEdit['status']);
         this.paymentFormEdit.get('cmbPaymentFormEdit').setValue(paymentEdit['formaPagamento_formaPagamento']);
         this.paymentFormEdit.get('txtCheckNumberEdit').setValue(paymentEdit['numeroCheque']);
