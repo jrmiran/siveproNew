@@ -9,6 +9,19 @@
     <section class="invoice">
         <div class="row">
             
+            <!-- FILTER -->
+            <sivp-primary-box [title]="'Filtro'" [icon]="'fa fa-filter'" [size]="'col-md-12'">
+                <form [formGroup]="filterForm">
+                    
+                    <div class="checkbox" formArrayName="cbStatus">
+                        <label><input type="checkbox" [formControlName]="'0'"> Aprovado </label>
+                        <br>
+                        <label><input type="checkbox" [formControlName]="'1'"> Rejeitado </label>
+                    </div>
+                    
+                </form>
+            </sivp-primary-box>
+            <!-- FILTER -->
             <!-- TABLE OF DRAWS -->
             <div class="col-sm-6 col-xs-12">
                 <div class="box box-primary">
@@ -16,7 +29,7 @@
                         <h3 class="box-title"><i class="fa fa-pencil"></i> Projetos:</h3>
                         <a class="btn btn-primary pull-right" (click)="exportPdf()" [class.disabled]="!currentDraw"> Gerar Desenho </a>
                     </div>
-                    <sivp-table *ngIf="projects.length > 0" [headers]="['Id', 'Ambiente', 'Loja', 'Cliente', 'Orçamento']" [datas]="projects" [ids]="['id','ambient','store','client', 'budget']" [spc]="self" [runClickRow]="true"></sivp-table>
+                    <sivp-table *ngIf="projects.length > 0" [headers]="['Id', 'Ambiente', 'Loja', 'Cliente', 'Orçamento']" [datas]="filteredProjects" [ids]="['id','ambient','store','client', 'budget']" [spc]="self" [runClickRow]="true"></sivp-table>
                     <label *ngIf="projects.length <= 0">Não há projetos para este cliente ou orçamento</label>
                 </div>
             </div>

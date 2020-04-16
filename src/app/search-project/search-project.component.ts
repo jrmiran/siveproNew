@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {NgxSpinnerService} from 'ngx-spinner';
 import {ProjectModel}  from  '../create-pdf-project/project.model';
 import {CreatePdfProjectComponent}  from  '../create-pdf-project/create-pdf-project.component';
+import {FormGroup, FormArray, FormBuilder, FormControl, Validators} from '@angular/forms';
 
 @Component({
   selector: 'sivp-search-project',
@@ -12,9 +13,10 @@ import {CreatePdfProjectComponent}  from  '../create-pdf-project/create-pdf-proj
 })
 export class SearchProjectComponent implements OnInit {
 
-    constructor(private appService: AppService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private createPdf: CreatePdfProjectComponent) { }
+    constructor(private appService: AppService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private createPdf: CreatePdfProjectComponent, private formBuilder: FormBuilder) { }
     self: any;
     projects: Object[] = [];
+    filteredProjects: Object[] = [];
     selectedRow: number = -1;
     currentDraw: string;
     currentDrawId: number = -1;
@@ -24,6 +26,8 @@ export class SearchProjectComponent implements OnInit {
     currentStatus: any;
     projectData = {id: 0, ambient: "", store: "", client: "", budget: "", material: "", local: ""};
     pModel: ProjectModel;
+    filterForm: FormGroup;
+    status: string[] = ['Aprovado', 'Rejeitado'];
     
     clickRow(i: number){
         this.selectedRow = i;
@@ -84,9 +88,9 @@ export class SearchProjectComponent implements OnInit {
     
     changeProjectStatus(status: boolean){
         this.spinner.show();
-        //console.log(this.projects);
         this.appService.postUpdateProjectStatus({id: this.currentDrawId, status: status? 1 : 0}).subscribe((data) =>{
             this.projects.find((v) =>{return v['id'] == this.currentDrawId})['approved'] = status;
+            this.filteredProjects.find((v) =>{return v['id'] == this.currentDrawId})['approved'] = status;
             this.spinner.hide();
         })
         
@@ -96,18 +100,38 @@ export class SearchProjectComponent implements OnInit {
         this.self = this;
         var self = this;
         
+        this.filterForm = this.formBuilder.group({
+            cbStatus: this.formBuilder.array([new FormControl(true), new FormControl(true)])
+        });
+        
+        this.filterForm.get('cbStatus').valueChanges.subscribe((v)=>{
+            this.filteredProjects = this.projects.filter((d)=>{
+                if(v[0] && v[1]){
+                    return true;
+                } else if(v[0] && !v[1]){
+                    return d['approved'] == 1;
+                } else if(!v[0] && v[1]){
+                    return d['approved'] == 0;
+                } else if(!v[0] && !v[1]){
+                    return false;
+                }
+            })
+        })
+        
         this.pModel = this.initializeProjectModel();
         if(this.route.queryParams['value']['clientId']){
             this.appService.postSearchProject({type: "Client", clientId: this.route.queryParams['value']['clientId']}).subscribe(function(data){
                 data.map((v) =>{ v['approved'] = v['approved']['data'][0]});
                 console.log(data);
-               self.projects = data; 
+                self.projects = data; 
+                self.filteredProjects = self.projects;
             });
         } else{
             this.appService.postSearchProject({type: "All"}).subscribe(function(data){
                 data.map((v) =>{ v['approved'] = v['approved']['data'][0]});
                 console.log(data);
                 self.projects = data;
+                self.filteredProjects = self.projects;
             });
         }
     }
