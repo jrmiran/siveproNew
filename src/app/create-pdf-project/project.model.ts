@@ -9,4 +9,5 @@ export interface ProjectModel{
     drawId: string;
     budgetId: string;
     local: string;
+    approved: boolean;
 }

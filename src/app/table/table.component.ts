@@ -408,6 +408,9 @@ export class TableComponent implements OnInit {
         return this.formBuilder.array(values); 
     }
     
+    changeProjectStatus(status: boolean){
+        console.log(status);
+    }
     
     
     ngOnInit() {

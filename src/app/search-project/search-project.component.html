@@ -48,6 +48,11 @@
                 <p *ngIf="currentDraw"> {{currentProject.local}} </p>
                 
             </div>
+            
+            <div class="col-sm-3 col-xs-12">
+                <a *ngIf="currentProject.approved == 0 && currentDraw" class="btn btn-success" (click)="changeProjectStatus(true)"><i class="fa fa-check"> Aprovar </i></a>
+                <a *ngIf="currentProject.approved == 1 && currentDraw" class="btn btn-danger"  (click)="changeProjectStatus(false)"><i class="fa fa-close"> Rejeitar </i></a>
+            </div>
             <!-- END OF DIV CONTAINING THE SELECTED DRAW-->
             
             <!-- PROJECT DATA -->

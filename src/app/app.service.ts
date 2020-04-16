@@ -472,6 +472,10 @@ export class AppService{
         return this.callPost('postSearchAllServiceOrders', {});
     }
     
+    postUpdateProjectStatus(obj: any):Observable<Object[]>{
+        return this.callPost('postSearchAllServiceOrders', obj);
+    }
+    
     postInsertExecutionServiceOrder(obj: any):Observable<Object[]>{
         return this.callPost('postInsertExecutionServiceOrder', obj);
     }

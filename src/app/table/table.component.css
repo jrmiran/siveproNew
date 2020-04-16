@@ -28,5 +28,9 @@
 }
 .budgetItemWithServiceOrder{
     background-color: #FFC0CB;
-    font-weight: italic;
+    font-style: italic;
+}
+.lightGreen{
+    background-color: #98FF98;
+    font-style: italic;
 }

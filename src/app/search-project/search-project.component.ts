@@ -21,12 +21,12 @@ export class SearchProjectComponent implements OnInit {
     currentMaterial: string;
     currentLocal: string;
     currentProject: any;
+    currentStatus: any;
     projectData = {id: 0, ambient: "", store: "", client: "", budget: "", material: "", local: ""};
     pModel: ProjectModel;
     
     clickRow(i: number){
         this.selectedRow = i;
-        console.log(i);
     }
     
     setCurrentDraw(id: any){
@@ -73,11 +73,23 @@ export class SearchProjectComponent implements OnInit {
         pModel.material = "";
         pModel.name = "";
         pModel.store = "";
+        pModel.approved = false;
+        this.currentProject = pModel;
         return pModel;
     }
     
     drawClickEvent(){
         console.log("Click event");
+    }
+    
+    changeProjectStatus(status: boolean){
+        this.spinner.show();
+        //console.log(this.projects);
+        this.appService.postUpdateProjectStatus({id: this.currentDrawId, status: status? 1 : 0}).subscribe((data) =>{
+            this.projects.find((v) =>{return v['id'] == this.currentDrawId})['approved'] = status;
+            this.spinner.hide();
+        })
+        
     }
     
     ngOnInit() {
@@ -87,11 +99,13 @@ export class SearchProjectComponent implements OnInit {
         this.pModel = this.initializeProjectModel();
         if(this.route.queryParams['value']['clientId']){
             this.appService.postSearchProject({type: "Client", clientId: this.route.queryParams['value']['clientId']}).subscribe(function(data){
+                data.map((v) =>{ v['approved'] = v['approved']['data'][0]});
                 console.log(data);
                self.projects = data; 
             });
         } else{
             this.appService.postSearchProject({type: "All"}).subscribe(function(data){
+                data.map((v) =>{ v['approved'] = v['approved']['data'][0]});
                 console.log(data);
                 self.projects = data;
             });

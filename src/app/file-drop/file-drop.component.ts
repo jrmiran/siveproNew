@@ -205,6 +205,7 @@ export class FileDropComponent implements OnInit{
         self.images.forEach(function(data, index){
             
             params.query =  "(0,'" + self.images[index].img + "'," + self.budgetId + "," + self.materiaisId[index] + ",'" + self.ambients[index] + "','" + self.locals[index] + "')"
+            
             self.appService.insertDraw(params).subscribe(function(data){
                 var drawId: number = data['insertId'];
                 self.pModel.ambient = self.ambients[index];
@@ -267,6 +268,7 @@ export class FileDropComponent implements OnInit{
         this.currentItemDraw = i;
         this.projectForm.get('txtAmbient').setValue(this.ambients[this.currentItemDraw]);
         this.projectForm.get('txtMaterial').setValue(this.materiais[this.currentItemDraw]);
+        this.projectForm.get('txtLocal').setValue(this.locals[this.currentItemDraw]);
     }
     
     openModalMaterial(){

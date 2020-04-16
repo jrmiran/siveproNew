@@ -42,7 +42,7 @@ export class NewBudgetV2Component implements OnInit {
     oldItemsBudget: ItemBudgetV2[] = [];
     enableAddItem: boolean = false;
     selectedItemBudget: ItemBudgetV2;
-    budget: BudgetV2;
+    budget = {} as BudgetV2;
     freightValue: number = 0;
     itemByAmbient: ItemByAmbient[] = [];
     modal = {} as ModalComponent;
@@ -407,17 +407,18 @@ export class NewBudgetV2Component implements OnInit {
                 self.store = JSON.parse(self.params['store']);
                 self.client = JSON.parse(self.params['client']);
                 self.seller = JSON.parse(self.params['seller']);
-                if(self.params['budget']){
+                if(self.params['budget'] != "{}"){
                     self.budget = JSON.parse(self.params['budget']);
                     self.budget.note = self.appService.replaceAll(self.budget.note, "QUEBRADELINHA", String.fromCharCode(10));
                     self.budgetType = "Edit";
+                    
                 }
                 if(self.params['itemsBudget']){
                     self.itemsBudgetParam = JSON.parse(self.params['itemsBudget']);
                     self.serviceOrders = JSON.parse(self.params['serviceOrders']);
                     self.assignItemsBudget();
                 }
-                self.release = true;
+                
                 
                 // ------------------ START INITIALIZE BUDGET VAR --------------------
                 if(self.params['budget'] == "{}"){
@@ -437,6 +438,7 @@ export class NewBudgetV2Component implements OnInit {
                     self.budget.freightValue = 0;
                 }
                 // ------------------ END INITIALIZE BUDGET VAR ----------------------
+                self.release = true;
             }
         );
         // ------------------ END ASSIGN PARAMETERS ------------------------
@@ -461,8 +463,10 @@ export class NewBudgetV2Component implements OnInit {
             txtFreight: this.formBuilder.control(''),
             txtDiscount: this.formBuilder.control('')
         });
+
+            self.newBudgetForm.get('txtNote').setValue(self.budget.note);
+
         
-        self.newBudgetForm.get('txtNote').setValue(self.budget.note);
         
         this.newBudgetForm.get('cbAmbients').valueChanges.subscribe(function(data){
             self.selectedAmbients = [];
