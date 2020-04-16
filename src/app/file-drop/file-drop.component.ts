@@ -56,9 +56,10 @@ export class FileDropComponent implements OnInit{
       console.log(files);
       this.files.forEach((f, index) =>{
           this.ambients[index] = f['relativePath'].split('.')[0].split('-')[f['relativePath'].split('.')[0].split('-').length - 1];
+          if(this.ambients[index] != ''){
+              this.releaseAmbient = true;
+          }
       })
-      
-      console.log(this.ambients);
       
       for (const droppedFile of files) {
  
@@ -351,7 +352,20 @@ export class FileDropComponent implements OnInit{
         });
         
         this.projectForm.get('txtAmbient').valueChanges.subscribe(function(data){
-            setTimeout(()=>{
+            self.ambients[self.currentItemDraw] = data;
+            if(data == ""){
+                self.releaseAmbient = false;
+            }else{
+                self.releaseAmbient = true;
+            }
+            
+            if(self.releaseMaterial && self.releaseAmbient){
+                self.enableGenerateDraw = true;
+            } else{
+                self.enableGenerateDraw = false;
+            }
+            
+            /*setTimeout(()=>{
                 self.ambients[self.currentItemDraw] = data;
                 
                 console.log(self.ambients.find((v) => v == ""));
@@ -369,7 +383,7 @@ export class FileDropComponent implements OnInit{
                 } else{
                     self.enableGenerateDraw = false;
                 }
-            }, 50);
+            }, 50);*/
         });
         
         this.projectForm.get('txtLocal').valueChanges.subscribe(function(data){
