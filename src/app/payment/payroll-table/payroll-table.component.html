@@ -1,0 +1,21 @@
+<form [formGroup]="payrollForm">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th *ngFor="let header of headers" scope="col">{{header}}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let data of datas">
+                <div formArrayName="txtPayments">
+                    <td *ngFor="let id of ids; index as i">
+                        <span *ngIf="id != employeeName">
+                            <input type="text" [formControlName]="i">
+                        </span>
+                        {{data[id]}}
+                    </td>
+                </div>
+            </tr>
+        </tbody>
+    </table>
+</form>

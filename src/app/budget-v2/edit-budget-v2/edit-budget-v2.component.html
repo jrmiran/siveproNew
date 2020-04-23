@@ -1,3 +1,20 @@
-<p>
-  edit-budget-v2 works!
-</p>
+<section class="content-header">
+</section>
+<section class="content">
+    <section class="invoice">
+        <form [formGroup]="valueForm">
+            <div class="row">
+                <sivp-primary-box [title]="'Alteração de Valor Total de Orçamento'" [icon]="'fa fa-usd'" [size]="'col-md-12'">
+                    <div class="row">
+                        <div class="col-md-6"><input type="text" placeholder="Nº Orçamento" [formControlName]="'txtBudgetId'"></div>
+
+                        <div class="col-md-6"><input type="text" placeholder="Valor Total" [formControlName]="'txtTotalValue'" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"></div>
+                    </div>
+                    <div class="row">
+                        <a class="btn btn-primary pull-right" (click)="updateTotalValue()"><i class="fa fa-usd"></i> Alterar Valor </a>
+                    </div>
+                </sivp-primary-box>
+            </div>
+        </form>
+    </section>
+</section>

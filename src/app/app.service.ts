@@ -480,7 +480,16 @@ export class AppService{
         return this.callPost('postInsertExecutionServiceOrder', obj);
     }
     
+    postSearchEmployees(): Observable<Object[]>{
+        return this.callPost('postSearchEmployees', {});
+    }
     
+    postUpdateTotalValueBudget(obj: any): Observable<Object[]>{
+        return this.callPost('postUpdateTotalValueBudget', obj);
+    }
+    
+    
+    // ----------------------------------------------------------------------------------
     draw(budgetId: number): Observable<Object[]>{
         return this.callQuery(`draw/${budgetId}`);
     }

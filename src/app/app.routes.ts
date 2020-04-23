@@ -28,9 +28,11 @@ import {NewRequestComponent} from './request/new-request/new-request.component';
 import {EditRequestComponent} from './request/edit-request/edit-request.component';
 import {BudgetV2Component} from './budget-v2/budget-v2.component';
 import {NewBudgetV2Component} from './budget-v2/new-budget-v2/new-budget-v2.component';
+import {EditBudgetV2Component} from './budget-v2/edit-budget-v2/edit-budget-v2.component';
 import {ServiceOrderV2Component} from './service-order-v2/service-order-v2.component';
 import {ServiceOrderTableV2Component} from './service-order-v2/service-order-table-v2/service-order-table-v2.component';
 import {ServiceOrderReportV2Component} from './service-order-report-v2/service-order-report-v2.component';
+import {PayrollComponent} from './payment/payroll/payroll.component';
 
 export const ROUTES: Routes = [
     {path: '', component: LoginComponent},
@@ -60,8 +62,10 @@ export const ROUTES: Routes = [
     {path: 'newRequest', component: NewRequestComponent},
     {path: 'editRequest', component: EditRequestComponent},
     {path: 'budgetV2', component: BudgetV2Component},
+    {path: 'editBudgetV2', component: EditBudgetV2Component},
     {path: 'newBudgetV2', component: NewBudgetV2Component},
     {path: 'serviceOrderV2', component: ServiceOrderV2Component},
     {path: 'serviceOrderReportV2', component: ServiceOrderReportV2Component},
-    {path: 'serviceOrderTableV2', component: ServiceOrderTableV2Component}
+    {path: 'serviceOrderTableV2', component: ServiceOrderTableV2Component},
+    {path: 'payroll', component: PayrollComponent}
 ]

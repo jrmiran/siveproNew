@@ -99,6 +99,8 @@ import { ServiceOrderTableV2Component } from './service-order-v2/service-order-t
 import { ConfirmationBoxComponent } from './shared/confirmation-box/confirmation-box.component';
 import { ServiceOrderReportV2Component } from './service-order-report-v2/service-order-report-v2.component';
 import { ColorBoxComponent } from './shared/color-box/color-box.component';
+import { PayrollComponent } from './payment/payroll/payroll.component';
+import { PayrollTableComponent } from './payment/payroll-table/payroll-table.component';
 registerLocaleData(localePt);
 
 
@@ -166,7 +168,9 @@ registerLocaleData(localePt);
     ServiceOrderTableV2Component,
     ConfirmationBoxComponent,
     ServiceOrderReportV2Component,
-    ColorBoxComponent
+    ColorBoxComponent,
+    PayrollComponent,
+    PayrollTableComponent
   ],
   imports: [
     BrowserModule,

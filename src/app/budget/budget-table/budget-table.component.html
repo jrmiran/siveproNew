@@ -7,9 +7,24 @@
     </ngx-spinner>
     <section class="invoice">
         <!----------------------- CARREGA ORÇAMENTOS QUE NÃO ESTÃO NO BUFFER ----------------------->
-        <a class="btn pull-right" (click)="loadBudgets()"><i class="fa fa-download"></i> Carregar Orçamentos </a>
+        <div class="row">
+            <a class="btn pull-right" (click)="loadBudgets()"><i class="fa fa-download"></i> Carregar Orçamentos </a>
+        </div>
         <!----------------------- CARREGA ORÇAMENTOS QUE NÃO ESTÃO NO BUFFER ----------------------->
-        <sivp-table [name]="'Orçamento'" [headers]="['Id', 'Cliente', 'Terceiro', 'Data', 'Valor', 'Aprovado', 'Edit Old']" [datas]="buds" [ids]="['budgetId','clientName','storeClient' ,'date', 'value', 'approved', 'editOld']" [btc]="self" [dropdownButton]="true" [runClickRow]="false">
+        <div class="row" style="border-bottom: 10px"></div>
+        <sivp-primary-box [title]="'Filtro'" [icon]="'fa fa-filter'" [size]="'col-md-12'">
+            <div class="row">
+                <form [formGroup]="filterForm">
+                    <div formArrayName="cbStatus">
+                        <div class="col-md-4"><label><input type="checkbox" [formControlName]="0" id="cb0"> Aprovado </label></div>
+                        <div class="col-md-4"><label><input type="checkbox" [formControlName]="1" id="cb1"> Rejeitado </label></div>
+                        <div class="col-md-4"><label><input type="checkbox" [formControlName]="2" id="cb2"> Em Análsie </label></div>
+                    </div>
+                </form>
+            </div>
+        </sivp-primary-box>
+        <div class="row" style="border-bottom: 10px"></div>
+        <sivp-table [name]="'Orçamento'" [headers]="['Id', 'Cliente', 'Terceiro', 'Data', 'Valor', 'Status', 'Edit Old']" [datas]="filteredBuds" [ids]="['budgetId','clientName','storeClient' ,'date', 'value', 'status', 'editOld']" [btc]="self" [dropdownButton]="true" [runClickRow]="false">
         </sivp-table>
     </section>
 </section>

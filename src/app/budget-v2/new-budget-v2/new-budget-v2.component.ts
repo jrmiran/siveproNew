@@ -193,11 +193,11 @@ export class NewBudgetV2Component implements OnInit {
         this.spinner.show();
         
         self.budget.retificated = self.budget.retificated + 1;
+        console.log(this.budget);
         var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"})};
         this.separeteItemByAmbient();
         
         this.appService.postInsertBudget(params).subscribe(function(data){
-            console.log(data);
             self.budget.id = data[0]['insertId'];
             self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller);
             self.spinner.hide();
@@ -218,7 +218,6 @@ export class NewBudgetV2Component implements OnInit {
         this.separeteItemByAmbient();
         
         this.appService.postEditBudget(params).subscribe(function(data){
-            console.log(data);
             self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller);
             self.spinner.hide();
             self.router.navigate(['/budget']);
@@ -251,31 +250,23 @@ export class NewBudgetV2Component implements OnInit {
         })
         
         self.ambientsEdit = ambients;
-        console.log(self.itemByAmbient);
     }
     // ------------------------------------------------------------------------------------------------
     // FUNÇÃO QUE ADICIONA LINHA DE SEPARAÇÃO POR AMBIENTES -------------------------------------------
     addSeparationRows(){
-        var self = this;
-        this.itemsBudget = this.itemsBudget.filter((v) => {
-            return v.item != "LINHA DE SEPARAÇÃO";
-        });
-        
-        let separationRow = {} as ItemBudgetV2;
-        separationRow.ambient = self.itemsBudget[0].ambient;
-        separationRow.item = "LINHA DE SEPARAÇÃO";
-        self.itemsBudget.splice(0, 0, separationRow);
-        
-        this.itemsBudget.forEach(function(data, index){
-            if(index < self.itemsBudget.length - 1){
-                if(self.itemsBudget[index + 1].ambient != data.ambient){
-                    let separationRow = {} as ItemBudgetV2;
-                    separationRow.ambient = self.itemsBudget[index + 1].ambient;
-                    separationRow.item = "LINHA DE SEPARAÇÃO";
-                    self.itemsBudget.splice(index+1, 0, separationRow);
-                }
-            }
+        this.separeteItemByAmbient();
+        var newItemsBudget: ItemBudgetV2[] = [];
+        this.itemByAmbient.forEach((v)=>{
+            let separationRow = {} as ItemBudgetV2;
+            separationRow.ambient = v.ambient;
+            separationRow.item = "LINHA DE SEPARAÇÃO";
+            newItemsBudget.push(separationRow);
+            v.items.forEach((item)=>{
+                newItemsBudget.push(item);
+            })
         })
+        
+        this.itemsBudget = newItemsBudget;
     }
     // ------------------------------------------------------------------------------------------------
     // FUNÇÃO DO BOTÃO 'OK' DO MODAL PARA MODIFICAR ITEM DO ORÇAMENTO ---------------------------------
@@ -314,8 +305,7 @@ export class NewBudgetV2Component implements OnInit {
             item.serviceOrderId = this.serviceOrders.find((d)=>{return d['itemOrcamento_id'] == item.id}) ? parseFloat(this.serviceOrders.find((d)=>{return d['itemOrcamento_id'] == item.id})['id']) : 0;
             this.itemsBudget.push(item);
         });
-        console.log(this.itemsBudget);
-        this.addSeparationRows();
+        this.sortItems();
         this.separeteItemByAmbient();
         this.ambientsEdit.forEach((v) => {
             this.addAmbient(v);
@@ -325,7 +315,6 @@ export class NewBudgetV2Component implements OnInit {
     // FUNÇÃO DO BOTÃO "GERAR PDF" DA EDIÇÃO DE ORÇAMENTO ---------------------------------------------
     generatePDF(){
         this.separeteItemByAmbient();
-        console.log(this.itemByAmbient);
         this.budgetPdf.generatePDF(this.itemByAmbient, this.budget, this.store, this.client, this.seller);
     }
     // ------------------------------------------------------------------------------------------------
@@ -339,7 +328,6 @@ export class NewBudgetV2Component implements OnInit {
         var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"})};
         
         this.appService.postInsertBudget(params).subscribe(function(data){
-            console.log(data);
             self.budget.id = data[0]['insertId'];
             alert("Orçamento duplicado com o número " + self.budget.id);
             self.spinner.hide();
@@ -348,16 +336,18 @@ export class NewBudgetV2Component implements OnInit {
     }
     // ------------------------------------------------------------------------------------------------
     // FUNÇÃO DO BOTÃO "APROVAR" OU "REJEITAR" DA EDIÇÃO DE ORÇAMENTO ---------------------------------
-    changeBudgetStatus(status: boolean){
+    changeBudgetStatus(status: string){
         this.spinner.show();
         var self = this;
-        var params = {budgetId: this.budget.id, status: status? 1 : 0};
+        var params = {budgetId: this.budget.id, status: status};
         this.appService.postEditBudgetStatus(params).subscribe(function(data){
-            self.budget.approved = status? 1 : 0;
-            if(status){
-                alert("Orçamento aprovado");
-            }else{
+            self.budget.status = status;
+            if(status == 'Aprovado'){
+                alert("Orçamento Aprovado");
+            }else if(status == 'Rejeitado'){
                 alert("Orçamento Rejeitado");
+            } if(status == 'Em Análise'){
+                alert("Orçamento Em Análise");
             }
             self.spinner.hide();
         });
@@ -436,6 +426,7 @@ export class NewBudgetV2Component implements OnInit {
                     self.budget.poloAd = 0;
                     self.budget.discountValue = 0;
                     self.budget.freightValue = 0;
+                    self.budget.status = "Em Análise";
                 }
                 // ------------------ END INITIALIZE BUDGET VAR ----------------------
                 self.release = true;

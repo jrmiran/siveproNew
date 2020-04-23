@@ -376,6 +376,7 @@ export class TableComponent implements OnInit {
             budget.retificated = v[1][0]['retificado'];
             budget.sellerId = v[1][0]['vendedor_id'];
             budget.storeId = v[1][0]['clienteJuridico_id'];
+            budget.status = v[1][0]['status'];
             
             store = v[2][0];
             client = v[3][0];

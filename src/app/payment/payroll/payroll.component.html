@@ -1,0 +1,64 @@
+<section class="content-header">
+</section>
+<section class="content">
+    <section class="invoice" *ngIf="release">
+        <form [formGroup]="payrollForm">
+            <div class="row">
+                <!------ FILTRO -------->
+                <sivp-primary-box [icon]="'fa fa-filter'" [title]="'Filtros'" [size]="'col-md-12'">
+                    <div class="col-md-4" *ngFor="let t of typePayment; let i = index" formArrayName="cbType">
+                        <label><input class="form-check form-check-input" type="checkbox" [formControlName]="i"> {{t}}</label>
+                    </div>
+                </sivp-primary-box>
+                <!------ FILTRO -------->
+
+                <div class="row" style="margin-bottom: 10px"></div>
+
+                <!------ DATA -------->
+                <sivp-primary-box [icon]="'fa fa-calendar'" [size]="'col-md-12'" [title]="'Data'">
+                    <sivp-date-picker formControlName="txtDate"></sivp-date-picker>
+                </sivp-primary-box>
+                <!------ DATA -------->
+
+                <!------ TABELA DE FOLHA DE PAGAMENTO -------->
+                <sivp-primary-box [title]="'Folha de Pagamento'" [icon]="'fa fa-usd'" [size]="'col-md-12'">
+                    <!-- TABELA -------------------------->
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th *ngFor="let h of filteredHeaders" scope="col">{{h}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let data of filteredEmployees; let i = index" formArrayName="txtPayments">
+                                <td>{{data['employeeName']}}</td>
+                                <td *ngFor="let name of filteredFormsName" [formGroupName]="i">
+                                    <input class="form-control" style="width: 100px" type="text" [formControlName]="name" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ','}">
+                                </td>
+                                <td>{{appService.converteFloatMoeda(data['total'])}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- TABELA -------------------------->
+                    <div class="row" style="margin: 5px">
+                        <div class="pull-right">
+                            <p>{{appService.converteFloatMoeda(totalPayroll)}}</p>
+                        </div>
+                        <div class="pull-right">
+                            <p><b>Total Folha de Pagamento:</b></p>
+                        </div>
+                    </div>
+                    <div class="row" style="margin: 5px">
+                        <a class="btn btn-success pull-right" [class.disabled]="!payrollForm.valid" (click)="processPayroll()"><i class="fa fa-usd"></i> Processar Folha de Pagamento</a>
+                    </div>
+                </sivp-primary-box>
+                <!------ TABELA DE FOLHA DE PAGAMENTO -------->
+
+            </div>
+        </form>
+    </section>
+</section>
+
+<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+    <p style="color: white"> {{spinnerText}} </p>
+</ngx-spinner>

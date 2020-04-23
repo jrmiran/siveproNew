@@ -12,4 +12,5 @@ export interface BudgetV2{
     poloAd: number;
     discountValue: number;
     freightValue: number;
+    status: string;
 }

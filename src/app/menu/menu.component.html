@@ -60,14 +60,14 @@
                                     class="sidebar-menu"></sivp-menu-item>
                 
                     <sivp-menu-item [name]="'Pagamentos'" 
-                                    [subItems]="['Consultar']" 
-                                    [routers]="['/payment']" 
+                                    [subItems]="['Consultar', 'Folha de Pagamento']" 
+                                    [routers]="['/payment', '/payroll']" 
                                     class="sidebar-menu"
                                     *ngIf="privilege || parameterService.privilege"></sivp-menu-item>
 
                     <sivp-menu-item [name]="'Test Area'" 
-                                    [subItems]="['Service Order', 'Orçamento V2', 'Relatório OS']" 
-                                    [routers]="['/serviceOrderTableV2', 'budgetV2', '/serviceOrderReportV2']" 
+                                    [subItems]="['Service Order', 'Orçamento V2', 'Relatório OS', 'Valor Total Orçamento']" 
+                                    [routers]="['/serviceOrderTableV2', 'budgetV2', '/serviceOrderReportV2', '/editBudgetV2']" 
                                     class="sidebar-menu"
                                     *ngIf="administrator || parameterService.administrator"></sivp-menu-item>
             </ul>

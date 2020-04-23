@@ -21,7 +21,6 @@ export class FileDropComponent implements OnInit{
     
     projectForm: FormGroup;
     formMaterial: FormGroup;
-    //createPdf= {} as CreatePdfProjectComponent;
     pModel: ProjectModel;
     budgets: BudgetNew[] =  [];
     budgetItems: BudgetItem[] = [];
@@ -50,10 +49,8 @@ export class FileDropComponent implements OnInit{
     releaseMaterial: boolean = false;
     
   public dropped(files: NgxFileDropEntry[]) {
-    //this.files = files;
       this.files = this.files.concat(files);
-      
-      console.log(files);
+
       this.files.forEach((f, index) =>{
           this.ambients[index] = f['relativePath'].split('.')[0].split('-')[f['relativePath'].split('.')[0].split('-').length - 1];
           if(this.ambients[index] != ''){
@@ -78,22 +75,6 @@ export class FileDropComponent implements OnInit{
             }
             reader.onload = this._handleReaderLoaded.bind(this);
             reader.readAsDataURL(file);
-
-              /**
-              // You could upload it like this:
-              const formData = new FormData()
-              formData.append('logo', file, relativePath)
-
-              // Headers
-              const headers = new HttpHeaders({
-                'security-token': 'mytoken'
-              })
-
-              this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
-              .subscribe(data => {
-                // Sanitized logo returned from backend
-              })
-              **/
 
             });
           } else {
@@ -364,26 +345,6 @@ export class FileDropComponent implements OnInit{
             } else{
                 self.enableGenerateDraw = false;
             }
-            
-            /*setTimeout(()=>{
-                self.ambients[self.currentItemDraw] = data;
-                
-                console.log(self.ambients.find((v) => v == ""));
-                
-                if(self.ambients.find((v) => v == "") == undefined){
-                   self.releaseAmbient = true; 
-                    console.log("ambient true");
-                }else{
-                    self.releaseAmbient = false;
-                    console.log("ambient false");
-                }
-                
-                if(self.releaseMaterial && self.releaseAmbient){
-                    self.enableGenerateDraw = true;
-                } else{
-                    self.enableGenerateDraw = false;
-                }
-            }, 50);*/
         });
         
         this.projectForm.get('txtLocal').valueChanges.subscribe(function(data){

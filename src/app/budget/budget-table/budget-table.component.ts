@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import {NgxSpinnerService} from 'ngx-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import {ParameterService} from '../../shared/parameter.service';
+import {FormControl, FormBuilder, FormGroup, FormArray, Validators} from '@angular/forms';
 
 @Component({
   selector: 'sivp-budget-table',
@@ -13,13 +14,16 @@ import {ParameterService} from '../../shared/parameter.service';
 })
 export class BudgetTableComponent implements OnInit {
 
-  constructor(private appService: AppService, public spinner: NgxSpinnerService, public route: ActivatedRoute, private parameterService: ParameterService) { }
+  constructor(private appService: AppService, public spinner: NgxSpinnerService, public route: ActivatedRoute, private parameterService: ParameterService, private formBuilder: FormBuilder) { }
 
     buds: Object[] = [];
+    filteredBuds: Object[] = [];
     flag: boolean = true;
     n: number;
     budgetTest: Object[];
     self = this;
+    filterForm: FormGroup;
+    
     
     openBudget(id: any){
         alert("Open Budget " + id);
@@ -55,17 +59,45 @@ export class BudgetTableComponent implements OnInit {
                 }); 
                 
             }
+        this.filteredBuds = this.buds;
+        this.filterForm.get('cbStatus')['controls'].forEach((data, index)=>{
+            if(!data['value']){
+                document.getElementById('cb' + index).click();
+            }
+        })
     }
     
     ngOnInit() {
         
         var self = this;
         this.n = 1;
-
+        
+        this.filterForm = this.formBuilder.group({
+            cbStatus: this.formBuilder.array([new FormControl(true), new FormControl(true), new FormControl(true)])
+        })
+        
+        this.filterForm.get('cbStatus').valueChanges.subscribe((v)=>{
+            this.filteredBuds = [];
+            if(v[0]){
+                this.filteredBuds = this.buds.filter((data)=>{return data['status'] == "Aprovado"});
+            }
+            if(v[1]){
+                this.filteredBuds = this.filteredBuds.concat(this.buds.filter((data)=>{return data['status'] == "Rejeitado"}));
+            }
+            if(v[2]){
+                this.filteredBuds = this.filteredBuds.concat(this.buds.filter((data)=>{return data['status'] == "Em Análise"}));
+            }
+            //this.filteredBuds.sort((a,b) => a['budgetId'].localeCompare(b['budgetId']));
+            this.filteredBuds.sort((a,b) => {
+                return b['budgetId'] - a['budgetId'];
+            });
+        })
+        
         if(window.sessionStorage.getItem('budgetsTable') == null || window.sessionStorage.getItem('budgetsTable') == ""){    
             self.loadBudgets();
         } else{
-            self.buds = JSON.parse(window.sessionStorage.getItem('budgetsTable'))
+            self.buds = JSON.parse(window.sessionStorage.getItem('budgetsTable'));
+            this.filteredBuds = this.buds;
         }
         
         interval(1000).pipe(
