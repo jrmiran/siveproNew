@@ -56,7 +56,7 @@ export class MaterialComponent implements OnInit {
         
     }
     
-    processMaterial(){
+    processMaterial(event: any){
         this.spinner.show();
         var obj = {name: this.formMaterial.get('txtName').value, comercialSize: this.formMaterial.get('txtComercialSize').value, realSize: this.formMaterial.get('txtRealSize').value, brand: this.formMaterial.get('txtBrand').value.toString().toUpperCase(), value: this.formMaterial.get('txtValue').value, unit: this.formMaterial.get('cmbUnit').value, id: this.selectedMaterial['id']};
         if(this.modalType == "Edit"){
