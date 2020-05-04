@@ -105,18 +105,18 @@
                             <label class="col-sm-10 col-xs-12 text-right">Valor Itens: </label>
                             <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.totalValue - budget.freightValue)}}</p>
                         </span>
+                        <span *ngIf="budget.discount > 0">
+                            <label class="col-sm-10 col-xs-12 text-right"> Desconto: </label>
+                            <p class="col-sm-2 col-xs-12"> {{budget.discount}} %</p>
+                            <label class="col-sm-10 col-xs-12 text-right">Valor com Desconto: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.discountValue)}} </p>
+                        </span>
                         <span *ngIf="budget.freightValue > 0">
                             <label class="col-sm-10 col-xs-12 text-right"> Frete: </label>
                             <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.freightValue)}}</p>
                         </span>
                         <label class="col-sm-10 col-xs-12 text-right">Valor total: </label>
-                        <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.totalValue)}}</p>
-                        <span *ngIf="budget.discount > 0">
-                            <label class="col-sm-10 col-xs-12 text-right"> Desconto: </label>
-                            <p class="col-sm-2 col-xs-12"> {{budget.discount}} %</p>
-                            <label class="col-sm-10 col-xs-12 text-right">Valor com Desconto: </label>
-                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.discountValue + budget.freightValue)}} </p>
-                        </span>
+                        <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.discountValue + budget.freightValue)}}</p>
                     </div>
                 </sivp-primary-box>
                 

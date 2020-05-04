@@ -368,8 +368,8 @@ export class TableComponent implements OnInit {
             budget.date = v[1][0]['data'];
             budget.discount = parseFloat(v[1][0]['desconto']);
             budget.totalValue = parseFloat(v[1][0]['valorTotal']);
-            budget.discountValue = self.appService.discountValue(budget.totalValue, budget.discount);
             budget.freightValue = parseFloat(v[1][0]['frete'].replace(',','.'));
+            budget.discountValue = self.appService.discountValue((budget.totalValue - budget.freightValue), budget.discount);
             budget.id = v[1][0]['id'];
             budget.note = v[1][0]['observacao'];
             budget.poloAd = v[1][0]['poload']['data'][0];
@@ -377,6 +377,8 @@ export class TableComponent implements OnInit {
             budget.sellerId = v[1][0]['vendedor_id'];
             budget.storeId = v[1][0]['clienteJuridico_id'];
             budget.status = v[1][0]['status'];
+            
+            console.log(budget.discountValue);
             
             store = v[2][0];
             client = v[3][0];

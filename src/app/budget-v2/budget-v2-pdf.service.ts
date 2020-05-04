@@ -358,49 +358,53 @@ export class BudgetV2PdfService{
         });
         //******************************************************* BUDGET ITEMS + AMBIENT CELLS **************************************************
         
-        //*********************************************************** FREIGHT (IF APPLICABLE) ***********************************************************
-        if(budget.freightValue > 0){
-            console.log("FREIGHT");
-            //****************************************************** DISCOUNT ***************************************************************
-            doc.autoTable(columnTotal, [{valor: "Frete: " + self.appService.converteFloatMoeda(budget.freightValue)}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
-                            c1: {cellWidth: 0.75, fontStyle: 'bold', fillColor: [0,0,0]},
-                            c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
-                          }});
-            lineBottomAmmount();
-            //****************************************************** DISCOUNT ***************************************************************
-        }
-        //*********************************************************** FREIGHT (IF APPLICABLE) ***********************************************************
-        
-        //********************************************************* AMOUNT **********************************************************************
-        console.log("AMOUNT");
-        doc.autoTable(columnTotal, [{valor: "Total: " + self.appService.converteFloatMoeda(budget.totalValue) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+        //********************************************************* AMOUNT ITEMS **********************************************************************
+        doc.autoTable(columnTotal, [{valor: "Total Itens: " + self.appService.converteFloatMoeda(budget.totalValue - budget.freightValue) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
         lineBottomAmmount();
-        //********************************************************* AMOUNT **********************************************************************
+        //********************************************************* AMOUNT ITEMS **********************************************************************
         
         //*********************************************************** DISCOUNT (IF APPLICABLE) ***********************************************************
         if(budget.discount > 0){
-            console.log("DISCOUNT");
             //****************************************************** DISCOUNT ***************************************************************
-            doc.autoTable(columnTotal, [{valor: "Desconto: " + budget.discount + "%  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            doc.autoTable(columnTotal, [{valor: "Desconto: " + budget.discount + "%  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 0.75, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
             lineBottomAmmount();
             //****************************************************** DISCOUNT ***************************************************************
-        }
-        //*********************************************************** DISCOUNT (IF APPLICABLE) ***********************************************************
-        
-        //****************************************************** VALUE WITH DISCOUNT ***************************************************************
-            console.log("VALUE WITH DISCOUNT");
-            doc.autoTable(columnTotal, [{valor: "Valor Final: " + self.appService.converteFloatMoeda(budget.discountValue + budget.freightValue) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+            //****************************************************** VALUE WITH DISCOUNT ***************************************************************
+            doc.autoTable(columnTotal, [{valor: "Valor Total: " + self.appService.converteFloatMoeda(budget.discountValue) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
                             c1: {cellWidth: 1, fontStyle: 'bold', fillColor: [0,0,0]},
                             c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
                           }});
             lineBottomAmmount();
         //****************************************************** VALUE WITH DISCOUNT ***************************************************************
+        }
+        //*********************************************************** DISCOUNT (IF APPLICABLE) ***********************************************************
+        
+        
+        
+        //*********************************************************** FREIGHT (IF APPLICABLE) ***********************************************************
+        if(budget.freightValue > 0){
+            console.log("FREIGHT");
+            doc.autoTable(columnTotal, [{valor: "Frete: " + self.appService.converteFloatMoeda(budget.freightValue)}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", cellPadding: 0}, columnStyles: {
+                            c1: {cellWidth: 0.75, fontStyle: 'bold', fillColor: [0,0,0]},
+                            c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
+                          }});
+            lineBottomAmmount();
+        }
+        //*********************************************************** FREIGHT (IF APPLICABLE) ***********************************************************
+        
+        //********************************************************* AMOUNT ITEMS **********************************************************************
+        doc.autoTable(columnTotal, [{valor: "Valor Final: " + self.appService.converteFloatMoeda(budget.discountValue + budget.freightValue) + "  "}],{margin: {top:0, left: 450, right: self.defaultMarginRight}, showHead: 'false', startY: doc.previousAutoTable.finalY, theme: 'plain', styles: {halign: "right", fillColor: [211,211,211], cellPadding: 0}, columnStyles: {
+                            c1: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]},
+                            c4: {cellWidth: 0.5, fontStyle: 'bold', fillColor: [0,0,0]}
+                          }});
+        lineBottomAmmount();
+        //********************************************************* AMOUNT ITEMS **********************************************************************
         
         //**********************************************************BUDGET NOTE*******************************************************
         console.log("NOTE");
