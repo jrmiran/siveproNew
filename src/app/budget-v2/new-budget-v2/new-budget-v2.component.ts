@@ -287,6 +287,7 @@ export class NewBudgetV2Component implements OnInit {
     // ------------------------------------------------------------------------------------------------
     // FUNÇÃO QUE ATRIBUI VALORES DE ITEMSBUDGET RECEBIDOS POR PARAMETRO ------------
     assignItemsBudget(){
+        var totalValue: number = 0;
         this.itemsBudgetParam.forEach((v)=>{
             var item = {} as ItemBudgetV2;
             item.id = v['id'];
@@ -303,8 +304,10 @@ export class NewBudgetV2Component implements OnInit {
             item.discountValue = this.appService.toFixed2(parseFloat(v['valorComDesconto']));
             item.number = v['numero'];
             item.serviceOrderId = this.serviceOrders.find((d)=>{return d['itemOrcamento_id'] == item.id}) ? parseFloat(this.serviceOrders.find((d)=>{return d['itemOrcamento_id'] == item.id})['id']) : 0;
+            totalValue = totalValue + item.totalValue;
             this.itemsBudget.push(item);
         });
+        //this.budget.totalValue = totalValue;
         this.sortItems();
         this.separeteItemByAmbient();
         this.ambientsEdit.forEach((v) => {

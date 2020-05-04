@@ -8,45 +8,50 @@
         </ngx-spinner>
         <section class="invoice">
             <a class="btn btn-primary pull-right" (click)="openModalAddMaterial()"> <i class="fa fa-plus"></i> Adicionar Material</a>
-            <sivp-table [name]="'Material'" [headers]="['Id', 'Nome', 'Tamanho Comercial', 'Tamanho Real']" [datas]="materials" [ids]="['id','nome','tamanhoComercial','tamanhoReal']" [mc]="self" [runClickRow]="true">
+            <sivp-table [name]="'Material'" [headers]="['Id', 'Nome', 'Marca', 'Tamanho Comercial', 'Tamanho Real', 'Unidade', 'Valor']" [datas]="materials" [ids]="['id','nome', 'marca', 'tamanhoComercial','tamanhoReal' ,'unidade' ,'valor']" [mc]="self" [runClickRow]="false">
             </sivp-table>
         </section>
 
-        <!----------------------------------- MODAL --------------------------------------------------------------------->
+        <!-- MODAL INSERÇÃO -------------------------------------------->
         <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modal-default">Open Modal</button>
-        <div class="modal fade" id="modal-default">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span></button>
-                        <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
-                    </div>
-                    <div class="modal-body">
-                        <sivp-input-container class="col-sm-12 col-xs-12">
-                            <label> Nome</label>
-                            <input type="text" class="form-control" formControlName="txtName" placeholder="Nome">
-                        </sivp-input-container>
+        <sivp-modal [title]="modalTitle" [icon]="'fa fa-pencil'" (okClick)="processMaterial($event)" [id]="'modal-default'" [enableOkButton]="formMaterial.valid">
+            <div class="row">
+                <sivp-input-container class="col-sm-6 col-xs-12">
+                    <label> Marca</label>
+                    <input type="text" class="form-control" formControlName="txtBrand" placeholder="Marca" style="text-transform: uppercase">
+                </sivp-input-container>
 
-                        <sivp-input-container class="col-sm-6 col-xs-12">
-                            <label> Tamanho Comercial </label>
-                            <input type="text" class="form-control" formControlName="txtComercialSize" placeholder="Tamanho Comercial">
-                        </sivp-input-container>
+                <sivp-input-container class="col-sm-6 col-xs-12">
+                    <label> Nome</label>
+                    <input type="text" class="form-control" formControlName="txtName" placeholder="Nome">
+                </sivp-input-container>
 
-                        <sivp-input-container class="col-sm-6 col-xs-12">
-                            <label> Tamanho Real </label>
-                            <input type="text" class="form-control" formControlName="txtRealSize" placeholder="Tamanho Real">
-                        </sivp-input-container>
+                <sivp-input-container class="col-sm-6 col-xs-12">
+                    <label> Tamanho Comercial </label>
+                    <input type="text" class="form-control" formControlName="txtComercialSize" placeholder="Tamanho Comercial">
+                </sivp-input-container>
+                
+                <sivp-input-container class="col-sm-6 col-xs-12">
+                    <label> Tamanho Real </label>
+                    <input type="text" class="form-control" formControlName="txtRealSize" placeholder="Tamanho Real">
+                </sivp-input-container>
 
-                    </div>
-                    <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" (click)="insertMaterial()" [class.disabled]="!formMaterial.valid">Gerar Desenho</button>
-                    </div>
-                </div>
-                <!-- /.modal-content -->
+                <sivp-input-container class="col-sm-6 col-xs-12">
+                    <label> Unidade</label>
+                    <select class="form-control" formControlName="cmbUnit">
+                        <option>pç</option>
+                        <option>m2</option>
+                    </select>
+                </sivp-input-container>
+
+                <sivp-input-container class="col-sm-6 col-xs-12">
+                    <label> Valor</label>
+                    <input type="select" class="form-control" formControlName="txtValue" currencyMask [options]="{prefix: 'R$ ', decimal: ',', thousands: '.'}">
+                </sivp-input-container>
+
             </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!------------------------------------------ END MODAL ----------------------------------------------------------->
+        </sivp-modal>
+        <!-- MODAL INSERÇÃO -------------------------------------------->
+
     </form>
 </section>

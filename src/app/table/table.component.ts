@@ -369,7 +369,7 @@ export class TableComponent implements OnInit {
             budget.discount = parseFloat(v[1][0]['desconto']);
             budget.totalValue = parseFloat(v[1][0]['valorTotal']);
             budget.discountValue = self.appService.discountValue(budget.totalValue, budget.discount);
-            budget.freightValue = 0;
+            budget.freightValue = parseFloat(v[1][0]['frete'].replace(',','.'));
             budget.id = v[1][0]['id'];
             budget.note = v[1][0]['observacao'];
             budget.poloAd = v[1][0]['poload']['data'][0];
@@ -413,6 +413,9 @@ export class TableComponent implements OnInit {
         console.log(status);
     }
     
+    openEditMaterial(id: any){
+        this.mc.openEditMaterialModal(id);
+    }
     
     ngOnInit() {
         var self = this;

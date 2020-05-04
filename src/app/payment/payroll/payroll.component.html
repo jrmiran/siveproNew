@@ -56,9 +56,10 @@
 
             </div>
         </form>
+        <sivp-primary-box [icon]="'fa fa-cloud'" [title]="'Finalizando Folha de Pagamento'" [size]="'col-md-12'">
+            <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="false">
+                <p style="color: white"> {{spinnerText}} </p>
+            </ngx-spinner>
+        </sivp-primary-box>
     </section>
 </section>
-
-<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
-    <p style="color: white"> {{spinnerText}} </p>
-</ngx-spinner>

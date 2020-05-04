@@ -26,6 +26,10 @@ export class ServiceOrderTableV2Component implements OnInit {
     showStoneValueInput: boolean = false;
     selectedServiceOrder: any;
     enableOkButton: boolean = false;
+    selectedSO: number;
+    valueSO: string = '';
+    titleModal: string = '';
+    idsInput: string[] = [];
     // -----------------------
     
     // FORM VARIABLES ----------------
@@ -37,10 +41,19 @@ export class ServiceOrderTableV2Component implements OnInit {
     
     // FUNÇÃO QUE ABRE O MODAL PARA ALTERAR SO CHAMADA PELA TABLE ---------------------
     openModalChangeSO(id){
+        this.selectedSO = id;
         document.getElementById('openModalButton').click();
+        this.serviceOrderForm.get('cbEmployees')['controls'].forEach((v, index)=>{
+            if(v['value']['employeeName']){
+                document.getElementById(this.idsInput[index]).click();
+            }
+        })
+        this.serviceOrderForm.get('txtDate').setValue('');
         this.selectedServiceOrder = this.serviceOrders.find((v) =>{
             return v['id'] == id
         })
+        this.valueSO = this.appService.converteFloatMoeda(parseFloat(this.selectedServiceOrder['valorComDesconto']));
+        this.titleModal = "Alteração Ordem de Serviço: " + id + "\nValor: " + this.valueSO;
     }
     // --------------------------------------------------------------------------------
     
@@ -74,12 +87,13 @@ export class ServiceOrderTableV2Component implements OnInit {
     
     // FUNÇÃO QUE CONSTRÓI OS FORMS DE NOME, PORCENTAGEM E EMPREITA DOS FUNCIONÁRIOS --
     buildEmployeesForm(){
-        this.employees.forEach((v) =>{
+        this.employees.forEach((v, index) =>{
             this.employeesForm.push(new FormGroup({
                 employeeName: new FormControl(false, []),
                 employeeShare: new FormControl('100',[]),
                 employeeEmpreita: new FormControl('0',[])
-            }));  
+            }));
+            this.idsInput.push("cb" + index);
             this.showInputs.push(false);
         })
     }
@@ -145,7 +159,7 @@ export class ServiceOrderTableV2Component implements OnInit {
             })
             this.releaseModal = true;
             this.serviceOrderForm.get('cbStone').valueChanges.subscribe(function(value){
-                console.log(value);
+                self.serviceOrderForm.get('stoneValue').setValue(parseFloat(self.selectedServiceOrder['valorComDesconto'])*0.4);
                 self.showStoneValueInput = value;
             });
             

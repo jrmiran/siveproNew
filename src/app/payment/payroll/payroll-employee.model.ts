@@ -10,5 +10,7 @@ export interface PayrollEmployee{
     sharing: number;
     others: number;
     comission: number;
+    vacation: number;
+    thirteen: number;
     total: number;
 }

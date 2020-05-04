@@ -48,9 +48,11 @@ export class ServiceOrderV2Component implements OnInit {
         this.spinner.show();
         var params = {items: this.selectedItems, budgetId: this.budget.id};
         this.appService.postInsertServiceOrder(params).subscribe(function(data){
-            alert("Ordens de serviço adicionadas!");
-            console.log(data);
-            self.spinner.hide();
+            self.appService.postSearchServiceOrderByBudget({budgetId: self.budget.id}).subscribe(function(v){
+                alert("Ordens de serviço adicionadas!");
+                self.serviceOrders = v;
+                self.spinner.hide();
+            });
         })
     }
     // ----------------------------------------------------------------------------------------------

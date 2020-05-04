@@ -20,18 +20,18 @@ export class PayrollComponent implements OnInit {
     employees: Object[] = [];
     filteredEmployees: PayrollEmployee[] = [];
     payrollForm: FormGroup;
-    typePayment: string[] = ['Vale', 'Salario', 'Vale Transporte', 'Empreita', 'Cesta', 'PLR', 'Comissão', 'Outros'];
+    typePayment: string[] = ['Vale', 'Salario', 'Vale Transporte', 'Empreita', 'Cesta', 'PLR', 'Comissão', 'Outros', 'Férias', '13º'];
     returnedForm: FormGroup;
     employeesForm: FormArray;
     release: boolean = false;
-    headers: string[] = ['Nome', 'Vale', 'Salário', 'Vale Transporte', 'Empreita', 'Cesta', 'PLR', 'Comissão', 'Outros', 'Total'];
+    headers: string[] = ['Nome', 'Vale', 'Salário', 'Vale Transporte', 'Empreita', 'Cesta', 'PLR', 'Comissão', 'Outros', 'Férias', '13º','Total'];
     filteredHeaders: string[] = ['Nome', 'Total'];
-    formsName: string[] = ['advance', 'salary', 'transport', 'empreita', 'basket', 'sharing', 'comission', 'others'];
+    formsName: string[] = ['advance', 'salary', 'transport', 'empreita', 'basket', 'sharing', 'comission', 'others', 'vacation', 'thirteen'];
     filteredFormsName: string[] = [];
     totalPayroll: number = 0;
     payrollDate: string = "";
     payments: PayrollPayment[] = [];
-    typePaymentDB: string[] = ['vale', 'Salário', 'vale transporte', 'empreita', 'cesta basica', 'PLR', 'comissao', 'gasto diversos com funcionarios'];
+    typePaymentDB: string[] = ['vale', 'Salário', 'vale transporte', 'empreita', 'cesta basica', 'PLR', 'comissão', 'gasto diversos com funcionarios', 'ferias', 'decimo terceiro'];
     // -----------------------
     
     //FUNÇÃO QUE RETORNA FORM DE CHECKBOX DE TIPOS DE PAGAMENTO -------------------------------------------
@@ -59,6 +59,8 @@ export class PayrollComponent implements OnInit {
                     basket: new FormControl(0, []),
                     sharing: new FormControl(0, []),
                     comission: new FormControl(0, []),
+                    vacation: new FormControl(0, []),
+                    thirteen: new FormControl(0, []),
                     others: new FormControl(0, [])
                 }))
             })
@@ -100,26 +102,43 @@ export class PayrollComponent implements OnInit {
     
     // FUNÇÃO QUE PROCESSA FOLHA DE PAGAMENTO E CRIA PAGAMENTOS NO BANCO ----------------------------------
     processPayroll(){
-        this.filteredEmployees.forEach((employee)=>{
-            this.formsName.forEach((v, index)=>{
-                if(employee[v] != 0 && this.filteredFormsName.indexOf(v) > -1){
-                    var payment = {} as PayrollPayment;
-                    payment.bill = this.headers[index + 1] + " " + employee.employeeName;
-                    payment.budgetId = 1;
-                    payment.checkNumber = 0;
-                    payment.date = this.payrollDate;
-                    payment.employeeId = employee.employeeId;
-                    payment.in = 0;
-                    payment.note = "";
-                    payment.paymentType = this.typePaymentDB[index];
-                    payment.paymentWay = "deposito";
-                    payment.status = "Pago";
-                    payment.value = employee[v];
-                    this.payments.push(payment);
-                }
+        this.spinner.show();
+        
+        this.buildPayments().then((response)=>{
+            this.appService.postInsertPayrollPayments({payments: this.payments}).subscribe((data)=>{
+                alert("Folha de Pagamento Cadastrada com Sucesso!");
+                this.spinner.hide();
             })
-            console.log(this.payments);
         })
+    }
+    // ----------------------------------------------------------------------------------------------------
+    
+    // FUNÇÃO QUE MONTA O ARRAY DE PAGAMENTOS A SEREM CADASTRADOS NO BANCO --------------------------------
+    buildPayments(): Promise<any>{
+        return new Promise((resolve, reject)=>{
+            this.filteredEmployees.forEach((employee)=>{
+                this.formsName.forEach((v, index)=>{
+                    if(employee[v] != 0 && this.filteredFormsName.indexOf(v) > -1){
+                        var payment = {} as PayrollPayment;
+                        payment.bill = this.headers[index + 1] + " " + employee.employeeName;
+                        payment.budgetId = 1;
+                        payment.checkNumber = 0;
+                        payment.date = this.payrollDate;
+                        payment.employeeId = employee.employeeId;
+                        payment.in = 0;
+                        payment.note = "";
+                        payment.paymentType = this.typePaymentDB[index];
+                        payment.paymentWay = "deposito";
+                        payment.status = "Pago";
+                        payment.value = employee[v];
+                        this.payments.push(payment);
+                    }
+                })
+            })
+            resolve('buildPayments executado com sucesso');
+            reject('buildpayments falhou');
+        })
+        
     }
     // ----------------------------------------------------------------------------------------------------
     ngOnInit() {
@@ -143,6 +162,8 @@ export class PayrollComponent implements OnInit {
                 employee.sharing = 0;
                 employee.others = 0;
                 employee.comission = 0;
+                employee.vacation = 0;
+                employee.thirteen = 0;
                 employee.total = 0;
                 this.filteredEmployees.push(employee);
             })
@@ -164,6 +185,8 @@ export class PayrollComponent implements OnInit {
                         data.sharing = v[index]['sharing'] == null ? 0 : parseFloat(v[index]['sharing']);
                         data.others = v[index]['others'] == null ? 0 : parseFloat(v[index]['others']);
                         data.comission = v[index]['comission'] == null ? 0 : parseFloat(v[index]['comission']);
+                        data.vacation = v[index]['vacation'] == null ? 0 : parseFloat(v[index]['vacation']);
+                        data.thirteen = v[index]['thirteen'] == null ? 0 : parseFloat(v[index]['thirteen']);
                         data.total = this.getTotalPayments(data);
                     })
                     this.refreshTotalPayroll();

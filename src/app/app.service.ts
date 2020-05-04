@@ -488,7 +488,21 @@ export class AppService{
         return this.callPost('postUpdateTotalValueBudget', obj);
     }
     
+    postInsertPayrollPayments(obj: any): Observable<Object[]>{
+        return this.callPost('postInsertPayrollPayments', obj);
+    }
     
+    postEditMaterial(obj: any): Observable<Object[]>{
+        return this.callPost('postEditMaterial', obj);
+    }
+    
+    postFixBudget(obj: any): Observable<Object[]>{
+        return this.callPost('postFixBudget', obj);
+    }
+    
+    postSearchBudgetTable(obj: any): Observable<Object[]>{
+        return this.callPost('postSearchBudgetTable', obj);
+    }
     // ----------------------------------------------------------------------------------
     draw(budgetId: number): Observable<Object[]>{
         return this.callQuery(`draw/${budgetId}`);

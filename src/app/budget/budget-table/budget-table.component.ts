@@ -45,7 +45,15 @@ export class BudgetTableComponent implements OnInit {
                        data['approved'] =  data['approved']['data'][0];
                     });
                     self.spinner.hide();
-                });  
+                    
+                    self.filteredBuds = this.buds;
+                    self.filterForm.get('cbStatus')['controls'].forEach((data, index)=>{
+                        if(!data['value']){
+                            document.getElementById('cb' + index).click();
+                        }
+                    })
+                });
+            
             window.sessionStorage.setItem('budgetsTable', JSON.stringify(self.buds));
             } else{
                 this.appService.budgets().subscribe(function(budgets){
@@ -56,15 +64,44 @@ export class BudgetTableComponent implements OnInit {
                     self.spinner.hide();
                     console.log(JSON.stringify(self.buds));
                     window.sessionStorage.setItem('budgetsTable', JSON.stringify(self.buds));
-                }); 
+                    
+                    self.filteredBuds = self.buds;
+                    self.filterForm.get('cbStatus')['controls'].forEach((data, index)=>{
+                        if(!data['value']){
+                            document.getElementById('cb' + index).click();
+                        }
+                    })
+                });
+            }
+    }
+    
+    fixBudgetValues(){
+        this.spinner.show();
+        var budgets: any;
+        var current: any;
+        var total = 0;
+        this.appService.postSearchBudgetTable({}).subscribe((data)=>{
+            budgets = data[1];
+            console.log(budgets);
+            
+            for (let i = 2500; i < 3000; i++) {
+                total = 0;
+                current = budgets.filter((v)=>{return v['orcamento_id'] == i});
+                if(current.length > 0){
+                    current.forEach((v, index)=>{
+                        total = total + parseFloat(v['valorTotal'].replace(',','.'));
+                    })
+                   this.appService.postUpdateTotalValueBudget({budgetId: i, totalValue: this.appService.toFixed2(total)}).subscribe((value)=>{
+                        console.log(value);
+                    })
+                }
+                
                 
             }
-        this.filteredBuds = this.buds;
-        this.filterForm.get('cbStatus')['controls'].forEach((data, index)=>{
-            if(!data['value']){
-                document.getElementById('cb' + index).click();
-            }
+            
+            this.spinner.hide();
         })
+        
     }
     
     ngOnInit() {
@@ -87,7 +124,6 @@ export class BudgetTableComponent implements OnInit {
             if(v[2]){
                 this.filteredBuds = this.filteredBuds.concat(this.buds.filter((data)=>{return data['status'] == "Em Análise"}));
             }
-            //this.filteredBuds.sort((a,b) => a['budgetId'].localeCompare(b['budgetId']));
             this.filteredBuds.sort((a,b) => {
                 return b['budgetId'] - a['budgetId'];
             });
@@ -107,6 +143,5 @@ export class BudgetTableComponent implements OnInit {
             })
         );
         console.log(this.n);
-        
     }
 }

@@ -18,11 +18,11 @@
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a class="btn pull-left" (click)="navigateServiceOrder()" [class.disabled]="!budget.approved"><i class="fa fa-wrench" style="color: black"></i>Ordem de Serviço</a>
+                                <li><a class="btn pull-left" (click)="navigateServiceOrder()" [class.disabled]="budget.status != 'Aprovado'"><i class="fa fa-wrench" style="color: black"></i>Ordem de Serviço</a>
                                     <a [class.hide]="true" id="serviceOrderButton" class="btn pull-left" [routerLink]="['/serviceOrderV2']" [queryParams]="serviceOrderParams" [class.disabled]="!budget.approved"><i class="fa fa-wrench" style="color: black"></i>Ordem de Serviço</a></li>
                                 <li><a class="btn pull-left" (click)="generatePDF()"><i class="fa fa-file-pdf-o pull-left" style="color: red"></i>Gerar PDF</a></li>
                                 <li><a class="btn pull-left" (click)="duplicateBudget()"><i class="fa fa-copy" style="color: darkblue"></i>Duplicar</a></li>
-                                
+
                                 <li *ngIf="budget.status != 'Aprovado'"><a class="btn pull-left" (click)="changeBudgetStatus('Aprovado')"><i class="fa fa-check" style="color: green"></i>Aprovar</a></li>
                                 <li *ngIf="budget.status != 'Rejeitado'"><a class="btn pull-left" (click)="changeBudgetStatus('Rejeitado')"><i class="fa fa-close" style="color: red"></i>Rejeitar</a></li>
                                 <li *ngIf="budget.status != 'Em Análise'"><a class="btn pull-left" (click)="changeBudgetStatus('Em Análise')"><i class="fa fa-hourglass-2" style="color: goldenrod"></i>Em Análise</a></li>
@@ -46,14 +46,14 @@
 
                         <label class="col-xs-1"> Data: </label>
                         <p class="col-xs-11"> {{budget.date}} </p>
-                        
+
                         <label class="col-xs-1"> Edição: </label>
                         <p class="col-xs-11"> {{budget.retificated}} </p>
 
                         <div class="col-xs-12" *ngIf="budgetType == 'Edit'">
-                            <p class="col-sm-10" *ngIf="budget.status == 'Rejeitado'" style="color: red" ><i class="fa fa-close" ></i><b> {{budget.status}} </b></p>
-                            <p class="col-sm-10" *ngIf="budget.status == 'Aprovado'" style="color: green" ><i class="fa fa-check" ></i> <b> {{budget.status}} </b></p>
-                            <p class="col-sm-10" *ngIf="budget.status == 'Em Análise'" style="color: goldenrod"><i class="fa fa-hourglass-2"  ></i> <b> {{budget.status}} </b> </p>
+                            <p class="col-sm-10" *ngIf="budget.status == 'Rejeitado'" style="color: red"><i class="fa fa-close"></i><b> {{budget.status}} </b></p>
+                            <p class="col-sm-10" *ngIf="budget.status == 'Aprovado'" style="color: green"><i class="fa fa-check"></i> <b> {{budget.status}} </b></p>
+                            <p class="col-sm-10" *ngIf="budget.status == 'Em Análise'" style="color: goldenrod"><i class="fa fa-hourglass-2"></i> <b> {{budget.status}} </b> </p>
                         </div>
                     </div>
                 </div>
@@ -102,6 +102,10 @@
 
                     <div class="row">
                         <span *ngIf="budget.freightValue > 0">
+                            <label class="col-sm-10 col-xs-12 text-right">Valor Itens: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.totalValue - budget.freightValue)}}</p>
+                        </span>
+                        <span *ngIf="budget.freightValue > 0">
                             <label class="col-sm-10 col-xs-12 text-right"> Frete: </label>
                             <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.freightValue)}}</p>
                         </span>
@@ -111,12 +115,11 @@
                             <label class="col-sm-10 col-xs-12 text-right"> Desconto: </label>
                             <p class="col-sm-2 col-xs-12"> {{budget.discount}} %</p>
                             <label class="col-sm-10 col-xs-12 text-right">Valor com Desconto: </label>
-                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.discountValue)}} </p>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.discountValue + budget.freightValue)}} </p>
                         </span>
-
                     </div>
                 </sivp-primary-box>
-
+                
                 <div class="row" *ngIf="selectedItemBudget">
                     <sivp-primary-box [title]="'Itens'" [icon]="'fa fa-pencil'" [size]="'col-sm-12 col-xs-12'">
                         <div class="row">

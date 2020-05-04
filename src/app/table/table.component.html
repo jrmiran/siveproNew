@@ -123,7 +123,15 @@
                         <i *ngIf="data[id] == 'Em Análise'" class = "fa fa-hourglass-2" style="color: goldenrod"></i>    
                     </span>
                     
-                    <span *ngIf="id != 'budgetId' && !((sotc || ostc) && id == 'id') && id != 'approved' && id != 'empreita' && id != 'pedra' && id != 'terminado' && !(csc && id == 'id') && !(pc && id=='id') && !((sotc || ostc) && id == 'orcamento_id') && !(soc && id=='id') && !(pc && id =='orcamento_id') && !(sorc && id == 'percentagePersonal') && !(sorc && id=='empreitaPayed') && !(nrc && id == 'valor') && !(rc &&  id == 'id') && !(erc && id == 'id' && !budgetSellection) && !((bncv2 && id == 'unitValue') || (bncv2 && id== 'totalValue')) && !(socv2 && id == 'totalValue') && !(sotcv2 && id == 'valorComDesconto') && !(sotcv2 && id == 'id') && !(sorcv2 && id == 'personalPercentage') && !(sorcv2 && id == 'productionPercentage') && !(sorcv2 && id == 'normalProduction') && !(sorcv2 && id == 'empreitaProduction') && !(sorcv2 && id == 'payedEmpreita') && !(sorcv2 && id == 'awardValue') && !(btc && id=='editOld') && !(btc && id=='value') && !(btc && id == 'status')">
+                    <span *ngIf="mc && id=='valor'">
+                        {{appService.converteFloatMoeda(data[id])}}
+                    </span>
+                    
+                    <span *ngIf="mc && id=='id'">
+                        <a class="btn" (click)="openEditMaterial(data[id])"> {{data[id]}} </a>
+                    </span>
+                    
+                    <span *ngIf="id != 'budgetId' && !((sotc || ostc) && id == 'id') && id != 'approved' && id != 'empreita' && id != 'pedra' && id != 'terminado' && !(csc && id == 'id') && !(pc && id=='id') && !((sotc || ostc) && id == 'orcamento_id') && !(soc && id=='id') && !(pc && id =='orcamento_id') && !(sorc && id == 'percentagePersonal') && !(sorc && id=='empreitaPayed') && !(nrc && id == 'valor') && !(rc &&  id == 'id') && !(erc && id == 'id' && !budgetSellection) && !((bncv2 && id == 'unitValue') || (bncv2 && id== 'totalValue')) && !(socv2 && id == 'totalValue') && !(sotcv2 && id == 'valorComDesconto') && !(sotcv2 && id == 'id') && !(sorcv2 && id == 'personalPercentage') && !(sorcv2 && id == 'productionPercentage') && !(sorcv2 && id == 'normalProduction') && !(sorcv2 && id == 'empreitaProduction') && !(sorcv2 && id == 'payedEmpreita') && !(sorcv2 && id == 'awardValue') && !(btc && id=='editOld') && !(btc && id=='value') && !(btc && id == 'status') && !(mc && id=='valor') && !(mc && id=='id')">
                         {{data[id]}}
                     </span>
 

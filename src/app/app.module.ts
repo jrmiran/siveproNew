@@ -101,6 +101,7 @@ import { ServiceOrderReportV2Component } from './service-order-report-v2/service
 import { ColorBoxComponent } from './shared/color-box/color-box.component';
 import { PayrollComponent } from './payment/payroll/payroll.component';
 import { PayrollTableComponent } from './payment/payroll-table/payroll-table.component';
+import { EmployeeComponent } from './employee/employee.component';
 registerLocaleData(localePt);
 
 
@@ -170,7 +171,8 @@ registerLocaleData(localePt);
     ServiceOrderReportV2Component,
     ColorBoxComponent,
     PayrollComponent,
-    PayrollTableComponent
+    PayrollTableComponent,
+    EmployeeComponent
   ],
   imports: [
     BrowserModule,
