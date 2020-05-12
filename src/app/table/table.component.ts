@@ -412,7 +412,7 @@ export class TableComponent implements OnInit {
     }
     
     changeProjectStatus(status: boolean){
-        console.log(status);
+        this.spc.changeProjectStatus(status);
     }
     
     openEditMaterial(id: any){

@@ -29,7 +29,7 @@
                         <h3 class="box-title"><i class="fa fa-pencil"></i> Projetos:</h3>
                         <a class="btn btn-primary pull-right" (click)="exportPdf()" [class.disabled]="!currentDraw"> Gerar Desenho </a>
                     </div>
-                    <sivp-table *ngIf="projects.length > 0" [headers]="['Id', 'Ambiente', 'Loja', 'Cliente', 'Orçamento']" [datas]="filteredProjects" [ids]="['id','ambient','store','client', 'budget']" [spc]="self" [runClickRow]="true"></sivp-table>
+                    <sivp-table *ngIf="projects.length > 0" [headers]="['Id', 'Ambiente', 'Loja', 'Cliente', 'Orçamento', 'Status']" [datas]="filteredProjects" [ids]="['id','ambient','store','client', 'budget', 'approved']" [spc]="self" [runClickRow]="true"></sivp-table>
                     <label *ngIf="projects.length <= 0">Não há projetos para este cliente ou orçamento</label>
                 </div>
             </div>

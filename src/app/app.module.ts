@@ -102,6 +102,8 @@ import { ColorBoxComponent } from './shared/color-box/color-box.component';
 import { PayrollComponent } from './payment/payroll/payroll.component';
 import { PayrollTableComponent } from './payment/payroll-table/payroll-table.component';
 import { EmployeeComponent } from './employee/employee.component';
+import { PaymentReportService } from './payment/payment-report.service';
+import { ChartsModule } from 'ng2-charts';
 registerLocaleData(localePt);
 
 
@@ -201,7 +203,8 @@ registerLocaleData(localePt);
     NgxFileDropModule,
     NgxDaterangepickerMd.forRoot(),
     MatExpansionModule,
-    AutocompleteLibModule
+    AutocompleteLibModule,
+    ChartsModule
   ],
   providers: [
       AppService,
@@ -214,6 +217,7 @@ registerLocaleData(localePt);
       UploadComponent,
       CreatePdfSOComponent,
       CreatePdfProjectComponent,
+      PaymentReportService,
       {provide: LOCALE_ID, useValue: 'pt-BR'},
   ],
   bootstrap: [AppComponent]

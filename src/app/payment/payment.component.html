@@ -6,7 +6,7 @@
         <p> Caregando Pagamentos </p>
     </ngx-spinner>
     <section class="invoice">
-
+        <a class="btn btn-primary" (click)="paymentReport()"> Teste! </a>
         <div class="row">
             <form [formGroup]="filterForm" novalidate>
                 <div class="col-md-12">
@@ -38,9 +38,14 @@
                                 </sivp-input-container>
 
 
-                                <sivp-input-container class="form-group col-sm-5 col-xs-12">
+                                <sivp-input-container class="form-group col-sm-4 col-xs-12">
                                     <label> Assunto </label>
                                     <input type="text" class="form-control" formControlName="txtBill">
+                                </sivp-input-container>
+                                
+                                <sivp-input-container class="form-group col-sm-1 col-xs-12">
+                                    <label> ID </label>
+                                    <input type="text" class="form-control" formControlName="txtId">
                                 </sivp-input-container>
                             </div>
 
@@ -90,8 +95,6 @@
                             <a class="btn btn-primary pull-right" (click)="applyFilter()"><i class="fa fa-filter"></i> Filtrar </a>
                         </mat-expansion-panel>
                     </mat-accordion>
-
-
                 </div>
             </form>
         </div>
@@ -127,6 +130,13 @@
                 <p> {{totalValueString}}</p>
             </span>
         </div>
+        
+        <canvas id="pieChart" style="height:250px" 
+                baseChart
+                [data]="dataPieChart" 
+                [labels]="labelPieChart"
+                [colors]="colors"
+                [chartType]="'pie'"></canvas>
     </section>
 </section>
 <a (click)="setNewPayment()" data-toggle="modal" class="btn pull-left" data-target="#modal-default" id="openModalPaymentButton"><i class="fa fa-money"></i> Novo Pagamento </a>

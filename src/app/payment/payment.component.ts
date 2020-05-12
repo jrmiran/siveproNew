@@ -8,6 +8,8 @@ import {RadioOption} from '../shared/radio/radio-option.model';
 import { Pipe, PipeTransform } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PaymentReportService } from './payment-report.service';
+import {PaymentByType} from './payment-by-type.model';
 
 @Component({
   selector: 'sivp-payment',
@@ -16,7 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class PaymentComponent implements OnInit, AfterViewInit {
 
-  constructor(private appService: AppService, private spinner: NgxSpinnerService, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router) { }
+  constructor(private appService: AppService, private spinner: NgxSpinnerService, private formBuilder: FormBuilder, private route: ActivatedRoute, private router: Router, private paymentReportService: PaymentReportService) { }
     
     payments: Object[] = [];
     filteredPayments: Object[] = [];
@@ -49,6 +51,14 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     totalValue: number = 0;
     totalValueString: string = "";
     
+    // CHART PARAMETERS ----------------------------------
+    dataPieChart: number[] = [];
+    labelPieChart: string[] = [];
+    colors: any[] = [
+      { 
+        backgroundColor:["#FF7360", "#6FC8CE", "#FAFFF2", "#FFFCC4", "#B9E8E0"] 
+      }];
+    // ---------------------------------------------------
     
     setTotalValue(){
         var self = this;
@@ -100,8 +110,10 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             && self.filterData(data, 'observacao', self.filterForm.get('txtNote').value, true)
             && self.filterData(data, 'entrada', self.filterForm.get('cmbInOut').value)
             && self.filterData(data, 'valor', self.appService.converteFloatMoeda(self.filterForm.get('txtValue').value))
-            && self.filterDataDate(data, 'data', self.startDateFilter, self.endDateFilter);;
+            && self.filterData(data, 'id', self.filterForm.get('txtId').value)
+            && self.filterDataDate(data, 'data', self.startDateFilter, self.endDateFilter);
         });
+        self.chartGenerator();
         self.setTotalValue();
         console.log(this.filteredPayments);
         console.log(this.payments);
@@ -232,7 +244,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     }
     
     newPayment(): Payment{
-        return {type: "", date: "", bill: "", part: "", value: 0, status: "", check: "", paymentForm: "", paymentType: "", note: "", budgetId: 1};
+        return {id: 0, type: "", date: "", bill: "", part: "", value: 0, status: "", check: "", paymentForm: "", paymentType: "", note: "", budgetId: 1};
     }
     
     setNewPayment(){
@@ -386,6 +398,72 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     }
     
     
+    // FUNÇÃO QUE PREENCHE PARÂMETROS PARA GERAÇÃO DO GRÁFICO ------------------------------------------------
+    chartGenerator(){
+        // Payments separated by IN and OUT --------------------------------------------------------------
+        var inPayments: Payment[] = this.transformFilteredPayments().filter((v)=>{ return v.status == 'Entrada'; });
+        var outPayments: Payment[] = outPayments = this.transformFilteredPayments().filter((v)=>{ return v.status == 'Saída'; });
+        // -----------------------------------------------------------------------------------------------
+        // Total value of IN and OUT Payments ------------------------------------------------------------
+        var totalValueIn: number = this.paymentReportService.getTotalValue(inPayments);
+        var totalValueOut: number = this.paymentReportService.getTotalValue(outPayments);
+        // -----------------------------------------------------------------------------------------------
+        // Types of IN and OUT Payments ------------------------------------------------------------------
+        var inTypes: string[] = this.paymentReportService.getPaymentTypes(inPayments);
+        var outTypes: string[] = this.paymentReportService.getPaymentTypes(outPayments);
+        // -----------------------------------------------------------------------------------------------
+        // Payments Separated by IN and OUT with total value ---------------------------------------------
+        var inPaymentsByType: PaymentByType[] = this.paymentReportService.joinPaymentsByType(inPayments, inTypes);
+        var outPaymentsByType: PaymentByType[] = this.paymentReportService.joinPaymentsByType(outPayments, outTypes);
+        // -----------------------------------------------------------------------------------------------
+        
+        
+        this.dataPieChart = [];
+        this.labelPieChart = [];
+        
+        outPaymentsByType.forEach((p, index)=>{
+            if(index < 5){
+                this.dataPieChart.push(this.appService.toFixed2(p.totalValue));
+                this.labelPieChart.push(p.type);
+            }
+            
+        })
+        
+    }
+    // -------------------------------------------------------------------------------------------------------
+    // FUNÇÃO QUE TRANSFORMA TIPO 'OBJECT' EM PAYMENT ---------------------------------------------
+    transformFilteredPayments(): Payment[]{
+        var payments: Payment[] = [];
+        this.filteredPayments.forEach((data)=>{
+            let p = {} as Payment;
+            p.id = data['id'];
+            p.bill = data['conta'];
+            p.budgetId = data['orcamento_id'];
+            p.check = data['numeroCheque'];
+            p.date = data['data'];
+            p.note = data['observacao'];
+            p.part = '0';
+            p.paymentForm = data['formaPagamento_formaPagamento'];
+            p.paymentType = data['tipoPagamento_tipoPagamento'];
+            p.status = data['entrada'] ? "Entrada" : "Saída";
+            p.type = "";
+            p.value = this.appService.converteMoedaFloat(data['valor']);
+            payments.push(p);
+        })
+        return payments;
+    }
+    // --------------------------------------------------------------------------------------------
+    
+    paymentReport(){
+        var payments: Payment[] = this.transformFilteredPayments();
+        
+        var datePipe = new DatePipe('en-US');
+        var startDate = datePipe.transform(this.startDateFilter, 'dd/MM/yyyy');
+        var endDate = datePipe.transform(this.endDateFilter, 'dd/MM/yyyy');
+        
+        this.paymentReportService.processPaymentReport(payments, startDate, endDate);
+    }
+    
   ngOnInit() {
       var self = this;
       setTimeout(()=> {self.spinner.show();}, 100)
@@ -438,7 +516,8 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         cmbPaymentForm: this.formBuilder.control('', []),
         txtCheckNumber: this.formBuilder.control('', []),
         cmbTypePayment: this.formBuilder.control('', []),
-        txtNote: this.formBuilder.control('', [])
+        txtNote: this.formBuilder.control('', []),
+        txtId: this.formBuilder.control('', [])
     });
       
       this.paymentTypeForm = this.formBuilder.group({
@@ -475,6 +554,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             
             console.log(self.startDateFilter);
             console.log(self.endDateFilter);
+            self.chartGenerator();
         }
     });
       
@@ -530,6 +610,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
           console.log(self.payments);
           self.setTotalValue();
           self.spinner.hide();
+          self.chartGenerator();
       });
   }
     

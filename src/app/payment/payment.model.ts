@@ -1,4 +1,5 @@
 export interface Payment{
+    id: number;
     type: string;
     date: string;
     bill: string;

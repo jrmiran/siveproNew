@@ -14,7 +14,7 @@
     <tbody>
         <tr *ngFor="let data of datas | filter:filter | paginate: {itemsPerPage: ipp, currentPage: p}; index as j" (click)="eventRow(j, data)">
 
-            <td [class.linhaSelecionada]="selectRow(j)" [class.budgetItemWithServiceOrder]="bncv2 && data['serviceOrderId'] != 0 && budgetTable" [class.lightGreen]="spc && data['approved'] == 1" *ngFor="let id of ids; index as i" [class.hide]="data['item'] == 'LINHA DE SEPARAÇÃO'">
+            <td [class.linhaSelecionada]="selectRow(j)" [class.budgetItemWithServiceOrder]="bncv2 && data['serviceOrderId'] != 0 && budgetTable" *ngFor="let id of ids; index as i" [class.hide]="data['item'] == 'LINHA DE SEPARAÇÃO'">
                 <span *ngIf="id != 'approved' && id != 'entrada'">
                     <!--<span *ngIf="id == 'budgetId'">
                         <a [routerLink]="['/budgetEdit']" [queryParams]="{id: data[id]}" class="btn"> {{data[id]}} </a>
@@ -25,8 +25,6 @@
                     </span>
 
                     <a [class.hide]="true" id="openEditBudget" [routerLink]="['/newBudgetV2']" [queryParams]="paramsEditBudget"> Próximo <i class="fa fa-arrow-right"></i></a>
-
-
 
                     <span *ngIf="rc &&  id == 'id'">
                         <a [routerLink]="['/editRequest']" [queryParams]="{id: data[id]}" class="btn"> {{data[id]}} </a>
@@ -131,7 +129,12 @@
                         <a class="btn" (click)="openEditMaterial(data[id])"> {{data[id]}} </a>
                     </span>
                     
-                    <span *ngIf="id != 'budgetId' && !((sotc || ostc) && id == 'id') && id != 'approved' && id != 'empreita' && id != 'pedra' && id != 'terminado' && !(csc && id == 'id') && !(pc && id=='id') && !((sotc || ostc) && id == 'orcamento_id') && !(soc && id=='id') && !(pc && id =='orcamento_id') && !(sorc && id == 'percentagePersonal') && !(sorc && id=='empreitaPayed') && !(nrc && id == 'valor') && !(rc &&  id == 'id') && !(erc && id == 'id' && !budgetSellection) && !((bncv2 && id == 'unitValue') || (bncv2 && id== 'totalValue')) && !(socv2 && id == 'totalValue') && !(sotcv2 && id == 'valorComDesconto') && !(sotcv2 && id == 'id') && !(sorcv2 && id == 'personalPercentage') && !(sorcv2 && id == 'productionPercentage') && !(sorcv2 && id == 'normalProduction') && !(sorcv2 && id == 'empreitaProduction') && !(sorcv2 && id == 'payedEmpreita') && !(sorcv2 && id == 'awardValue') && !(btc && id=='editOld') && !(btc && id=='value') && !(btc && id == 'status') && !(mc && id=='valor') && !(mc && id=='id')">
+                    <span *ngIf="spc && id=='approved'">
+                        <i *ngIf="data[id] == 1" class="fa fa-check" style="color: green"></i>
+                        <i *ngIf="data[id] == 0" class="fa fa-check" style="color: red"></i>
+                    </span>
+                    
+                    <span *ngIf="id != 'budgetId' && !((sotc || ostc) && id == 'id') && id != 'approved' && id != 'empreita' && id != 'pedra' && id != 'terminado' && !(csc && id == 'id') && !(pc && id=='id') && !((sotc || ostc) && id == 'orcamento_id') && !(soc && id=='id') && !(pc && id =='orcamento_id') && !(sorc && id == 'percentagePersonal') && !(sorc && id=='empreitaPayed') && !(nrc && id == 'valor') && !(rc &&  id == 'id') && !(erc && id == 'id' && !budgetSellection) && !((bncv2 && id == 'unitValue') || (bncv2 && id== 'totalValue')) && !(socv2 && id == 'totalValue') && !(sotcv2 && id == 'valorComDesconto') && !(sotcv2 && id == 'id') && !(sorcv2 && id == 'personalPercentage') && !(sorcv2 && id == 'productionPercentage') && !(sorcv2 && id == 'normalProduction') && !(sorcv2 && id == 'empreitaProduction') && !(sorcv2 && id == 'payedEmpreita') && !(sorcv2 && id == 'awardValue') && !(btc && id=='editOld') && !(btc && id=='value') && !(btc && id == 'status') && !(mc && id=='valor') && !(mc && id=='id') && !(spc && id=='approved')">
                         {{data[id]}}
                     </span>
 
@@ -156,7 +159,12 @@
             <!--<td class="linhaSeparacao" [class.hide]="data['item'] != 'LINHA DE SEPARAÇÃO'" colspan=9>
                 {{data['comodo']}}
             </td>-->
-
+            
+            <td *ngIf="spc">
+                <a *ngIf="data['approved'] == 0" class="btn" (click)="changeProjectStatus(true)"><i class="fa fa-check"></i></a>
+                <a *ngIf="data['approved'] == 1" class="btn" (click)="changeProjectStatus(false)"><i class="fa fa-close"></i></a>
+            </td>
+            
             <td *ngIf="bncv2" class="linhaSeparacao" [class.hide]="data['item'] != 'LINHA DE SEPARAÇÃO'" colspan=9>
                 {{data['ambient']}}
             </td>

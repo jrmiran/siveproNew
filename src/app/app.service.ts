@@ -521,9 +521,6 @@ export class AppService{
     }
     
     converteFloatMoedaAntigo(valor: any){
-        
-        
-        
       var inteiro = null, decimal = null, c = null, j = null;
       var aux = new Array();
       valor = ""+valor;
@@ -568,16 +565,14 @@ export class AppService{
       return valor;
 
    }
-
+    
     converteMoedaFloat(value: any): number{
          var valor = value.toString();
-         valor = valor.replace("R$ ","");
+         valor = value.replace("R$","");
          valor = valor.replace(".","");
          valor = valor.replace(",",".");
          return parseFloat(valor);
     }
-    
-    
     
     checkSessionStorage(localStorageName: string): boolean{
         if(window.sessionStorage.getItem(localStorageName) == "true"){
