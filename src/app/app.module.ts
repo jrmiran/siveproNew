@@ -138,7 +138,6 @@ registerLocaleData(localePt);
     CreatePdfComponent,
     AutoCompleteComponent,
     BudgetItemsComponent,
-    //SpinnerComponent,
     ClientRegisterComponent,
     ClientSearchComponent,
     SellerRegisterComponent,
