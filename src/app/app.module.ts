@@ -47,7 +47,7 @@ import {NgxMaskModule} from 'ngx-mask-2';
 import { TextMaskModule } from 'angular2-text-mask';
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { BudgetItemsComponent } from './budget/budget-items/budget-items.component';
-//import { SpinnerComponent } from './shared7/spinner/spinner.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {SpinnerService} from './shared/spinner.service';
 import { ClientRegisterComponent } from './clients/client-register/client-register.component';
@@ -138,6 +138,7 @@ registerLocaleData(localePt);
     CreatePdfComponent,
     AutoCompleteComponent,
     BudgetItemsComponent,
+    SpinnerComponent,
     ClientRegisterComponent,
     ClientSearchComponent,
     SellerRegisterComponent,
