@@ -12,6 +12,7 @@ export class ModalComponent implements OnInit {
     @Input() title: string = "";
     @Input() icon: string = "";
     @Input() enableOkButton: boolean = true;
+    @Input() outOnClick: boolean = true;
     @Output() okClick = new EventEmitter();
     
     okClicked() { 

@@ -9,6 +9,7 @@ import { BudgetNew } from '../budget/budget-new/budget-new.model';
 import { formin } from './forminSO';
 import { ParameterService } from '../shared/parameter.service';
 import {NgxSpinnerService} from 'ngx-spinner';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'sivp-service-order',

@@ -42,7 +42,7 @@
                                     <label> Assunto </label>
                                     <input type="text" class="form-control" formControlName="txtBill">
                                 </sivp-input-container>
-                                
+
                                 <sivp-input-container class="form-group col-sm-1 col-xs-12">
                                     <label> ID </label>
                                     <input type="text" class="form-control" formControlName="txtId">
@@ -113,12 +113,13 @@
                                 <li><a (click)="setNewPayment()" data-toggle="modal" class="btn pull-left" data-target="#modal-default" id="openModalButton"><i class="fa fa-money"></i> Novo Pagamento </a></li>
                                 <li><a data-toggle="modal" class="btn pull-left" data-target="#modal-formPayment"><i class="fa fa-money"></i> Novo Forma Pagamento </a></li>
                                 <li><a data-toggle="modal" class="btn pull-left" data-target="#modal-typePayment"><i class="fa fa-money"></i> Novo Tipo Pagamento </a></li>
+                                <li><a data-toggle="modal" class="btn pull-left" data-target="#modal-paymentReport"><i class="fa fa-pie-chart"></i> Relatório Geral </a></li>
                             </ul>
                         </div>
 
 
                     </div>
-                    <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.', 'Orçamento']" [datas]="filteredPayments" [ids]="['id','conta','data' , 'valor', 'entrada', 'numeroCheque', 'status', 'formaPagamento_formaPagamento', 'orcamento_id']" [pc]="self" [runClickRow]="true" [searchBar]="true">
+                    <sivp-table *ngIf="filteredPayments.length > 0" [headers]="['Id', 'Conta', 'Data', 'Valor', 'Entrada/Saída', 'Cheque', 'Status', 'Forma Pgto.', 'Orçamento']" [datas]="filteredPayments" [ids]="['id','conta','data' , 'valor', 'entrada', 'numeroCheque', 'status', 'formaPagamento_formaPagamento', 'orcamento_id']" [pc]="self" [runClickRow]="true" [searchBar]="true" [paginationId]="'pid1'" [sortTable]="true">
                     </sivp-table>
                 </div>
             </div>
@@ -130,13 +131,13 @@
                 <p> {{totalValueString}}</p>
             </span>
         </div>
-        
-        <canvas id="pieChart" style="height:250px" 
-                baseChart
-                [data]="dataPieChart" 
-                [labels]="labelPieChart"
-                [colors]="colors"
-                [chartType]="'pie'"></canvas>
+        <div class="row">
+            <sivp-expandable-box [title]="'Gráfico Pizza'" [icon]="'fa fa-pie-chart'" [size]="'col-md-12'">
+                <canvas id="pieChart" style="height:250px" baseChart [data]="dataPieChart" [labels]="labelPieChart" [colors]="colors" [chartType]="'pie'"></canvas>
+            </sivp-expandable-box>
+        </div>
+
+
     </section>
 </section>
 <a (click)="setNewPayment()" data-toggle="modal" class="btn pull-left" data-target="#modal-default" id="openModalPaymentButton"><i class="fa fa-money"></i> Novo Pagamento </a>
@@ -260,7 +261,7 @@
 
 <a data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-Edit" id="editPayment" [class.hide]="true"><i class="fa fa-plus"></i> Editar Pagamento </a>
 <!----------------------------------- MODAL EDIT --------------------------------------------------------------------->
-<div class="modal fade" id="modal-Edit" data-backdrop="static">
+<div class="modal fade" id="modal-Edit" data-backdrop="static" style="z-index: 9999">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -270,7 +271,6 @@
             </div>
             <div class="modal-body">
                 <form [formGroup]="paymentFormEdit" novalidate>
-
                     <div class="row">
                         <sivp-input-container class="form-group col-sm-6 col-xs-12">
                             <label> Data </label>
@@ -410,3 +410,46 @@
     <!-- /.modal-dialog -->
 </div>
 <!------------------------------------------ END MODAL TYPE PAYMENT ----------------------------------------------------------->
+<!-- MODAL PAYMENT REPORT ----------------------------------------------------------------------------------------------------->
+<form [formGroup]="generalReportForm">
+    <sivp-modal [id]="'modal-paymentReport'" [title]="'Relatório Geral'" [icon]="'fa fa-pie-chart'" (okClick)="processGeneralReport($event)" [enableOkButton]="generalReportForm.valid" [outOnClick]="false">
+        <div class="row">
+            <div class="col-md-6">
+                <label> De </label>
+                <select class="form-control" formControlName="cmbMonthStartReport">
+                    <option> </option>
+                    <option *ngFor="let m of months">{{m}}</option>
+                </select>
+                <select class="form-control" formControlName="cmbYearStartReport">
+                    <option> </option>
+                    <option *ngFor="let y of years">{{y}}</option>
+                </select>
+            </div>
+
+            <div class="col-md-6">
+                <label> Até </label>
+                <select class="form-control" formControlName="cmbMonthEndReport">
+                    <option> </option>
+                    <option *ngFor="let m of months">{{m}}</option>
+                </select>
+                <select class="form-control" formControlName="cmbYearEndReport">
+                    <option> </option>
+                    <option *ngFor="let y of years">{{y}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="row" *ngIf="releaseGeneralReport">
+            <canvas baseChart [datasets]="barChartDatasets" [labels]="barChartLabels" [chartType]="'bar'" [options]="barChartOptions" (chartClick)="barChartClick($event)"></canvas>
+        </div>
+    </sivp-modal>
+</form>
+<!----------------------------------------------------------------------------------------------------------------------------->
+<!-- REPORT PAYMENTS ---------------------------------------------------------------------------------------------------------->
+<a id="btnModalCategoryPayments" data-toggle="modal" class="btn pull-left hide" data-target="#modal-categoryPayments"><i class="fa fa-pie-chart"></i> Relatório Geral </a>
+<sivp-modal [id]="'modal-categoryPayments'" [title]="'Pagamento Por Categoria'" [icon]="'fa fa-usd'" [outOnClick]="true">
+    <div class="row">
+        <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Status', 'Tipo Pgto.', 'Orçamento']" [datas]="reportPayments" [ids]="['id','conta','data' , 'valor', 'status', 'tipoPagamento_tipoPagamento', 'orcamento_id']" [pc]="self" [runClickRow]="true" [searchBar]="true" [paginationId]="'pid2'" [sortTable]="true">
+        </sivp-table>
+    </div>
+</sivp-modal>
+<!----------------------------------------------------------------------------------------------------------------------------->

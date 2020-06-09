@@ -11,4 +11,5 @@ export interface Payment{
     paymentType: string;
     note: string;
     budgetId: number;
+    paymentCategory: string;
 }

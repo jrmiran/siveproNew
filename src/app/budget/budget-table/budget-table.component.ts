@@ -6,6 +6,10 @@ import {NgxSpinnerService} from 'ngx-spinner';
 import { ActivatedRoute, Router } from '@angular/router';
 import {ParameterService} from '../../shared/parameter.service';
 import {FormControl, FormBuilder, FormGroup, FormArray, Validators} from '@angular/forms';
+import {BudgetV2PdfService} from '../../budget-v2/budget-v2-pdf.service';
+import {ItemBudgetV2} from '../../budget-v2/item-budget.model';
+import {ItemByAmbient} from '../../budget-v2/item-by-ambient.model';
+import {BudgetV2} from '../../budget-v2/budget-v2.model';
 
 @Component({
   selector: 'sivp-budget-table',
@@ -14,7 +18,7 @@ import {FormControl, FormBuilder, FormGroup, FormArray, Validators} from '@angul
 })
 export class BudgetTableComponent implements OnInit {
 
-  constructor(private appService: AppService, public spinner: NgxSpinnerService, public route: ActivatedRoute, private parameterService: ParameterService, private formBuilder: FormBuilder) { }
+  constructor(private appService: AppService, public spinner: NgxSpinnerService, public route: ActivatedRoute, private parameterService: ParameterService, private formBuilder: FormBuilder, private budgetPdf: BudgetV2PdfService) { }
 
     buds: Object[] = [];
     filteredBuds: Object[] = [];
@@ -23,11 +27,111 @@ export class BudgetTableComponent implements OnInit {
     budgetTest: Object[];
     self = this;
     filterForm: FormGroup;
+    itemsBudget: ItemBudgetV2[] = [];
+    itemByAmbient: ItemByAmbient[] = [];
+    ambientsEdit: string[] = [];
+    budget = {} as BudgetV2;
+    store: any;
+    client: any;
+    seller: any;
+    itemsBudgetParam: any;
+    serviceOrders: any;
     
-    
-    openBudget(id: any){
-        alert("Open Budget " + id);
+    openBudget(data: any){
+        
+
+        this.itemsBudget = [];
+        this.itemByAmbient = [];
+        this.ambientsEdit = [];
+
+        
+        var self = this;
+        this.itemsBudgetParam = data['itemsBudget'];
+        this.budget = data['budget'];
+        this.store = data['store'];
+        this.client = data['client'];
+        this.seller = data['seller'];
+        this.serviceOrders = data['serviceOrders'];
+        this.assignItemsBudget().then((value)=>{
+            this.separeteItemByAmbient().then((data)=>{
+                self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller, 'open');
+            })
+        })
+        
     }
+    
+    separeteItemByAmbient(): Promise<any>{
+        
+        return new Promise((resolve, reject)=>{
+            
+            var self = this;
+            var ambients: string[] = [];
+            this.itemsBudget.forEach(function(data){
+               if(data.item != "LINHA DE SEPARAÇÃO"){
+                   if(ambients.indexOf(data.ambient) < 0){
+                       ambients.push(data.ambient);
+                   }
+               } 
+            });
+
+            self.itemByAmbient = [];
+            ambients.forEach(function(data){
+                var items = {} as ItemByAmbient;
+                items.ambientValue = 0;
+                items.ambient = data;
+                items.items = self.itemsBudget.filter((v) => {return v.ambient == data && v.item != "LINHA DE SEPARAÇÃO"});
+                items.items.forEach(function(v){
+                    items.ambientValue = self.appService.toFixed2(items.ambientValue + v.totalValue);
+                });
+                self.itemByAmbient.push(items);
+            })
+
+            self.ambientsEdit = ambients;
+
+            resolve("Promise executada com sucesso!!");
+            
+        })
+        
+        
+        
+    }
+    
+    // FUNÇÃO QUE ATRIBUI VALORES DE ITEMSBUDGET RECEBIDOS POR PARAMETRO ------------
+    assignItemsBudget(): Promise<any>{
+        return new Promise((resolve, reject)=>{
+            
+            
+        
+            var totalValue: number = 0;
+            this.itemsBudgetParam.forEach((v)=>{
+                var item = {} as ItemBudgetV2;
+                item.id = v['id'];
+                item.qtd = parseFloat(v['quantidade']);
+                item.cod = v['codigo'];
+                item.item = v['item'];
+                item.detail = v['detalhe'];
+                item.measure = v['medida'];
+                item.ambient = v['comodo'];
+                item.necessary = v['necessario'];
+                item.unitValue = this.appService.toFixed2(parseFloat(v['valorUnitario']));
+                item.totalValue = this.appService.toFixed2(parseFloat(v['valorTotal']));
+                item.discount = parseFloat(v['desconto']);
+                item.discountValue = this.appService.toFixed2(parseFloat(v['valorComDesconto']));
+                item.number = v['numero'];
+                item.serviceOrderId = this.serviceOrders.find((d)=>{return d['itemOrcamento_id'] == item.id}) ? parseFloat(this.serviceOrders.find((d)=>{return d['itemOrcamento_id'] == item.id})['id']) : 0;
+                totalValue = totalValue + item.totalValue;
+                this.itemsBudget.push(item);
+            });
+            //this.budget.totalValue = totalValue;
+            /*this.sortItems();
+            this.separeteItemByAmbient();
+            this.ambientsEdit.forEach((v) => {
+                this.addAmbient(v);
+            })*/
+            resolve('sucesso');
+        })
+    }
+    // ------------------------------------------------------------------------------------------------
     
     searchBudgetIndex(id: any){
         this.buds.forEach(function(data){
@@ -62,7 +166,6 @@ export class BudgetTableComponent implements OnInit {
                        data['approved'] =  data['approved']['data'][0];
                     });
                     self.spinner.hide();
-                    console.log(JSON.stringify(self.buds));
                     window.sessionStorage.setItem('budgetsTable', JSON.stringify(self.buds));
                     
                     self.filteredBuds = self.buds;
@@ -82,7 +185,6 @@ export class BudgetTableComponent implements OnInit {
         var total = 0;
         this.appService.postSearchBudgetTable({}).subscribe((data)=>{
             budgets = data[1];
-            console.log(budgets);
             
             for (let i = 2500; i < 3000; i++) {
                 total = 0;
@@ -92,7 +194,6 @@ export class BudgetTableComponent implements OnInit {
                         total = total + parseFloat(v['valorTotal'].replace(',','.'));
                     })
                    this.appService.postUpdateTotalValueBudget({budgetId: i, totalValue: this.appService.toFixed2(total)}).subscribe((value)=>{
-                        console.log(value);
                     })
                 }
                 
@@ -138,10 +239,8 @@ export class BudgetTableComponent implements OnInit {
         
         interval(1000).pipe(
             map((x) => {
-                console.log(this.n);
                 this.n ++;
             })
         );
-        console.log(this.n);
     }
 }

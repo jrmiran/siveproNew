@@ -91,21 +91,25 @@ export class ServiceOrderReportV2Component implements OnInit {
         
         this.employeeAwards.forEach((data) =>{
             data.executions.forEach((v) =>{
-                data.normalProduction = v.empreita ? data.normalProduction : data.normalProduction + v.executionValue;
+                data.normalProduction = v.empreita ? data.normalProduction : data.normalProduction + v.executionValue - v.stoneValue;
                 data.empreitaProduction = v.empreita? data.empreitaProduction + v.executionValue : data.empreitaProduction;
                 data.payedEmpreita = data.payedEmpreita + v.empreitaValue;
             })
             data.personalPercentage = data.normalProduction / 20000;
             data.productionPercentage = data.normalProduction / this.reportData.totalProduction;
             if(data.employeeFunction == 'Acabador Fixo'){
-                data.awardValue = this.appService.toFixed2(this.reportData.finishingValue * data.personalPercentage);
+                //data.awardValue = this.appService.toFixed2(this.reportData.finishingValue * data.personalPercentage);
+                data.awardValue = this.appService.toFixed2(250 * data.personalPercentage);
             } else if(data.employeeFunction == 'Acabador' || data.employeeFunction == 'Serrador'){
-                data.awardValue = this.appService.toFixed2(this.reportData.supportValue / 3);
+                //data.awardValue = this.appService.toFixed2(this.reportData.supportValue / 3);
+                //data.awardValue = this.appService.toFixed2((this.reportData.totalGoal / 80000) * 250) + this.appService.toFixed2(250 * data.personalPercentage);
+                data.awardValue = this.appService.toFixed2((this.reportData.totalGoal / 80000) * 250);
             }else if(data.employeeFunction == 'Ajudante Geral'){
-                data.awardValue = this.appService.toFixed2(this.reportData.auxiliaryValue / 2);
+                //data.awardValue = this.appService.toFixed2(this.reportData.auxiliaryValue / 2);
+                //data.awardValue = this.appService.toFixed2((this.reportData.totalGoal / 80000) * 200) + this.appService.toFixed2(200 * data.personalPercentage);
+                data.awardValue = this.appService.toFixed2((this.reportData.totalGoal / 80000) * 200);
             }
         })
-        
     }
     // --------------------------------------------------------------
     

@@ -31,6 +31,9 @@ import {BudgetParameterModel} from '../budget-v2/budget-parameter.model';
 import {ServiceOrderV2Component} from '../service-order-v2/service-order-v2.component';
 import {ServiceOrderTableV2Component} from '../service-order-v2/service-order-table-v2/service-order-table-v2.component';
 import {ServiceOrderReportV2Component} from '../service-order-report-v2/service-order-report-v2.component';
+import { DatePipe } from '@angular/common';
+
+
 
 @Component({
   selector: 'sivp-table',
@@ -96,6 +99,10 @@ export class TableComponent implements OnInit {
     @Input() addItemButton = false;
     @Input() enableAddItemButton = false;
     @Input() ambientsV2: string[] = [];
+    @Input() paginationId: string = 'general';
+    @Input() sortTable: boolean = false;
+    sorts: boolean[] = [];
+    datePipe = new DatePipe('en-US');
     /*********************** END VARIABLE INPUTS ***********************/
     
     
@@ -157,8 +164,39 @@ export class TableComponent implements OnInit {
     showServiceOrderModal(){
     }
     
-    openBudget(id: any){
-        this.btc.openBudget(id);
+    openBudget(data: any){
+        var self = this;
+        var budget = {} as BudgetV2;
+        var store: any;
+        var client: any;
+        var seller: any;
+        var itemsBudget: any;
+        var serviceOrders: any;
+        this.appService.postSearchBudget({budgetId: data['budgetId']}).subscribe(function(v){
+            budget.approved = v[1][0]['aprovado']['data'][0];
+            budget.clientId = v[1][0]['clienteEmpresaa_id'];
+            budget.date = v[1][0]['data'];
+            budget.discount = parseFloat(v[1][0]['desconto']);
+            budget.totalValue = parseFloat(v[1][0]['valorTotal']);
+            budget.freightValue = parseFloat(v[1][0]['frete'].replace(',','.'));
+            budget.discountValue = self.appService.discountValue((budget.totalValue - budget.freightValue), budget.discount);
+            budget.id = v[1][0]['id'];
+            budget.note = v[1][0]['observacao'];
+            budget.poloAd = v[1][0]['poload']['data'][0];
+            budget.retificated = v[1][0]['retificado'];
+            budget.sellerId = v[1][0]['vendedor_id'];
+            budget.storeId = v[1][0]['clienteJuridico_id'];
+            budget.status = v[1][0]['status'];
+            
+            
+            store = v[2][0];
+            client = v[3][0];
+            seller = v[4][0];
+            itemsBudget = v[5];
+            serviceOrders = v[6];
+            
+            self.btc.openBudget({budget: budget, store: store, client: client, seller: seller, itemsBudget: itemsBudget, serviceOrders: serviceOrders});
+        })
     }
     
     percentageToNumber(value: string){
@@ -378,7 +416,6 @@ export class TableComponent implements OnInit {
             budget.storeId = v[1][0]['clienteJuridico_id'];
             budget.status = v[1][0]['status'];
             
-            console.log(budget.discountValue);
             
             store = v[2][0];
             client = v[3][0];
@@ -419,9 +456,49 @@ export class TableComponent implements OnInit {
         this.mc.openEditMaterialModal(id);
     }
     
+    sortItems(index: number){
+        // ORDENA CRESCENTE ----------------------------------------------------------------
+        if(this.sorts[index]){
+            if(isNaN(this.datas[0][this.ids[index]])){
+                
+                if(this.pc && this.ids[index] == 'valor'){
+                    this.datas.sort((a,b) => this.appService.converteMoedaFloat(a[this.ids[index]]) > this.appService.converteMoedaFloat(b[this.ids[index]]) ? -1 : 1);
+                } else{
+                    this.datas.sort((a,b) => a[this.ids[index]].localeCompare(b[this.ids[index]]));
+                }
+            }else{
+                this.datas.sort((a,b) => a[this.ids[index]] > b[this.ids[index]] ? -1 : 1);
+            }
+        // --------------------------------------------------------------------------------
+        // ORDENA DECRESCENTE -------------------------------------------------------------
+        } else{
+            if(isNaN(this.datas[0][this.ids[index]])){
+                if(this.pc && this.ids[index] == 'valor'){
+                    this.datas.sort((a,b) => this.appService.converteMoedaFloat(a[this.ids[index]]) > this.appService.converteMoedaFloat(b[this.ids[index]]) ? 1 : -1);
+                } else{
+                    this.datas.sort((a,b) => a[this.ids[index]].localeCompare(b[this.ids[index]])*-1);
+                }
+                
+            }else{
+                this.datas.sort((a,b) => a[this.ids[index]] > b[this.ids[index]] ? 1 : -1);
+            }
+        }
+        // --------------------------------------------------------------------------------
+        this.sorts[index] = !this.sorts[index];
+    }
+    
+    showExecutions(index: any, data: any){
+        this.sotcv2.showExecutions(index, data);
+    }
+    
     ngOnInit() {
         var self = this;
         this.start.start();
+        
+        this.ids.forEach((data)=>{
+            this.sorts.push(true);    
+        })
+        
         this.orderForm = this.formBuilder.group({
             checkBoxOption: this.buildComodos()
         })

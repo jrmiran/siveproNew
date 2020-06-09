@@ -193,13 +193,13 @@ export class NewBudgetV2Component implements OnInit {
         this.spinner.show();
         
         self.budget.retificated = self.budget.retificated + 1;
-        console.log(this.budget);
+        this.budget.note = this.newBudgetForm.get('txtNote').value;
         var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"})};
         this.separeteItemByAmbient();
         
         this.appService.postInsertBudget(params).subscribe(function(data){
             self.budget.id = data[0]['insertId'];
-            self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller);
+            self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller, 'saveeeee');
             self.spinner.hide();
             self.router.navigate(['/budget']);
         });
@@ -213,12 +213,13 @@ export class NewBudgetV2Component implements OnInit {
         this.spinner.show();
         
         self.budget.retificated = self.budget.retificated + 1;
+        this.budget.note = this.newBudgetForm.get('txtNote').value;
         var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"}), newItemsBudget: this.newItemsBudget, oldItemsBudget: this.oldItemsBudget, serviceOrdersToRemove: this.serviceOrdersToRemove};
         
         this.separeteItemByAmbient();
         
         this.appService.postEditBudget(params).subscribe(function(data){
-            self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller);
+            self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller, 'save');
             self.spinner.hide();
             self.router.navigate(['/budget']);
         });
@@ -318,7 +319,7 @@ export class NewBudgetV2Component implements OnInit {
     // FUNÇÃO DO BOTÃO "GERAR PDF" DA EDIÇÃO DE ORÇAMENTO ---------------------------------------------
     generatePDF(){
         this.separeteItemByAmbient();
-        this.budgetPdf.generatePDF(this.itemByAmbient, this.budget, this.store, this.client, this.seller);
+        this.budgetPdf.generatePDF(this.itemByAmbient, this.budget, this.store, this.client, this.seller, 'save');
     }
     // ------------------------------------------------------------------------------------------------
     // FUNÇÃO DO BOTÃO "DUPLICAR ORÇAMENTO" DA EDIÇÃO DE ORÇAMENTO ------------------------------------

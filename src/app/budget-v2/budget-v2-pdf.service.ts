@@ -34,7 +34,7 @@ export class BudgetV2PdfService{
     rows: BudgetPdf[] = [];
     
     //public gerarPDF(items: BudgetAmbient[], mainBudget: BudgetModel, cpf: string) {
-    generatePDF(items: ItemByAmbient[], budget: BudgetV2, store: any, client: any, seller: any) {
+    generatePDF(items: ItemByAmbient[], budget: BudgetV2, store: any, client: any, seller: any, type: string) {
         console.log(items);
         var self = this;
         var doc = new jsPDF('p', 'pt', 'a4');
@@ -425,7 +425,12 @@ export class BudgetV2PdfService{
         }
         //**********************************************************BUDGET NOTE*******************************************************
         
-        doc.save('Orçamento '+ budget.id + ' Ed '+ budget.retificated + ' ' + store['nome'] + ' ('+  client['nome'] +').pdf'.replace(/[\/]/g,'%2F'));
+        if(type == 'save'){
+            doc.save('Orçamento '+ budget.id + ' Ed '+ budget.retificated + ' ' + store['nome'] + ' ('+  client['nome'] +').pdf'.replace(/[\/]/g,'%2F'));
+        }else if(type=='open'){
+            doc.output('dataurlnewwindow');
+        }
+        
         
     }
 }

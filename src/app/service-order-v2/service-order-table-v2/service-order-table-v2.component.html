@@ -6,11 +6,32 @@
         <p style="color: white"> {{spinnerText}} </p>
     </ngx-spinner>
     <section class="invoice">
-
-        <sivp-table [name]="'Ordem de Serviço'" [headers]="['Id', 'Orçamento','Loja', 'Cliente', 'Qtd','Item', 'Detalhe', 'Ambiente', 'Valor c/ Desc.']" [datas]="serviceOrders" [ids]="['id','orcamento','loja' ,'cliente', 'quantidade','item','detalhe','comodo','valorComDesconto']" [runClickRow]="false" [sotcv2]="self">
-        </sivp-table>
-
-
+        <div class="row">
+            <sivp-primary-box [title]="'Ordem de Serviço'" [icon]="'fa fa-wrench'" [size]="'col-md-12'">
+                <form [formGroup]="filterForm" style="z-index=9999" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label> Data Término </label>
+                            <input class="col-md-6" type="text" ngxDaterangepickerMd formControlName="txtDate" class="form-control" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" readonly="true" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>Funcionário</label>
+                            <ng-multiselect-dropdown *ngIf="releaseEmployeesSelection" [placeholder]="'Selecione Funcionários'" [data]="employeesList" formControlName="cbEmployees" [settings]="dropdownSettings" (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+                            </ng-multiselect-dropdown>
+                        </div>
+                        <div class="row" style="margin: 10px"></div>
+                        <div class="col-md-12 pull-right">
+                            <a class="btn btn-primary pull-right" (click)="filterServiceOrders()"><i class="fa fa-filter"></i> Filtrar</a>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <sivp-table [headers]="['Id', 'Orçamento','Loja', 'Cliente', 'Qtd','Item', 'Detalhe', 'Ambiente', 'Valor c/ Desc.', 'Executado']" [datas]="filteredServiceOrders" [ids]="['id','orcamento','loja' ,'cliente', 'quantidade','item','detalhe','comodo','valorComDesconto','executado']" [runClickRow]="false" [sotcv2]="self" [paginationId]="'pid4'">
+                            </sivp-table>
+                        </div>
+                    </div>
+                </form>
+            </sivp-primary-box>
+        </div>
 
     </section>
 </section>
@@ -26,7 +47,7 @@
                 <div *ngFor="let item of employeesForm.controls; let i = index" class="checkbox" formArrayName="cbEmployees">
                     <div class="row" [formGroupName]="i">
                         <div class="col-sm-4">
-                            <label><input type="checkbox" [formControlName]="'employeeName'" id = "{{idsInput[i]}}"> {{employees[i].name}}</label>
+                            <label><input type="checkbox" [formControlName]="'employeeName'" id="{{idsInput[i]}}"> {{employees[i].name}}</label>
                         </div>
                         <div class="col-sm-4">
                             <input type="text" class="form-control input-sm pull-right" placeholder="%" [formControlName]="'employeeShare'" [class.hide]="!showInputs[i]">
@@ -41,18 +62,25 @@
 
             <!--------------------- DATA ------------------------->
             <sivp-primary-box [title]="'Data'" [size]="'col-sm-6 col-xs-12'" [icon]="'fa fa-calendar'">
-                <sivp-date-picker formControlName="txtDate"></sivp-date-picker>
+                <sivp-date-picker formControlName="txtDate" #dPicker></sivp-date-picker>
             </sivp-primary-box>
             <!--------------------- DATA ------------------------->
 
             <!--------------------- CHECKBOX PEDRA ------------------------->
             <sivp-primary-box [title]="'Material'" [size]="'col-sm-6 col-xs-12'" [icon]="'fa fa-pencil'">
-                <label><input type="checkbox" [formControlName]="'cbStone'"> Mármore/Granito </label>
+                <label><input type="checkbox" [formControlName]="'cbStone'" id="cbStone"> Mármore/Granito </label>
                 <input [class.hide]="!showStoneValueInput" type="text" class="form-control input-sm pull-left" placeholder="Valor Mármore/Granito" [formControlName]="'stoneValue'" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ','}">
             </sivp-primary-box>
             <!--------------------- CHECKBOX PEDRA ------------------------->
         </div>
-
     </form>
 </sivp-modal>
 <!-- MODAL DE ALTERAÇÃO DE ORDEM DE SERVIÇO -->
+
+<!-- MODAL DE EXIBIÇÃO DE EXECUÇÕES DE ORDEM DE SERVIÇO ---->
+<button id="openModalExecution" [hidden]="true" data-toggle="modal" data-target="#modalExecution">Open Modal</button>
+<sivp-modal [id]="'modalExecution'" [icon]="'fa fa-wrench'" [title]="executionTitle" style="white-space: pre-line">
+    <sivp-table [headers]="['Id', 'Funcionário','Porcentagem', 'Data', 'Valor Pedra', 'Valor Empreita','Valor Execução']" [datas]="filteredExecutions" [ids]="['id', 'employeeName','employeeShare', 'endDate', 'stoneValue', 'empreitaValue','executionValue']" [runClickRow]="false" [paginationId]="'pid3'">
+    </sivp-table>
+</sivp-modal>
+<!-- MODAL DE EXIBIÇÃO DE EXECUÇÕES DE ORDEM DE SERVIÇO ---->

@@ -47,7 +47,7 @@ import {NgxMaskModule} from 'ngx-mask-2';
 import { TextMaskModule } from 'angular2-text-mask';
 import { CurrencyMaskModule } from "ng2-currency-mask";
 import { BudgetItemsComponent } from './budget/budget-items/budget-items.component';
-import { SpinnerComponent } from './shared/spinner/spinner.component';
+//import { SpinnerComponent } from './shared7/spinner/spinner.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {SpinnerService} from './shared/spinner.service';
 import { ClientRegisterComponent } from './clients/client-register/client-register.component';
@@ -104,6 +104,7 @@ import { PayrollTableComponent } from './payment/payroll-table/payroll-table.com
 import { EmployeeComponent } from './employee/employee.component';
 import { PaymentReportService } from './payment/payment-report.service';
 import { ChartsModule } from 'ng2-charts';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 registerLocaleData(localePt);
 
 
@@ -137,7 +138,7 @@ registerLocaleData(localePt);
     CreatePdfComponent,
     AutoCompleteComponent,
     BudgetItemsComponent,
-    SpinnerComponent,
+    //SpinnerComponent,
     ClientRegisterComponent,
     ClientSearchComponent,
     SellerRegisterComponent,
@@ -204,7 +205,8 @@ registerLocaleData(localePt);
     NgxDaterangepickerMd.forRoot(),
     MatExpansionModule,
     AutocompleteLibModule,
-    ChartsModule
+    ChartsModule,
+    NgMultiSelectDropDownModule.forRoot()
   ],
   providers: [
       AppService,

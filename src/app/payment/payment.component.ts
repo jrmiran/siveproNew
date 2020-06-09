@@ -27,6 +27,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     paymentFormEdit: FormGroup;
     paymentTypeForm: FormGroup;
     paymentFormForm: FormGroup;
+    generalReportForm: FormGroup;
     filterForm: FormGroup;
     status: string[] = ['', 'Pago', 'Não Pago', 'Cheque a Compensar'];
     paymentWay: string[] = ['', 'Cartão Crédito', 'Cartão Débito', 'Cheque', 'Dinheiro'];
@@ -50,15 +51,63 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     endDateFilter: Date;
     totalValue: number = 0;
     totalValueString: string = "";
-    
-    // CHART PARAMETERS ----------------------------------
+    months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    years = [2018,2019,2020,2021,2022,2023,2024];
+    paymentCategory: string[] = [];
+    reportPayments: any[] = [];
+    // PIE CHART PARAMETERS ----------------------------------
     dataPieChart: number[] = [];
     labelPieChart: string[] = [];
     colors: any[] = [
       { 
-        backgroundColor:["#FF7360", "#6FC8CE", "#FAFFF2", "#FFFCC4", "#B9E8E0"] 
+        backgroundColor:["#0A1172", "#016064", "#59788E", "#022D36", "#151E3D", "#00FF00", "FF0000"] 
       }];
     // ---------------------------------------------------
+    
+    // BAR CHART PARAMETERS ----------------------------------
+    barChartDatasets = [{data: [], label: 'Fixo', yAxisID: 'y-axis-1', backgroundColor: "#0A1172"}, 
+                {data: [], label: 'Variável', yAxisID: 'y-axis-1', backgroundColor: "#016064"},
+                {data: [], label: 'Pontual', yAxisID: 'y-axis-1', backgroundColor: "#59788E"},
+                {data: [], label: 'Funcionário', yAxisID: 'y-axis-1', backgroundColor: "#a4adb0"},
+                {data: [], label: 'Entrada', type: 'line', yAxisID: 'y-axis-2', backgroundColor: "#002E1A"},
+                {data: [], label: 'Saída', type: 'line', yAxisID: 'y-axis-2', backgroundColor: "#660000"} 
+               ];
+    barChartOptions =  {
+        responsive: true,
+        scales: {
+          yAxes: [
+            {
+              id: 'y-axis-1',
+              position: 'right',
+              ticks: {
+                beginAtZero: true
+              },
+                gridLines: {
+                display:false
+            }
+            },
+            {
+              id: 'y-axis-2',
+              position: 'left',
+              ticks: {
+                beginAtZero: true
+              },
+                gridLines: {
+                display:false
+            }
+            }
+          ]
+        },
+        plugins: {
+      datalabels: {
+        anchor: 'end',
+        align: 'end',
+      }
+    }
+    }
+    barChartLabels = [];
+    // -------------------------------------------------------
+    releaseGeneralReport: boolean = false;
     
     setTotalValue(){
         var self = this;
@@ -151,9 +200,9 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     }
     
     filterDataDate(data: any, param: string, startDate: any, endDate: any){
-        let date = data['data'].split('/');
-        var auxDate: Date = new Date(date[2], date[1]-1, date[0]);
-        
+        //let date = data['data'].split('/');
+        //var auxDate: Date = new Date(date[2], date[1]-1, date[0]);
+        var auxDate = data['data'];
         if(!startDate || !endDate){
             return true;
         }else{
@@ -244,7 +293,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     }
     
     newPayment(): Payment{
-        return {id: 0, type: "", date: "", bill: "", part: "", value: 0, status: "", check: "", paymentForm: "", paymentType: "", note: "", budgetId: 1};
+        return {id: 0, type: "", date: "", bill: "", part: "", value: 0, status: "", check: "", paymentForm: "", paymentType: "", note: "", budgetId: 1, paymentCategory: ''};
     }
     
     setNewPayment(){
@@ -357,6 +406,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     }
     
     
+    
     addNewPaymentForm(){
         this.appService.postInsertPaymentForm({query: "'" + this.paymentFormForm.get('txtPaymentForm').value + "'"}).subscribe(function(data){
              console.log(data);
@@ -397,12 +447,133 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         document.getElementById("editPayment").click();
     }
     
+    barChartClick(e: any){
+        var period = e.active[0]['_chart'].getElementAtEvent(e.event)[0]['_view']['datasetLabel'] + " " + e.active[0]['_chart'].getElementAtEvent(e.event)[0]['_view']['label'];
+        var parameters = period.split(" ");
+        var startDate = new Date(parseFloat(parameters[2]), this.months.indexOf(parameters[1]), 1);
+        var endDate = new Date(parseFloat(parameters[2]), this.months.indexOf(parameters[1]) + 1, 0);
+        var type = parameters[0];
+        
+        var payments = this.payments.filter((data)=>{
+            return this.filterDataDate(data, 'data', startDate, endDate) && data['categoria'] == type && !data['entrada'];
+        });
+        
+        this.reportPayments = payments;
+        document.getElementById('btnModalCategoryPayments').click();
+    }
+    
+    processGeneralReportPromise(): Promise<any>{
+        return new Promise((resolve, reject)=>{
+            var self = this;
+
+            var fixValue: number[] = [];
+            var variableValue: number[] = [];
+            var pontualValue: number[] = [];
+            var employeeValue: number[] = [];
+            var monthRevenueValue: number[] = [];
+            var monthCostValue: number[] = [];
+
+            var paymentCategories: string[] = [];
+
+            var monthStart: number = this.months.indexOf(this.generalReportForm.get('cmbMonthStartReport').value) + 1;
+            var yearStart: number = this.generalReportForm.get('cmbYearStartReport').value
+            var monthEnd: number = this.months.indexOf(this.generalReportForm.get('cmbMonthEndReport').value) + 1;
+            var yearEnd: number = this.generalReportForm.get('cmbYearEndReport').value
+
+            var startDate = new Date(yearStart, monthStart - 1, 1);
+            var endDate = new Date(yearEnd, monthEnd - 1, 1);
+            endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0);
+
+            var arrayDates= [];
+
+            var payments = this.payments.filter(function(data){
+                return self.filterDataDate(data, 'data', startDate, endDate);
+            });
+
+            var labels: string[] = [];
+
+            this.paymentCategory.forEach((data, index)=>{
+                if(paymentCategories.indexOf(data) <0){
+                    paymentCategories.push(data);
+                }
+            })
+            
+            
+            var loop = true;
+            var auxDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDay());
+            while(loop){
+                labels.push(this.months[auxDate.getMonth()] + " " + auxDate.getFullYear());
+                auxDate = new Date(auxDate.setMonth(auxDate.getMonth() + 1));
+                if(auxDate > endDate){
+                    loop = false;
+                }
+            }
+            this.barChartLabels = labels;
+            
+            var sDate = new Date(startDate.getFullYear(), startDate.getMonth() - 1, 1);
+            var eDate = new Date(sDate.getFullYear(), sDate.getMonth() + 2, 0);
+            
+            labels.forEach((data, i)=>{
+                arrayDates.push({startDate: sDate, endDate: eDate});
+                
+                sDate = new Date(sDate.setMonth(sDate.getMonth() + 1));
+                eDate = new Date(sDate.getFullYear(), sDate.getMonth() + 2, 0);
+            })
+            
+            console.log(arrayDates);
+
+
+            arrayDates.forEach((data, index)=>{
+                console.log(data['startDate']);
+                console.log(data['endDate']);
+                var p = payments.filter((value)=>{
+                    
+                    return this.filterDataDate(value, 'data', data['startDate'], data['endDate']);
+                })
+                console.log(payments);
+                console.log(p);
+                
+                // Payments separated by IN and OUT --------------------------------------------------------------
+                var inPayments: Payment[] = this.transformFilteredPayments(p).filter((v)=>{ return v.status == 'Entrada'; });
+                var outPayments: Payment[]  = this.transformFilteredPayments(p).filter((v)=>{ return v.status == 'Saída'; });
+                // -----------------------------------------------------------------------------------------------
+                paymentCategories.forEach((pc)=>{
+                    var payments = outPayments.filter((v)=>{return v.paymentCategory == pc});
+                    var totalValue: number = this.paymentReportService.getTotalValue(payments);
+                    if(pc == "Fixo"){ fixValue.push(this.appService.toFixed2(totalValue))}
+                    else if(pc == "Variável"){ variableValue.push(this.appService.toFixed2(totalValue))}
+                    else if(pc == "Pontual"){pontualValue.push(this.appService.toFixed2(totalValue))}
+                    else if(pc == "Funcionário"){employeeValue.push(this.appService.toFixed2(totalValue))}
+                })
+
+                monthCostValue.push(this.appService.toFixed2(this.paymentReportService.getTotalValue(outPayments)));
+                monthRevenueValue.push(this.appService.toFixed2(this.paymentReportService.getTotalValue(inPayments)));
+            })
+
+            this.barChartDatasets[0]['data'] = fixValue;
+            this.barChartDatasets[1]['data'] = variableValue;
+            this.barChartDatasets[2]['data'] = pontualValue;
+            this.barChartDatasets[3]['data'] = employeeValue;
+            this.barChartDatasets[4]['data'] = monthRevenueValue;
+            this.barChartDatasets[5]['data'] = monthCostValue;
+
+            console.log(this.barChartDatasets);
+
+            resolve("Executado com sucesso.");
+        })
+    }
+    
+      processGeneralReport(e){
+          this.processGeneralReportPromise().then((response)=>{
+              this.releaseGeneralReport = true;
+          })
+      }
     
     // FUNÇÃO QUE PREENCHE PARÂMETROS PARA GERAÇÃO DO GRÁFICO ------------------------------------------------
     chartGenerator(){
         // Payments separated by IN and OUT --------------------------------------------------------------
-        var inPayments: Payment[] = this.transformFilteredPayments().filter((v)=>{ return v.status == 'Entrada'; });
-        var outPayments: Payment[] = outPayments = this.transformFilteredPayments().filter((v)=>{ return v.status == 'Saída'; });
+        var inPayments: Payment[] = this.transformFilteredPayments(this.filteredPayments).filter((v)=>{ return v.status == 'Entrada'; });
+        var outPayments: Payment[]  = this.transformFilteredPayments(this.filteredPayments).filter((v)=>{ return v.status == 'Saída'; });
         // -----------------------------------------------------------------------------------------------
         // Total value of IN and OUT Payments ------------------------------------------------------------
         var totalValueIn: number = this.paymentReportService.getTotalValue(inPayments);
@@ -432,9 +603,9 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     }
     // -------------------------------------------------------------------------------------------------------
     // FUNÇÃO QUE TRANSFORMA TIPO 'OBJECT' EM PAYMENT ---------------------------------------------
-    transformFilteredPayments(): Payment[]{
+    transformFilteredPayments(filteredPayments: Object[]): Payment[]{
         var payments: Payment[] = [];
-        this.filteredPayments.forEach((data)=>{
+        filteredPayments.forEach((data)=>{
             let p = {} as Payment;
             p.id = data['id'];
             p.bill = data['conta'];
@@ -448,6 +619,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             p.status = data['entrada'] ? "Entrada" : "Saída";
             p.type = "";
             p.value = this.appService.converteMoedaFloat(data['valor']);
+            p.paymentCategory = this.paymentCategory[this.paymentType.indexOf(p.paymentType)];
             payments.push(p);
         })
         return payments;
@@ -455,7 +627,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     // --------------------------------------------------------------------------------------------
     
     paymentReport(){
-        var payments: Payment[] = this.transformFilteredPayments();
+        var payments: Payment[] = this.transformFilteredPayments(this.filteredPayments);
         
         var datePipe = new DatePipe('en-US');
         var startDate = datePipe.transform(this.startDateFilter, 'dd/MM/yyyy');
@@ -463,6 +635,8 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         
         this.paymentReportService.processPaymentReport(payments, startDate, endDate);
     }
+    
+    
     
   ngOnInit() {
       var self = this;
@@ -480,6 +654,14 @@ export class PaymentComponent implements OnInit, AfterViewInit {
           console.log(self.requestId);
       })
       console.log(self.requestId);
+      
+      this.generalReportForm = this.formBuilder.group({
+        cmbMonthStartReport: this.formBuilder.control('', [Validators.required]),
+        cmbYearStartReport: this.formBuilder.control('', [Validators.required]),
+        cmbMonthEndReport: this.formBuilder.control('', [Validators.required]),
+        cmbYearEndReport: this.formBuilder.control('', [Validators.required]),
+    })
+      
     this.paymentForm = this.formBuilder.group({
         rdInOut: this.formBuilder.control('', [Validators.required]),
         txtInstallment: this.formBuilder.control('', [Validators.required]),
@@ -547,7 +729,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             
             var startDateAux2 = startDateAux.split('/');
             var endDateAux2 = endDateAux.split('/');
-
+            
             
             self.startDateFilter = new Date(parseFloat(startDateAux2[2]), parseFloat(startDateAux2[1])-1, parseFloat(startDateAux2[0]));
             self.endDateFilter = new Date(parseFloat(endDateAux2[2]), parseFloat(endDateAux2[1])-1, parseFloat(endDateAux2[0]));
@@ -586,6 +768,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             self.paymentType = [""];
             data.map(function(value){
                 self.paymentType.push(value['tipoPagamento']);
+                self.paymentCategory.push(value['categoria']);
             });
         })
       
@@ -602,8 +785,8 @@ export class PaymentComponent implements OnInit, AfterViewInit {
                   value['entrada'] = false;
               }
               value['valor'] = self.appService.converteFloatMoeda(value['valor'].replace(',','.'));
-              value['data'] = datePipe.transform(new Date(date[2], date[1]-1, date[0]), 'dd/MM/yyyy');
-              //value['data'] = new Date(date[2], date[1]-1, date[0]);
+              //value['data'] = datePipe.transform(new Date(date[2], date[1]-1, date[0]), 'dd/MM/yyyy');
+              value['data'] = new Date(date[2], date[1]-1, date[0]);
               
           })
           self.filteredPayments = self.payments;
