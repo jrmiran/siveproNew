@@ -164,8 +164,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         });
         self.chartGenerator();
         self.setTotalValue();
-        console.log(this.filteredPayments);
-        console.log(this.payments);
     }
     
     filterData(data: any, param:string, value: any, contains?: boolean){
@@ -289,7 +287,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             }
         }
         this.enableOkFunction();
-        console.log(this.paymentsParts);
     }
     
     newPayment(): Payment{
@@ -308,11 +305,10 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         var params = {query: this.stringQuery()};
         this.appService.postInsertPayment(params).subscribe(function(data){
             var insertId: number = data['insertId'];
-            console.log(insertId);
-            console.log(self.paymentsParts);
             self.paymentsParts.forEach(function(value, index){
-                console.log(value);
-                self.filteredPayments.push({conta: value.bill, data: value.date, entrada: value.type, formaPagamento_formaPagamento: value.paymentForm, funcionario_id: null, id: insertId, numeroCheque: value.check, observacao: value.note, status: value.status, tipoPagamento_tipoPagamento: value.paymentType, valor: value.value, orcamento_id: value.budgetId});
+                var aux = value.date.split('/');
+                var auxDate = new Date(parseFloat(aux[2]), parseFloat(aux[1])-1, parseFloat(aux[0]));
+                self.filteredPayments.push({conta: value.bill, data: auxDate, entrada: value.type, formaPagamento_formaPagamento: value.paymentForm, funcionario_id: null, id: insertId, numeroCheque: value.check, observacao: value.note, status: value.status, tipoPagamento_tipoPagamento: value.paymentType, valor: value.value, orcamento_id: value.budgetId});
                 if(self.requestId > 0){
                     insertOnRequest = insertOnRequest + "(" + self.requestId + "," + insertId + ")";
                     if(index != self.paymentsParts.length - 1){
@@ -323,7 +319,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             });
             if(self.requestId > 0){
                 self.appService.postInsertPaymentOnRequest({query: insertOnRequest}).subscribe(function(v){
-                    console.log(v);
                 })
             }
             alert("Pagamentos Registrados!");
@@ -332,7 +327,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             if(self.requestId  > 0){
                 self.router.navigate(['request']);
             }
-        })   
+        })
     }
     
     submitEditPayment(){
@@ -375,12 +370,11 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     stringQuery(): string{
         var self = this;
         var query: string = "";
-        console.log(this.paymentsParts);
         this.paymentsParts.forEach(function(data, index){
             if(index == 0){
                 query = query + "(" + "'" + data.bill + "'" + "," + "'" + data.date + "'" + "," + data.type  + "," +  "'" + data.check + "'" + "," +  "'" + data.status +  "'" + "," +  "'" + data.value + "'" + "," +  "'" + data.paymentForm +  "'" + "," +  "'" + data.note +  "'" + "," +  "'" + data.paymentType + "'," + data.budgetId + ")";
             } else{
-                query = query + ", (" + "'" + data.bill + "'" + "," + "'" + data.date + "'" + "," + "'" + data.type +  "'" + "," +  "'" + data.check + "'" + "," +  "'" + data.status +  "'" + "," +  "'" + data.value + "'" + "," +  "'" + data.paymentForm +  "'" + "," +  "'" + data.note +  "'" + "," +  "'" + data.paymentType + "'," + data.budgetId + ")";
+                query = query + ", (" + "'" + data.bill + "'" + "," + "'" + data.date + "'" + "," + data.type  + "," +  "'" + data.check + "'" + "," +  "'" + data.status +  "'" + "," +  "'" + data.value + "'" + "," +  "'" + data.paymentForm +  "'" + "," +  "'" + data.note +  "'" + "," +  "'" + data.paymentType + "'," + data.budgetId + ")";
             }
         });
         return query;
@@ -395,7 +389,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         }));
         
         this.appService.postRemovePayment({paymentId: data['id']}).subscribe(function(value){
-            console.log(value);
             self.payments = self.payments.slice(0,i).concat(self.payments.slice(i+1,self.payments.length));
             self.filteredPayments = self.filteredPayments.slice(0,i).concat(self.filteredPayments.slice(i+1,self.filteredPayments.length));
             alert("Pagamento Removido");
@@ -409,20 +402,17 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     
     addNewPaymentForm(){
         this.appService.postInsertPaymentForm({query: "'" + this.paymentFormForm.get('txtPaymentForm').value + "'"}).subscribe(function(data){
-             console.log(data);
         });
     }
     
     addNewPaymentType(){
         this.appService.postInsertPaymentType({query: "'" + this.paymentTypeForm.get('txtPaymentType').value + "'"}).subscribe(function(data){
-             console.log(data);
         });
     }
     
     editPayment(id: any){
         var paymentEdit = this.payments.find(function(data){return data['id'] == id});
         this.paymentId = id;
-        console.log(paymentEdit);
         var inOut: string = "";
         if(paymentEdit['entrada']){
             inOut = "Entrada";
@@ -441,8 +431,9 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         this.paymentFormEdit.get('cmbInOutEdit').setValue(inOut);
         this.paymentFormEdit.get('txtBudgetEdit').setValue(paymentEdit['orcamento_id']);
         
-        let date: string[] = paymentEdit['data'].split('/');
-        this.dPickerEdit.setDate(new Date(parseFloat(date[2]), parseFloat(date[1])-1, parseFloat(date[0])));
+        //let date: string[] = paymentEdit['data'].split('/');
+        //this.dPickerEdit.setDate(new Date(parseFloat(date[2]), parseFloat(date[1])-1, parseFloat(date[0])));
+        this.dPickerEdit.setDate(paymentEdit['data']);
         
         document.getElementById("editPayment").click();
     }
@@ -520,18 +511,13 @@ export class PaymentComponent implements OnInit, AfterViewInit {
                 eDate = new Date(sDate.getFullYear(), sDate.getMonth() + 2, 0);
             })
             
-            console.log(arrayDates);
 
 
             arrayDates.forEach((data, index)=>{
-                console.log(data['startDate']);
-                console.log(data['endDate']);
                 var p = payments.filter((value)=>{
                     
                     return this.filterDataDate(value, 'data', data['startDate'], data['endDate']);
                 })
-                console.log(payments);
-                console.log(p);
                 
                 // Payments separated by IN and OUT --------------------------------------------------------------
                 var inPayments: Payment[] = this.transformFilteredPayments(p).filter((v)=>{ return v.status == 'Entrada'; });
@@ -557,7 +543,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             this.barChartDatasets[4]['data'] = monthRevenueValue;
             this.barChartDatasets[5]['data'] = monthCostValue;
 
-            console.log(this.barChartDatasets);
 
             resolve("Executado com sucesso.");
         })
@@ -651,9 +636,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
               self.requestId = 0;
           }
 
-          console.log(self.requestId);
       })
-      console.log(self.requestId);
       
       this.generalReportForm = this.formBuilder.group({
         cmbMonthStartReport: this.formBuilder.control('', [Validators.required]),
@@ -733,9 +716,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             
             self.startDateFilter = new Date(parseFloat(startDateAux2[2]), parseFloat(startDateAux2[1])-1, parseFloat(startDateAux2[0]));
             self.endDateFilter = new Date(parseFloat(endDateAux2[2]), parseFloat(endDateAux2[1])-1, parseFloat(endDateAux2[0]));
-            
-            console.log(self.startDateFilter);
-            console.log(self.endDateFilter);
+
             self.chartGenerator();
         }
     });
@@ -749,14 +730,12 @@ export class PaymentComponent implements OnInit, AfterViewInit {
                         self.paymentsParts.push(self.newPayment());
                     }
                     self.showForm = true;
-                    console.log(self.paymentsParts);
                     self.enableOkFunction();
                 }, 500);
             }
         });
       
         self.appService.postSearchPaymentForm().subscribe(function(data){
-            console.log(data);
             self.paymentWay = [""];
             data.map(function(value){
                 self.paymentWay.push(value['formaPagamento']);
@@ -764,7 +743,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         })
       
       self.appService.postSearchPaymentType().subscribe(function(data){
-            console.log(data);
             self.paymentType = [""];
             data.map(function(value){
                 self.paymentType.push(value['tipoPagamento']);
@@ -790,7 +768,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
               
           })
           self.filteredPayments = self.payments;
-          console.log(self.payments);
           self.setTotalValue();
           self.spinner.hide();
           self.chartGenerator();
