@@ -46,7 +46,7 @@
                 <sivp-primary-box *ngIf="budgetsStore.length > 0" [size]="'col-sm-12 col-xs-12'" [title]="'Seleção de Orçamentos'">
                     <div class="row">
                         <div class="form-group col-sm-12 col-xs-12">
-                            <sivp-table [headers]="['Orçamento', 'Cliente','Valor', 'Desconto', 'Vendedor']" [datas]="budgetsStore" [ids]="['id','nomeCliente','valorTotal','desconto', 'nomeVendedor']" [nrc]="self" [searchBar]="'true'" [ipp]="5" [runClickRow]="false">
+                            <sivp-table [headers]="['Orçamento', 'Cliente','Valor', 'Desconto', 'Vendedor']" [datas]="budgetsStore" [ids]="['id','nomeCliente','valorTotal','desconto', 'nomeVendedor']" [nrc]="self" [searchBar]="'true'" [ipp]="5" [runClickRow]="false" [paginationId]="'1'">
                             </sivp-table>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                 <sivp-primary-box *ngIf="newRequestBudgets.length > 0" [size]="'col-sm-12 col-xs-12'" [title]="'Items Orçamentos'">
                     <div class="row">
                         <div class="form-group col-sm-12 col-xs-12">
-                            <sivp-request-table [headers]="headerTable" [datas]="newRequestBudgets" [idItemBudget]="idItemBudget" [nrc]="self"></sivp-request-table>
+                            <sivp-request-table [headers]="headerTable" [datas]="newRequestBudgets" [idItemBudget]="idItemBudget" [nrc]="self" [paginationId]="'2'"></sivp-request-table>
                             <div class="pull-right">
                                 <p><b>Valor do Pedido: </b> {{appService.converteFloatMoeda(requestValue)}} </p>
                             </div>

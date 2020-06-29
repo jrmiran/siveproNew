@@ -308,7 +308,8 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             self.paymentsParts.forEach(function(value, index){
                 var aux = value.date.split('/');
                 var auxDate = new Date(parseFloat(aux[2]), parseFloat(aux[1])-1, parseFloat(aux[0]));
-                self.filteredPayments.push({conta: value.bill, data: auxDate, entrada: value.type, formaPagamento_formaPagamento: value.paymentForm, funcionario_id: null, id: insertId, numeroCheque: value.check, observacao: value.note, status: value.status, tipoPagamento_tipoPagamento: value.paymentType, valor: value.value, orcamento_id: value.budgetId});
+                //self.filteredPayments.push({conta: value.bill, data: auxDate, entrada: value.type, formaPagamento_formaPagamento: value.paymentForm, funcionario_id: null, id: insertId, numeroCheque: value.check, observacao: value.note, status: value.status, tipoPagamento_tipoPagamento: value.paymentType, valor: value.value, orcamento_id: value.budgetId});
+                self.payments.push({conta: value.bill, data: auxDate, entrada: value.type, formaPagamento_formaPagamento: value.paymentForm, funcionario_id: null, id: insertId, numeroCheque: value.check, observacao: value.note, status: value.status, tipoPagamento_tipoPagamento: value.paymentType, valor: "R$ " + value.value.toString().replace('.',','), orcamento_id: value.budgetId});
                 if(self.requestId > 0){
                     insertOnRequest = insertOnRequest + "(" + self.requestId + "," + insertId + ")";
                     if(index != self.paymentsParts.length - 1){
@@ -353,7 +354,8 @@ export class PaymentComponent implements OnInit, AfterViewInit {
                 inOut = false;
             }
             payment['conta'] = self.paymentFormEdit.get('txtBillEdit').value;
-            payment['data'] = self.paymentFormEdit.get('txtDateEdit').value;
+            var auxDate  = self.paymentFormEdit.get('txtDateEdit').value.split('/');
+            payment['data'] = new Date(parseFloat(auxDate[2]), parseFloat(auxDate[1])-1, parseFloat(auxDate[0]));
             payment['numeroCheque'] = self.paymentFormEdit.get('txtCheckNumberEdit').value;
             payment['status'] = self.paymentFormEdit.get('cmbStatusEdit').value;
             payment['valor'] = self.paymentFormEdit.get('txtValueEdit').value;

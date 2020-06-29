@@ -17,6 +17,7 @@ export class RequestTableComponent implements OnInit {
     @Input() idItemBudget: string[];
     @Input() nrc: NewRequestComponent;
     @Input() erc: NewRequestComponent;
+    @Input() paginationId: string = 'general';
     
     deleteItemBudget(budgetId: any, itemId: any){
         if(this.nrc){

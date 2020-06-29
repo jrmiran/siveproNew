@@ -44,7 +44,7 @@
             <sivp-expandable-box [size]="'col-sm-12 col-xs-12'" [title]="'Seleção de Orçamentos'" *ngIf="budgetsStore.length > 0">
                 <div class="row">
                     <div class="form-group col-sm-12 col-xs-12">
-                        <sivp-table [headers]="['Orçamento', 'Cliente','Valor', 'Desconto', 'Vendedor']" [datas]="budgetsStore" [ids]="['id','nomeCliente','valorTotal','desconto', 'nomeVendedor']" [erc]="self" [searchBar]="'true'" [runClickRow]="false" [budgetSellection]="true" [ipp]="5">
+                        <sivp-table [headers]="['Orçamento', 'Cliente','Valor', 'Desconto', 'Vendedor']" [datas]="budgetsStore" [ids]="['id','nomeCliente','valorTotal','desconto', 'nomeVendedor']" [erc]="self" [searchBar]="'true'" [runClickRow]="false" [budgetSellection]="true" [ipp]="5" [paginationId]="'1'">
                         </sivp-table>
                     </div>
                 </div>
@@ -65,7 +65,7 @@
             <div class="row" style="margin: 10px"></div>
             <!--------------------- START PAYMENT TABLE -------------------->
             <sivp-expandable-box [size]="'col-sm-12'" [icon]="'fa fa-usd'" [title]="'Pagamentos'">
-                <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="payments" [ids]="['id','conta','data' , 'valor', 'numeroCheque', 'status', 'formaPagamento_formaPagamento']" [runClickRow]="true" [searchBar]="false"  [erc]="self" [showPagination]="false"></sivp-table>
+                <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="payments" [ids]="['id','conta','data' , 'valor', 'numeroCheque', 'status', 'formaPagamento_formaPagamento']" [runClickRow]="true" [searchBar]="false"  [erc]="self" [showPagination]="false" [paginationId]="'2'"></sivp-table>
                 <div class="pull-right">
                     <p><b>Valor dos Pagamentos: </b> {{totalValuePayments}} </p>
                     <p style="color: green"><b>Valor Pago: </b> {{appService.converteFloatMoeda(totalValuePayed)}} </p>
