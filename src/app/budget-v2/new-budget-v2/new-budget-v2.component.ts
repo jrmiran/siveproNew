@@ -199,7 +199,7 @@ export class NewBudgetV2Component implements OnInit {
         
         this.appService.postInsertBudget(params).subscribe(function(data){
             self.budget.id = data[0]['insertId'];
-            self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller, 'saveeeee');
+            self.budgetPdf.generatePDF(self.itemByAmbient, self.budget, self.store, self.client, self.seller, 'save');
             self.spinner.hide();
             self.router.navigate(['/budget']);
         });
