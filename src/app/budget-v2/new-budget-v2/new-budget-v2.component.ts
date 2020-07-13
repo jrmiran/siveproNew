@@ -81,6 +81,8 @@ export class NewBudgetV2Component implements OnInit {
             self.budget.discountValue = self.appService.toFixed2(self.budget.discountValue + item.discountValue);
         });
         self.sortItems();
+        
+        console.log(this.newItemsBudget);
     }
     // -------------------------------------------------------------------------------------------------
     // FUNÇÃO DO BOTÃO NA TABELA DE ITENS QUE REMOVE UM ITEM AO ORÇAMENTO ----------------------------
@@ -91,7 +93,9 @@ export class NewBudgetV2Component implements OnInit {
         
         this.itemsBudget = this.itemsBudget.slice(0,i).concat(this.itemsBudget.slice(i+1,this.itemsBudget.length));
         
-        this.newItemsBudget = this.newItemsBudget.filter((v)=>{v != this.selectedItemBudget});
+        console.log(this.selectedItemBudget);
+        console.log(this.newItemsBudget);
+        this.newItemsBudget = this.newItemsBudget.filter((v)=>{return v != this.selectedItemBudget});
         
         if(this.budgetType == "Edit"){
             this.oldItemsBudget.push(this.selectedItemBudget);
@@ -99,6 +103,10 @@ export class NewBudgetV2Component implements OnInit {
         if(this.selectedItemBudget.serviceOrderId != 0){
             this.serviceOrdersToRemove.push(this.selectedItemBudget.serviceOrderId);
         }    
+        
+        this.selectedItemBudget = undefined;
+        
+        console.log(this.newItemsBudget);
     }
     // -------------------------------------------------------------------------------------------------
     // FUNÇÃO CHAMADA PELA TABLE AO CLICAR NO BOTÃO DE EXCLUSÃO DE ITEM --------------------------------
@@ -179,7 +187,7 @@ export class NewBudgetV2Component implements OnInit {
     // ------------------------------------------------------------------------------------------------
     // FUNÇÃO DO BOTÃO 'APLICAR FRETE' QUE APLICA O VALOR DE FRETE AO ORÇAMENTO -----------------------
     applyFreight(){
-        this.budget.totalValue = this.budget.totalValue - this.freightValue;
+        this.budget.totalValue = this.budget.totalValue - this.budget.freightValue;
         this.freightValue = parseFloat(this.newBudgetForm.get('txtFreight').value);
         this.budget.freightValue = this.appService.toFixed2(this.freightValue);
         this.budget.totalValue = this.appService.toFixed2(this.budget.totalValue + this.freightValue);
@@ -214,7 +222,9 @@ export class NewBudgetV2Component implements OnInit {
         
         self.budget.retificated = self.budget.retificated + 1;
         this.budget.note = this.newBudgetForm.get('txtNote').value;
+        console.log(this.newItemsBudget);
         var params = {budget: this.budget, itemsBudget: this.itemsBudget.filter((v) => {return v.item != "LINHA DE SEPARAÇÃO"}), newItemsBudget: this.newItemsBudget, oldItemsBudget: this.oldItemsBudget, serviceOrdersToRemove: this.serviceOrdersToRemove};
+        
         
         this.separeteItemByAmbient();
         
