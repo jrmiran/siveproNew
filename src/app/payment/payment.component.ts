@@ -358,7 +358,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             payment['data'] = new Date(parseFloat(auxDate[2]), parseFloat(auxDate[1])-1, parseFloat(auxDate[0]));
             payment['numeroCheque'] = self.paymentFormEdit.get('txtCheckNumberEdit').value;
             payment['status'] = self.paymentFormEdit.get('cmbStatusEdit').value;
-            payment['valor'] = self.paymentFormEdit.get('txtValueEdit').value;
+            payment['valor'] = self.appService.converteFloatMoeda(self.paymentFormEdit.get('txtValueEdit').value);
             payment['formaPagamento_formaPagamento'] = self.paymentFormEdit.get('cmbPaymentFormEdit').value;
             payment['observacao'] = self.paymentFormEdit.get('txtNoteEdit').value;
             payment['tipoPagamento_tipoPagamento'] = self.paymentFormEdit.get('cmbTypePaymentEdit').value;
@@ -383,6 +383,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     }
     
     removePayment(data: any){
+        console.log(data);
         var self = this;
         var i = 0;
         this.spinner.show();
@@ -392,7 +393,9 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         
         this.appService.postRemovePayment({paymentId: data['id']}).subscribe(function(value){
             self.payments = self.payments.slice(0,i).concat(self.payments.slice(i+1,self.payments.length));
-            self.filteredPayments = self.filteredPayments.slice(0,i).concat(self.filteredPayments.slice(i+1,self.filteredPayments.length));
+            //self.payments = self.payments.filter((v)=>{return v != data});
+            self.filteredPayments = self.filteredPayments.filter((v)=>{return v != data});
+            //self.filteredPayments = self.filteredPayments.slice(0,i).concat(self.filteredPayments.slice(i+1,self.filteredPayments.length));
             alert("Pagamento Removido");
             self.spinner.hide();
         });
