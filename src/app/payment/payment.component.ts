@@ -330,6 +330,41 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             }
         })
     }
+    editPayment(id: any){
+        
+        var paymentEdit = this.payments.find(function(data){return data['id'] == id});
+        
+        this.paymentId = id;
+        var inOut: string = "";
+        if(paymentEdit['entrada']){
+            inOut = "Entrada";
+        }else{
+            inOut = "Saída";
+        }
+        
+        var datePipe = new DatePipe('en-US');
+        
+        console.log(paymentEdit);
+        console.log(paymentEdit['data']);
+        console.log(this.paymentFormEdit.get('txtDateEdit').value);
+        this.paymentFormEdit.get('txtDateEdit').setValue(datePipe.transform(paymentEdit['data'], 'dd/MM/yyyy'));
+        this.paymentFormEdit.get('txtBillEdit').setValue(paymentEdit['conta']);
+        this.paymentFormEdit.get('txtValueEdit').setValue(parseFloat(paymentEdit['valor'].substring(3).replace('.','').replace(',','.')));
+        this.paymentFormEdit.get('cmbStatusEdit').setValue(paymentEdit['status']);
+        this.paymentFormEdit.get('cmbPaymentFormEdit').setValue(paymentEdit['formaPagamento_formaPagamento']);
+        this.paymentFormEdit.get('txtCheckNumberEdit').setValue(paymentEdit['numeroCheque']);
+        this.paymentFormEdit.get('cmbTypePaymentEdit').setValue(paymentEdit['tipoPagamento_tipoPagamento']);
+        this.paymentFormEdit.get('txtNoteEdit').setValue(paymentEdit['observacao']);
+        this.paymentFormEdit.get('cmbInOutEdit').setValue(inOut);
+        this.paymentFormEdit.get('txtBudgetEdit').setValue(paymentEdit['orcamento_id']);
+        
+        console.log(this.paymentFormEdit.get('txtDateEdit').value);
+        //let date: string[] = paymentEdit['data'].split('/');
+        //this.dPickerEdit.setDate(new Date(parseFloat(date[2]), parseFloat(date[1])-1, parseFloat(date[0])));
+        this.dPickerEdit.setDate(paymentEdit['data']);
+        
+        document.getElementById("editPayment").click();
+    }
     
     submitEditPayment(){
         var self = this;
@@ -339,7 +374,12 @@ export class PaymentComponent implements OnInit, AfterViewInit {
         if(this.paymentFormEdit.get('cmbInOutEdit').value == "Entrada"){
             inOut = 1;   
         }
+        
+        console.log(this.paymentFormEdit.get('txtDateEdit').value);
+        
         var params = {bill: this.paymentFormEdit.get('txtBillEdit').value, date: this.paymentFormEdit.get('txtDateEdit').value, check: this.paymentFormEdit.get('txtCheckNumberEdit').value, status: this.paymentFormEdit.get('cmbStatusEdit').value, value: this.paymentFormEdit.get('txtValueEdit').value, paymentForm: this.paymentFormEdit.get('cmbPaymentFormEdit').value, note: this.paymentFormEdit.get('txtNoteEdit').value, paymentType: this.paymentFormEdit.get('cmbTypePaymentEdit').value, id: this.paymentId, inOut: inOut, budgetId: self.paymentFormEdit.get('txtBudgetEdit').value};
+        
+        console.log(params);
         
         var payment = this.filteredPayments.find(function(data){
            return data['id'] == self.paymentId; 
@@ -353,6 +393,7 @@ export class PaymentComponent implements OnInit, AfterViewInit {
             }else{
                 inOut = false;
             }
+            
             payment['conta'] = self.paymentFormEdit.get('txtBillEdit').value;
             var auxDate  = self.paymentFormEdit.get('txtDateEdit').value.split('/');
             payment['data'] = new Date(parseFloat(auxDate[2]), parseFloat(auxDate[1])-1, parseFloat(auxDate[0]));
@@ -413,34 +454,6 @@ export class PaymentComponent implements OnInit, AfterViewInit {
     addNewPaymentType(){
         this.appService.postInsertPaymentType({query: "'" + this.paymentTypeForm.get('txtPaymentType').value + "'"}).subscribe(function(data){
         });
-    }
-    
-    editPayment(id: any){
-        var paymentEdit = this.payments.find(function(data){return data['id'] == id});
-        this.paymentId = id;
-        var inOut: string = "";
-        if(paymentEdit['entrada']){
-            inOut = "Entrada";
-        }else{
-            inOut = "Saída";
-        }
-        
-        this.paymentFormEdit.get('txtDateEdit').setValue(paymentEdit['data']);
-        this.paymentFormEdit.get('txtBillEdit').setValue(paymentEdit['conta']);
-        this.paymentFormEdit.get('txtValueEdit').setValue(parseFloat(paymentEdit['valor'].substring(3).replace('.','').replace(',','.')));
-        this.paymentFormEdit.get('cmbStatusEdit').setValue(paymentEdit['status']);
-        this.paymentFormEdit.get('cmbPaymentFormEdit').setValue(paymentEdit['formaPagamento_formaPagamento']);
-        this.paymentFormEdit.get('txtCheckNumberEdit').setValue(paymentEdit['numeroCheque']);
-        this.paymentFormEdit.get('cmbTypePaymentEdit').setValue(paymentEdit['tipoPagamento_tipoPagamento']);
-        this.paymentFormEdit.get('txtNoteEdit').setValue(paymentEdit['observacao']);
-        this.paymentFormEdit.get('cmbInOutEdit').setValue(inOut);
-        this.paymentFormEdit.get('txtBudgetEdit').setValue(paymentEdit['orcamento_id']);
-        
-        //let date: string[] = paymentEdit['data'].split('/');
-        //this.dPickerEdit.setDate(new Date(parseFloat(date[2]), parseFloat(date[1])-1, parseFloat(date[0])));
-        this.dPickerEdit.setDate(paymentEdit['data']);
-        
-        document.getElementById("editPayment").click();
     }
     
     barChartClick(e: any){
