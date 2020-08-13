@@ -1,0 +1,80 @@
+<section class="content-header">
+</section>
+
+<section class="content">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p> Por Favor Aguarde </p>
+    </ngx-spinner>
+    <section class="invoice">
+
+        <div class="row">
+            <form [formGroup]="newRequestForm" novalidate>
+                <h2 class="text-center display-4"> Novo Pedido </h2>
+                <!-------------------------------- START REQUEST DATA ------------------------------>
+                <sivp-primary-box [size]="'col-sm-12 col-xs-12'" [title]="'Dados do Pedido'">
+                    <div class="row">
+                        <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                            <label> Data Pedido</label>
+                            <br>
+                            <sivp-date-picker formControlName="txtDate" #dPicker></sivp-date-picker>
+                        </sivp-input-container>
+
+                        <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                            <label> Data Pagamento</label>
+                            <br>
+                            <sivp-date-picker formControlName="txtPaymentDate" #dPicker></sivp-date-picker>
+                        </sivp-input-container>
+
+                        <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                            <label> Loja </label>
+                            <ng-autocomplete [data]="stores" [searchKeyword]="keyword" (selected)='selectEvent($event)' (inputChanged)='onChangeSearch($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate" [formControlName]="'txtStore'">
+                            </ng-autocomplete>
+
+                            <ng-template #itemTemplate let-item>
+                                <a [innerHTML]="item.nome"></a>
+                            </ng-template>
+
+                            <ng-template #notFoundTemplate let-notFound>
+                                <div [innerHTML]="'Nao Encontrado'"></div>
+                            </ng-template>
+                        </sivp-input-container>
+                    </div>
+                </sivp-primary-box>
+                <!-------------------------------- END REQUEST DATA ------------------------------>
+                
+                <!-------------------------------- START BUDGET SELLECTION ------------------------------>
+                <sivp-primary-box *ngIf="budgetsStore.length > 0" [size]="'col-sm-12 col-xs-12'" [title]="'Seleção de Orçamentos'">
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-xs-12">
+                            <sivp-table [headers]="['Orçamento', 'Cliente','Valor', 'Desconto', 'Vendedor']" [datas]="budgetsStore" [ids]="['id','nomeCliente','valorTotal','desconto', 'nomeVendedor']" [nrc]="self" [searchBar]="'true'" [ipp]="5" [runClickRow]="false" [paginationId]="'1'">
+                            </sivp-table>
+                        </div>
+                    </div>
+                </sivp-primary-box>
+                <!-------------------------------- END BUDGET SELLECTION ------------------------------>
+                
+                <!-------------------------------- START BUDGET ITEMS SELLECTION ------------------------------>
+                <sivp-primary-box *ngIf="newRequestBudgets.length > 0" [size]="'col-sm-12 col-xs-12'" [title]="'Items Orçamentos'">
+                    <div class="row">
+                        <div class="form-group col-sm-12 col-xs-12">
+                            <sivp-request-table [headers]="headerTable" [datas]="newRequestBudgets" [idItemBudget]="idItemBudget" [nrc]="self" [paginationId]="'2'"></sivp-request-table>
+                            <div class="pull-right">
+                                <p><b>Valor do Pedido: </b> {{appService.converteFloatMoeda(requestValue)}} </p>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-12 col-xs-12">
+                            <textarea class="md-textarea form-control" rows="5" placeholder="Observação" formControlName="txtNote"></textarea>
+                        </div>
+
+                        <div class="col-sm-12 col-xs-12">
+                            <a (click)="processRequest()" class="btn btn-success pull-right"><i class="fa fa-file"></i> Processar Pedido
+                            </a>
+                        </div>
+                    </div>
+                </sivp-primary-box>
+                <!-------------------------------- END BUDGET ITEMS SELLECTION ------------------------------>
+            </form>
+        </div>
+    </section>
+</section>

@@ -1,0 +1,12 @@
+<section class="content-header">
+</section>
+
+<section class="content">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p> Caregando Clientes </p>
+    </ngx-spinner>
+    <section class="invoice">
+        <sivp-table [name]="'Clientes'" [headers]="['Id', 'Cliente', 'Loja']" [datas]="clients" [ids]="['id','nameClient','nameStore']" [csc]="self">
+        </sivp-table>
+    </section>
+</section>

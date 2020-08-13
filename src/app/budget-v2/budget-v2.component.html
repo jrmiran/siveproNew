@@ -1,0 +1,85 @@
+<section class="content-header">
+</section>
+<section class="content">
+    <section class="invoice">
+        <form [formGroup]="budgetForm">
+            
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header">
+                        <i class="fa fa-usd"></i> Novo Orçamento
+                    </h2>
+                </div>
+            </div>
+            <div class="row">
+                <!----------------------- DATA ------------------->
+                <sivp-primary-box [title]="'Data'" [size]="'col-xs-6'" [icon]="'fa fa-calendar'">
+                    <sivp-date-picker formControlName="txtDate"></sivp-date-picker>
+                </sivp-primary-box>
+                <!----------------------- DATA ------------------->
+                <!-------------- LISTA DE LOJAS ------------------------->
+                <sivp-primary-box [title]="'Loja'" [size]="'col-xs-6'" [icon]="'fa fa-cart'">
+                    <div class="row">
+                        <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                            <ng-autocomplete [data]="stores" [searchKeyword]="keywordStore" (selected)='selectEventStore($event)' (inputChanged)='onChangeSearch($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate" [formControlName]="'txtStore'">
+                            </ng-autocomplete>
+                            <ng-template #itemTemplate let-item>
+                                <a [innerHTML]="item.nome"></a>
+                            </ng-template>
+                            <ng-template #notFoundTemplate let-notFound>
+                                <div [innerHTML]="'Nao Encontrado'"></div>
+                            </ng-template>
+                        </sivp-input-container>
+                    </div>
+                </sivp-primary-box>
+                <!-------------- LISTA DE LOJAS ------------------------->
+                <!-------------- LISTA DE CLIENTES ------------------------->
+                <sivp-primary-box [title]="'Cliente'" [size]="'col-xs-6'" [icon]="'fa fa-user'">
+                    <div class="row">
+                        <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                            <ng-autocomplete [data]="clients" [searchKeyword]="keywordClient" (selected)='selectEventClient($event)' (inputChanged)='onChangeSearchClient($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate" [formControlName]="'txtClient'">
+                            </ng-autocomplete>
+
+                            <ng-template #itemTemplate let-item>
+                                <a [innerHTML]="item.nome"></a>
+                            </ng-template>
+
+                            <ng-template #notFoundTemplate let-notFound>
+                                <div [innerHTML]="'Nao Encontrado'"></div>
+                            </ng-template>
+                        </sivp-input-container>
+                    </div>
+                </sivp-primary-box>
+                <!-------------- LISTA DE CLIENTES ------------------------->
+                <!-------------- LISTA DE VENDEDORES ------------------------->
+                <sivp-primary-box [title]="'Vendedor'" [size]="'col-xs-6'" [icon]="'fa fa-user'">
+                    <div class="row">
+                        <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                            <ng-autocomplete [data]="sellers" [searchKeyword]="keywordSeller" (selected)='selectEventSeller($event)' (inputChanged)='onChangeSearchSeller($event)' (inputFocused)='onFocused($event)' [itemTemplate]="itemTemplate" [notFoundTemplate]="notFoundTemplate" [formControlName]="'txtSeller'">
+                            </ng-autocomplete>
+
+                            <ng-template #itemTemplate let-item>
+                                <a [innerHTML]="item.nome"></a>
+                            </ng-template>
+
+                            <ng-template #notFoundTemplate let-notFound>
+                                <div [innerHTML]="'Nao Encontrado'"></div>
+                            </ng-template>
+                        </sivp-input-container>
+                    </div>
+                </sivp-primary-box>
+                <!-------------- LISTA DE VENDEDORES ------------------------->
+            </div>
+            <!------------------------- BOTÃO PRÓXIMO -------------->
+            <div class="row">
+                <a class="btn btn-primary pull-right" [class.disabled]="!budgetForm.valid" [routerLink]="['/newBudgetV2']" [queryParams]="params"> Próximo <i class="fa fa-arrow-right"></i></a>
+                <!--<a class="btn btn-primary pull-right" [class.disabled]="!budgetForm.valid" (click)="nextStep()"> Próximo <i class="fa fa-arrow-right"></i></a>-->
+            </div>
+            <!------------------------- BOTÃO PRÓXIMO -------------->
+        </form>
+    </section>
+</section>
+
+<ngx-spinner [fullScreen]="true" bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
+    <p style="color:white;"> {{spinnerText}} </p>
+</ngx-spinner>

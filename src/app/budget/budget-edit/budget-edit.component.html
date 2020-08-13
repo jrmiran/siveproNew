@@ -1,0 +1,352 @@
+<section class="content-header"></section>
+
+<section class="content" *ngIf="loadPage">
+    <section class="invoice">
+        <!--<ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
+            <p style="color:white;"> Aguarde </p>
+        </ngx-spinner>-->
+
+
+        <!-- novalidade desabilita validação do browser para delegar a validação para a aplicação angular-->
+        <form [formGroup]="orderForm" novalidate>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header">
+                        <i class="fa fa-usd"></i> Orçamento
+
+
+                        <div class="btn-group pull-right" style="margin-bottom: 5px">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="btn pull-left" [routerLink]="['/serviceOrder']" [queryParams]="formout" [class.disabled]="!approved"><i class="fa fa-wrench" style="color: black"></i>Ordem de Serviço</a></li>
+                                <li><a class="btn pull-left" (click)="createNewPdf()"><i class="fa fa-file-pdf-o pull-left" style="color: red"></i>Gerar PDF</a></li>
+                                <li><a class="btn pull-left" (click)="budgetInsertionTest()"><i class="fa fa-copy" style="color: darkblue"></i>Duplicar</a></li>
+                                <li *ngIf="!approved"><a class="btn pull-left" (click)="changeBudgetStatus(true)"><i class="fa fa-check" style="color: green"></i>Aprovar</a></li>
+                                <li *ngIf="approved"><a class="btn pull-left" (click)="changeBudgetStatus(false)"><i class="fa fa-close" style="color: red"></i>Rejeitar</a></li>
+                            </ul>
+                        </div>
+
+
+                        <!--<a class="btn pull-right" (click)="budgetInsertionTest()"><i class="fa fa-copy"></i> Duplicar Orçamento</a>-->
+
+                    </h2>
+                    <div class="row">
+                        <div class="pull-right">
+                            <input type="checkbox" formControlName="chkPoloAd"> Polo Ad
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <label class="col-sm-2"> Orçamento: </label>
+                        <p class="col-sm-10"> {{mainBudget.number}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"> Cliente: </label>
+                        <p class="col-sm-10"> {{nameClient}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2" *ngIf="typeClient == 'LOJ'"> Terceiro: </label>
+                        <a class="col-sm-10 pull-left" [routerLink]="['/clientRegister']" [queryParams]="{id: clientId, store: nameClient}" style="{align: left}">{{nameThirdy}}</a>
+                        <!--<p class="col-xs-10" *ngIf="typeClient == 'LOJ'"> {{nameThirdy}} </p>-->
+                    </div>
+                    <div class="row">
+                        <label class="col-xs-2" *ngIf="typeClient == 'LOJ'"> Vendedor: </label>
+                        <p class="col-xs-10" *ngIf="typeClient == 'LOJ'"> {{nameVendor}} </p>
+                    </div>
+                    <div class="row">
+                        <label class="col-sm-2"> Data: </label>
+                        <p class="col-sm-10"> {{mainBudget.date}} </p>
+                    </div>
+                    <div class="row">
+                        <p class="col-sm-10" *ngIf="approved"><i class="fa fa-check" style="color: green"></i> Aprovado </p>
+                        <p class="col-sm-10" *ngIf="!approved"><i class="fa fa-close" style="color: red"></i> Rejeitado </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Itens:</h3>
+                        </div>
+                        <sivp-table [name]="''" [headers]="['Id', 'Item', 'Valor Unitario']" [datas]="items" [ids]="['id','descricao','valorUnitario']" [budgetEdit]="self" [buttonOption]="true" [check]="checks" [comodos]="comods" [enableButton]="enableButton" [runClickRow]="false">
+                        </sivp-table>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Novo Cômodo:</h3>
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" formControlName="inputPlace" value="ddd" onblur="this.value = ''">
+                            <span class="input-group-btn">
+                                <button (click)="addPlace(orderForm.value.inputPlace)" type="button" class="btn btn-info btn-flat">Add</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-home"></i>
+                            <h3 class="box-title">Cômodos</h3>
+                        </div>
+
+                        <div *ngFor="let item of cbo.controls; let i = index" class="checkbox" formArrayName="checkBoxOption" (click)="setValue()">
+                            <label>
+                                <input (click)="setValueCheckBox(i)" type="checkbox" [formControlName]="i"> {{checks[i]}}
+                            </label>
+
+                            <a *ngIf="i > 0" class="btn text-right" (click)="removePlace2(i)">
+                                <i class="fa fa-trash"></i> Remover
+                            </a>
+                        </div>
+
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-xs-12" *ngIf="budgets.length > 0">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <i class="fa fa-pencil"></i>
+                            <h3 class="box-title"> Orçamento:</h3>
+                        </div>
+                        <sivp-table (keydown.enter)="onKeydown($event)" [name]="''" [headers]="['Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total']" [searchBar]="false" [datas]="budgets" [ids]="['qtd','cod', 'item', 'detalhe', 'medida', 'comodo', 'necessario', 'valorUnitario', 'valorTotal']" [budgetTable]="true" [ipp]="1000" [showPagination]="false" [budgetEdit]="self" [removeItemOption]="true" [ambients]="places">
+                        </sivp-table>
+                        <div class="row">
+                            <label class="col-sm-10 col-xs-12 text-right">Valor total: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(mainBudget.valorTotal)}}</p>
+                            <span *ngIf="mainBudget.discount > 0">
+                                <label class="col-sm-10 col-xs-12 text-right"> Desconto: </label>
+                                <p class="col-sm-2 col-xs-12"> {{mainBudget.discount}} %</p>
+                                <label class="col-sm-10 col-xs-12 text-right">Valor com Desconto: </label>
+                                <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(mainBudget.valorComDesconto)}} </p>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-xs-12" *ngIf="currentItem >= 0">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Itens:</h3>
+                        </div>
+
+                        <div class="row">
+                            <!--<label>
+                            <input (click)="setPedra()" type="checkbox"> Mármore/Granito
+                        </label>-->
+                            <a class="btn text-right" data-toggle="modal" data-target="#modal-default">
+                                <i class="fa fa-plus-square"></i> Adcionar Sub-Itens Mármore/Granito
+                            </a>
+                        </div>
+
+                        <div class="row">
+                            <sivp-input-container [label]="'Quantidade'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtQtd" placeholder="Qtd">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Necessário'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtNecessario" placeholder="Necessário">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Medida'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtMedida" placeholder="Medida">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Valor Unitário (R$)'" class="form-group col-sm-3 col-xs-12">
+                                <input (mousedown)="changeCurrentValue()" type="text" class="form-control" formControlName="txtValor" placeholder="Valor Unitário" currencyMask [(ngModel)]="value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                            </sivp-input-container>
+                        </div>
+
+                        <div class="row">
+                            <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
+                                <textarea class="md-textarea form-control" rows="5" placeholder="Descrição" formControlName="txtDetalhe"></textarea>
+                            </sivp-input-container>
+                        </div>
+
+                        <div class="row" *ngIf="pedraOption">
+                            <sivp-input-container [label]="'cm'" class="form-group col-sm-2 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtMedida1" placeholder="cm">
+                            </sivp-input-container>
+
+                            <div class="col-sm-1 col-xs-12">
+                                <p align="center">x</p>
+                            </div>
+
+                            <sivp-input-container [label]="'cm'" class="form-group col-sm-2 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtMedida2" placeholder="cm">
+                            </sivp-input-container>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a (click)="changeItem()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Alterar
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-xs-12" *ngIf="budgets.length > 0">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-pencil"></i> Complemento:</h3>
+                        </div>
+                    </div>
+                    <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
+                        <textarea class="md-textarea form-control" rows="5" placeholder="Observação" formControlName="txtObservacao"></textarea>
+                    </sivp-input-container>
+
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <sivp-input-container [label]="'desconto'" class="form-group pull-left">
+                                <input type="text" class="form-control" formControlName="txtDiscount" placeholder="Desconto (%)">
+                            </sivp-input-container>
+                        </div>
+                        <div class="col-xs-3">
+                            <a (click)="applyDiscount()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Aplicar Desconto </a>
+                        </div>
+                        <div class="col-xs-6">
+                            <a (click)="retifyBudget()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Alterar Orçamento
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <sivp-primary-box [size]="'col-xs-12'" [title]="'Finalizando Edição'" [icon]="'fa fa-cloud-download'">
+                    <div class="col-xs-12" style="height: 50px">
+                        <ngx-spinner [fullScreen]="false" bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
+                            <p style="color:white;"> Aguarde </p>
+                        </ngx-spinner>
+
+                        <div *ngIf="budgetEdited" class="alert alert-success alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <h4><i class="icon fa fa-check"></i> Sucesso!</h4>
+                            Orçamento {{mainBudget.number}} Editado Com Sucesso.
+                        </div>
+                    </div>
+                </sivp-primary-box>
+            </div>
+
+            <!----------------------------------- MODAL --------------------------------------------------------------------->
+            <div class="modal fade" id="modal-default" *ngIf="currentItem >=0">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <form [formGroup]="modalForm" novalidate>
+                                    <sivp-input-container [label]="'Qtd'" class="form-group col-sm-2 col-xs-12">
+                                        <label> Quantidade </label>
+                                        <input type="text" class="form-control" formControlName="qtdSubItem" value="ddd">
+                                    </sivp-input-container>
+
+                                    <sivp-input-container [label]="'Descrição'" class="form-group col-sm-2 col-xs-12">
+                                        <label> Unidade </label>
+                                        <input type="text" class="form-control" formControlName="unidadeSubItem" value="ddd">
+                                    </sivp-input-container>
+
+
+                                    <sivp-input-container [label]="'Descricao'" class="form-group col-sm-2 col-xs-12">
+                                        <label> Medida 1 </label>
+                                        <input type="text" class="form-control" formControlName="medida1SubItem" currencyMask [(ngModel)]="value2" [options]="{ prefix: '', thousands: '.', decimal: ',', precision: 3 }">
+                                    </sivp-input-container>
+
+                                    <!--<sivp-input-container [label]="'Descrição'" class="form-group col-sm-2 col-xs-12">
+                                        <label> Medida 1 </label>
+                                        <input type="text" class="form-control" formControlName="medida1SubItem" value="ddd">
+                                    </sivp-input-container>-->
+                                    <sivp-input-container [label]="'Descricao'" class="form-group col-sm-2 col-xs-12">
+                                        <label> Medida 2 </label>
+                                        <input type="text" class="form-control" formControlName="medida2SubItem" currencyMask [(ngModel)]="value3" [options]="{ prefix: '', thousands: '.', decimal: ',', precision: 3 }">
+                                    </sivp-input-container>
+
+                                    <!--<sivp-input-container [label]="'Descrição'" class="form-group col-sm-2 col-xs-12">
+                                        <label> Medida 2 </label>
+                                        <input type="text" class="form-control" formControlName="medida2SubItem" value="ddd">
+                                    </sivp-input-container>-->
+
+                                    <sivp-input-container [label]="'Descrição'" class="form-group col-sm-4 col-xs-12">
+                                        <label> Descrição </label>
+                                        <input type="text" class="form-control" formControlName="descricaoSubItem" value="ddd">
+                                    </sivp-input-container>
+
+                                    <div class="col-xs-12" style="{margin-top: 5; margin-bottom: 5}">
+                                        <a (click)="addSubItem(currentItem)" class="btn btn-primary pull-right" [class.disabled]="!modalForm.valid"><i class="fa fa-pencil"></i> Add
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="row">
+                                <h4> Itens: </h4>
+                            </div>
+
+                            <ul *ngIf="getSubItems(currentItem).length > 0">
+                                <li *ngFor="let subItem of getSubItems(currentItem); let i = index">
+                                    {{subItem.qtd + "   " + subItem.unidade + "  " + subItem.medida1 + "x" + subItem.medida2 + "  " + subItem.descricao}}
+                                    <a class="btn" (click)="removeSubItem(i, currentItem)"><i class="fa fa-trash"></i> Remover </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!------------------------------------------ END MODAL ----------------------------------------------------------->
+
+            <button id="openModalChangeItem" [hidden]="true" data-toggle="modal" data-target="#modalChangeItem">Open Modal</button>
+            <!----------------------------------- MODAL CHANGE ITEM --------------------------------------------------------------------->
+            <div class="modal fade" id="modalChangeItem" *ngIf="currentItem >=0">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                            <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
+                        </div>
+                        <div class="modal-body">
+
+                            <sivp-table [name]="''" [headers]="['Id', 'Item', 'Valor Unitario']" [datas]="items" [ids]="['id','descricao','valorUnitario']" [budgetEdit]="self" [check]="checks" [comodos]="comods" [enableButton]="enableButton" [runClickRow]="true" [changeItemTable]="true">
+                            </sivp-table>
+
+                        </div>
+                        <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                            <button type="button" (click)="changeItem2()" class="btn btn-primary" data-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+            <!------------------------------------------ END MODAL CHANGE ITEM ----------------------------------------------------------->
+        </form>
+    </section>
+</section>

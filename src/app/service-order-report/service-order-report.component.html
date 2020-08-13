@@ -1,0 +1,258 @@
+<section class="content-header">
+</section>
+
+<section class="content" *ngIf="release">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p> Por Favor Aguarde </p>
+    </ngx-spinner>
+    <section class="invoice">
+
+        <div class="row">
+            <form [formGroup]="filterForm" novalidate>
+
+                <div class="col-sm-12 col-xs-12">
+                    <div class="box box-primary">
+                        <div class="box-header">
+                            <h3 class="box-title"><i class="fa fa-filter"></i> Filtros </h3>
+                        </div>
+                        <div class="row">
+                            <sivp-input-container class="form-group col-sm-4 col-xs-12">
+
+                                <label> Data Término</label>
+                                <a (click)="clearDateFilter()" class="btn"><i class="fa fa-trash"> Limpar </i></a>
+                                <input type="text" ngxDaterangepickerMd formControlName="txtDate" class="form-control" [locale]="{applyLabel: 'ok', format: 'DD-MM-YYYY'}" readonly="true" />
+                            </sivp-input-container>
+
+                            <div class="col-sm-8 col-xs-12" *ngIf="cbo">
+                                <div *ngFor="let item of cbo.controls; let i = index" class="checkbox form-group col-sm-6 col-xs-12" formArrayName="cbFunctions">
+                                    <label>
+                                        <input type="checkbox" [formControlName]="i" (click)="filterByFunction(i)"> {{functions[i]}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!--<a class="btn pull-right" (click)="checkAll()"> <i class="fa fa-check-square-o"></i> Marcar|Desmarcar Tudo</a>-->
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <div class="col-sm-12">
+
+                    <sivp-table *ngIf="employeeExecsFiltered.length > 0" [name]="''" [headers]="['Funcionario', '% Pessoal', 'Qtd OS', 'Produção Normal', 'Produção Empreita', 'Empreitas Pagas', '% Produção']" [datas]="employeeExecsFiltered" [ids]="['employee','percentagePersonal','qtdSo', 'normalProduction', 'empreitaProduction', 'empreitaPayed', 'percentageTotal']" [runClickRow]="false" [sorc]="main" [searchBar]="false" [ipp]="20" [percentageExecution]="employeeExecs.percentagePersonal">
+                    </sivp-table>
+
+                    <p class="text-center" *ngIf="employeeExecsFiltered.length <= 0"> <b>Selecione um intervalo de datas para exibição da tabela de execução </b></p>
+
+                </div>
+
+
+            </form>
+        </div>
+
+        <mat-accordion *ngIf="employeeExecsFiltered.length > 0">
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h4 class="box-title"><i class="fa fa-pie-chart"></i> Visão Geral </h4>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <!-- COLOR BOX -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-blue">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">PRODUÇÃO TOTAL</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(amountSo)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-blue">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">CUSTO GRANITO</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(amountStoneValue)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-blue">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">PRODUÇÃO EMPREITA</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(amountEmpreitaProduction)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-blue">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">PAGAMENTO EMPREITA</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(amountEmpreitaValue)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-green">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">TOTAL META</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(goalAmount)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div *ngIf="privilege" class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-green">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">TOTAL PREMIAÇÃO</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(awardAmount)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div *ngIf="privilege" class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-green">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">PREMIAÇÃO (3%)</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(award)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!---------------------------------------------- START VALORES COMISSÕES  ------------------------------------------->
+                        <!-- COLOR BOX -->
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-red">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">COMISSÃO GERENTE DE VENDAS</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(serviceOrderAward.salesManager)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div *ngIf="privilege" class="col-md-6 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-red">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">GERENTE DE PRODUÇÃO</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(serviceOrderAward.productionManager)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div *ngIf="privilege" class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-red">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">ACABADORES</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(serviceOrderAward.finishing)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div *ngIf="privilege" class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-red">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">SUPORTE</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(serviceOrderAward.suport)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- COLOR BOX -->
+                        <div *ngIf="privilege" class="col-md-4 col-sm-6 col-xs-12">
+                            <a href="">
+                                <div class="info-box bg-red">
+                                    <span class="info-box-icon"><i class="fa fa-usd"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">AUXILIARES</span>
+                                        <span class="info-box-number"> {{appService.converteFloatMoeda(serviceOrderAward.auxiliary)}}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <!---------------------------------------------- END VALORES COMISSÕES  ------------------------------------------->
+
+
+                    </div>
+                </div>
+                
+            </mat-expansion-panel>
+        </mat-accordion>
+
+        <mat-accordion *ngIf="employeeExecsFiltered.length > 0 && privilege">
+            <mat-expansion-panel style="margin-top: 20px">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h4 class="box-title"><i class="fa fa-usd"></i> Premiações </h4>
+                    </mat-panel-title>
+
+                </mat-expansion-panel-header>
+                <sivp-table [name]="''" [headers]="['Funcionario', 'Função' ,'% Pessoal', '% Produção', 'Empreitas Pagas', 'Valor Premiação']" [datas]="awardTable" [ids]="['employee','function','percentagePersonal', 'percentageTotal', 'empreitaPayed', 'awardValue']" [runClickRow]="false" [awardTable]= 'true' [sorc]="main" [searchBar]="false" [ipp]="20">
+                </sivp-table>
+            </mat-expansion-panel>
+        </mat-accordion>
+
+    </section>
+</section>

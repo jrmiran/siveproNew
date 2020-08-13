@@ -1,0 +1,103 @@
+<section class="content-header">
+</section>
+
+<section class="content">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p> Caregando Projetos </p>
+    </ngx-spinner>
+    
+    <section class="invoice">
+        <div class="row">
+            
+            <!-- FILTER -->
+            <sivp-primary-box [title]="'Filtro'" [icon]="'fa fa-filter'" [size]="'col-md-12'">
+                <form [formGroup]="filterForm">
+                    
+                    <div class="checkbox" formArrayName="cbStatus">
+                        <label><input type="checkbox" [formControlName]="'0'"> Aprovado </label>
+                        <br>
+                        <label><input type="checkbox" [formControlName]="'1'"> Rejeitado </label>
+                    </div>
+                    
+                </form>
+            </sivp-primary-box>
+            <!-- FILTER -->
+            <!-- TABLE OF DRAWS -->
+            <div class="col-sm-6 col-xs-12">
+                <div class="box box-primary">
+                    <div class="box-header">
+                        <h3 class="box-title"><i class="fa fa-pencil"></i> Projetos:</h3>
+                        <a class="btn btn-primary pull-right" (click)="exportPdf()" [class.disabled]="!currentDraw"> Gerar Desenho </a>
+                    </div>
+                    <sivp-table *ngIf="projects.length > 0" [headers]="['Id', 'Ambiente', 'Loja', 'Cliente', 'Orçamento', 'Status']" [datas]="filteredProjects" [ids]="['id','ambient','store','client', 'budget', 'approved']" [spc]="self" [runClickRow]="true"></sivp-table>
+                    <label *ngIf="projects.length <= 0">Não há projetos para este cliente ou orçamento</label>
+                </div>
+            </div>
+            <!-- END OF TABLE OF DRAWS -->
+
+
+            <!-- DIV CONTAINING THE SELECTED DRAW-->
+            <div class="col-sm-3 col-xs-12">
+                <label *ngIf="currentDraw"> Loja: </label>
+                <p *ngIf="currentDraw"> {{currentProject.store}} </p>
+                
+                <label *ngIf="currentDraw"> Cliente: </label>
+                <p *ngIf="currentDraw"> {{currentProject.client}} </p>
+            </div>
+                
+            <div class="col-sm-3 col-xs-12">
+                <label *ngIf="currentDraw"> Ambiente: </label>
+                <p *ngIf="currentDraw"> {{currentProject.ambient}} </p>
+                
+                <label *ngIf="currentDraw"> Orçamento: </label>
+                <p *ngIf="currentDraw"> {{currentProject.budget}} </p>
+            </div>
+                
+            <div class="col-sm-3 col-xs-12">
+                <label *ngIf="currentDraw"> Material: </label>
+                <p *ngIf="currentDraw"> {{currentProject.material}} </p>
+                
+                <label *ngIf="currentDraw" > Local: </label>
+                <p *ngIf="currentDraw"> {{currentProject.local}} </p>
+                
+            </div>
+            
+            <div class="col-sm-3 col-xs-12">
+                <a *ngIf="currentProject.approved == 0 && currentDraw" class="btn btn-success" (click)="changeProjectStatus(true)"><i class="fa fa-check"> Aprovar </i></a>
+                <a *ngIf="currentProject.approved == 1 && currentDraw" class="btn btn-danger"  (click)="changeProjectStatus(false)"><i class="fa fa-close"> Rejeitar </i></a>
+            </div>
+            <!-- END OF DIV CONTAINING THE SELECTED DRAW-->
+            
+            <!-- PROJECT DATA -->
+            <div class="col-sm-6 col-xs-12">
+                <a data-toggle="modal" data-target="#modal-default" class="btn">
+                    <img *ngIf="currentDraw" src="{{currentDraw}}" width="100%" height="100%" class="img-fluid">
+                </a>
+            </div>
+            <!-- END OF PROJECT DATA -->
+            
+            <!----------------------------------- MODAL --------------------------------------------------------------------->
+        <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#modal-default">Open Modal</button>
+        <div class="modal fade" id="modal-default">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                        <!--<h4 class="modal-title">{{budgets[currentItem].item}}</h4>-->
+                    </div>
+                    <div class="modal-body">
+                        <img *ngIf="currentDraw" src="{{currentDraw}}" width="100%" height="100%" class="img-fluid">
+                    </div>
+                    <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                        
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!------------------------------------------ END MODAL ----------------------------------------------------------->
+        </div>
+    </section>
+</section>

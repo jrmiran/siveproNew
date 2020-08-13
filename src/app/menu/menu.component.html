@@ -1,0 +1,76 @@
+<aside class="main-sidebar" style="position: fixed">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="./img/userIcon.png" class="img-circle" alt="User Image">
+                </div>
+                <div class="pull-left info">
+                    <p>Bem-vindo(a), {{userName}}</p>
+                </div>
+            </div>
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">NAVEGAÇÃO</li>
+                
+                    <!--<sivp-menu-item [name]="'Orçamento'" 
+                                    [subItems]="['Novo', 'Procurar', 'Editar', 'Itens']" 
+                                    [routers]="['/newBudget', '/budget', '/newBudget2', '/budgetItems']" 
+                                    class="sidebar-menu"></sivp-menu-item>-->
+                
+                    <sivp-menu-item [name]="'Orçamento'" 
+                                    [subItems]="['Novo', 'Procurar', 'Itens']" 
+                                    [routers]="['/budgetV2', '/budget', '/budgetItems']" 
+                                    class="sidebar-menu"></sivp-menu-item>
+                
+                    <!--<sivp-menu-item [name]="'Ordem de Serviço'" 
+                                    [subItems]="['Procurar', 'Editar', 'Relatório']" 
+                                    [routers]="['/serviceOrderTable', '/serviceOrderEdit', '/serviceOrderReport']" 
+                                    class="sidebar-menu"></sivp-menu-item>-->
+                
+                    <sivp-menu-item [name]="'Ordem de Serviço'" 
+                                    [subItems]="['Procurar', 'Relatório', 'OS Old', 'Relatório Old']" 
+                                    [routers]="['/serviceOrderTableV2','serviceOrderReportV2', '/serviceOrderTable', '/serviceOrderReport']" 
+                                    class="sidebar-menu"></sivp-menu-item>
+                    
+                    <sivp-menu-item [name]="'Pedido'" 
+                                    [subItems]="['Novo', 'Consultar']" 
+                                    [routers]="['newRequest', '/request']" 
+                                    class="sidebar-menu"></sivp-menu-item>
+               
+                    <sivp-menu-item [name]="'Projeto'" 
+                                    [subItems]="['Novo', 'Procurar']" 
+                                    [routers]="['/dragDrop', '/searchProject']" 
+                                    class="sidebar-menu"></sivp-menu-item>
+                
+                    <sivp-menu-item [name]="'Material'" 
+                                    [subItems]="['Material']" 
+                                    [routers]="['/materials']" 
+                                    class="sidebar-menu"></sivp-menu-item>
+                
+                    <sivp-menu-item [name]="'Cliente'" 
+                                    [subItems]="['Cadastrar', 'Procurar']" 
+                                    [routers]="['/clientRegister', '/clientSearch']" 
+                                    class="sidebar-menu"></sivp-menu-item>
+               
+                    <sivp-menu-item [name]="'Vendedor'" 
+                                    [subItems]="['Cadastrar', 'Procurar']" 
+                                    [routers]="['/sellerRegister', '/sellerSearch']" 
+                                    class="sidebar-menu"></sivp-menu-item>
+                
+                    <sivp-menu-item [name]="'Pagamentos'" 
+                                    [subItems]="['Consultar', 'Folha de Pagamento']" 
+                                    [routers]="['/payment', '/payroll']" 
+                                    class="sidebar-menu"
+                                    *ngIf="privilege || parameterService.privilege"></sivp-menu-item>
+
+                    <sivp-menu-item [name]="'Test Area'" 
+                                    [subItems]="['Service Order', 'Orçamento V2', 'Relatório OS', 'Valor Total Orçamento']" 
+                                    [routers]="['/serviceOrderTableV2', 'budgetV2', '/serviceOrderReportV2', '/editBudgetV2']" 
+                                    class="sidebar-menu"
+                                    *ngIf="administrator || parameterService.administrator"></sivp-menu-item>
+            </ul>
+
+    </section>
+</aside>

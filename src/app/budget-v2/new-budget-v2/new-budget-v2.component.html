@@ -1,0 +1,226 @@
+<section class="content-header">
+</section>
+<section class="content" *ngIf="release">
+    <section class="invoice">
+        <form [formGroup]="newBudgetForm">
+            <!----------------------- CABEÇALHO COM TÍTULO E INFORMAÇÕES DO ORÇAMENTO ------------------------->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2 class="page-header" *ngIf="budgetType=='New'">
+                        <i class="fa fa-usd"></i> Novo Orçamento
+                    </h2>
+
+                    <h2 class="page-header" *ngIf="budgetType=='Edit'">
+                        <i class="fa fa-pencil"></i> Edição de Orçamento
+                        <!-- DROPDOWN COM OPÇÕES DE EDIÇÃO DE ORÇAMENTO -->
+                        <div class="btn-group pull-right" style="margin-bottom: 5px">
+                            <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="btn pull-left" (click)="navigateServiceOrder()" [class.disabled]="budget.status != 'Aprovado'"><i class="fa fa-wrench" style="color: black"></i>Ordem de Serviço</a>
+                                    <a [class.hide]="true" id="serviceOrderButton" class="btn pull-left" [routerLink]="['/serviceOrderV2']" [queryParams]="serviceOrderParams" [class.disabled]="!budget.approved"><i class="fa fa-wrench" style="color: black"></i>Ordem de Serviço</a></li>
+                                <li><a class="btn pull-left" (click)="generatePDF()"><i class="fa fa-file-pdf-o pull-left" style="color: red"></i>Gerar PDF</a></li>
+                                <li><a class="btn pull-left" (click)="duplicateBudget()"><i class="fa fa-copy" style="color: darkblue"></i>Duplicar</a></li>
+
+                                <li *ngIf="budget.status != 'Aprovado'"><a class="btn pull-left" (click)="changeBudgetStatus('Aprovado')"><i class="fa fa-check" style="color: green"></i>Aprovar</a></li>
+                                <li *ngIf="budget.status != 'Rejeitado'"><a class="btn pull-left" (click)="changeBudgetStatus('Rejeitado')"><i class="fa fa-close" style="color: red"></i>Rejeitar</a></li>
+                                <li *ngIf="budget.status != 'Em Análise'"><a class="btn pull-left" (click)="changeBudgetStatus('Em Análise')"><i class="fa fa-hourglass-2" style="color: goldenrod"></i>Em Análise</a></li>
+                            </ul>
+                        </div>
+                        <!-- DROPDOWN COM OPÇÕES DE EDIÇÃO DE ORÇAMENTO -->
+                    </h2>
+
+                    <div class="row">
+                        <label class="col-xs-1" *ngIf="budgetType=='Edit'"> Id: </label>
+                        <p class="col-xs-11" *ngIf="budgetType=='Edit'"> {{budget.id}} </p>
+
+                        <label class="col-xs-1"> Cliente: </label>
+                        <p class="col-xs-11"> {{store.id}} - {{store.nome}} </p>
+
+                        <label class="col-xs-1"> Terceiro: </label>
+                        <p class="col-xs-11"> {{client.id}} - {{client.nome}} </p>
+
+                        <label class="col-xs-1"> Vendedor: </label>
+                        <p class="col-xs-11"> {{seller.id}} - {{seller.nome}} </p>
+
+                        <label class="col-xs-1"> Data: </label>
+                        <p class="col-xs-11"> {{budget.date}} </p>
+
+                        <label class="col-xs-1"> Edição: </label>
+                        <p class="col-xs-11"> {{budget.retificated}} </p>
+
+                        <div class="col-xs-12" *ngIf="budgetType == 'Edit'">
+                            <p class="col-sm-10" *ngIf="budget.status == 'Rejeitado'" style="color: red"><i class="fa fa-close"></i><b> {{budget.status}} </b></p>
+                            <p class="col-sm-10" *ngIf="budget.status == 'Aprovado'" style="color: green"><i class="fa fa-check"></i> <b> {{budget.status}} </b></p>
+                            <p class="col-sm-10" *ngIf="budget.status == 'Em Análise'" style="color: goldenrod"><i class="fa fa-hourglass-2"></i> <b> {{budget.status}} </b> </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!----------------------- CABEÇALHO COM TÍTULO E INFORMAÇÕES DO ORÇAMENTO ------------------------->
+
+            <!----------------------- LINHA COM TABELA DE ITENS E AMBIENTES ------------------------->
+            <div class="row">
+                <!-- TABELA COM ITENS -->
+                <sivp-primary-box [title]="'Itens'" [size]="'col-sm-6'" [icon]="'fa fa-pencil'">
+                    <sivp-table [name]="''" [headers]="['Id', 'Item', 'Valor Unitario']" [datas]="items" [ids]="['id','descricao','valorUnitario']" [bncv2]="main" [addItemButton]="true" [runClickRow]="false" [enableAddItemButton]="enableAddItem">
+                    </sivp-table>
+                </sivp-primary-box>
+                <!-- TABELA COM ITENS -->
+                <!-- INPUT PARA ADCIONAR AMBIENTE -->
+                <sivp-primary-box [size]="'col-sm-6'" [title]="'Novo Ambiente'" [icon]="'fa fa-home'">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" formControlName="txtAmbient" onblur="this.value = ''">
+                        <span class="input-group-btn">
+                            <button (click)="addAmbient(newBudgetForm.value.txtAmbient)" type="button" class="btn btn-info btn-flat">Add</button>
+                        </span>
+                    </div>
+                </sivp-primary-box>
+                <!-- INPUT PARA ADCIONAR AMBIENTE -->
+                <!-- LISTA DE AMBIENTES -->
+                <sivp-primary-box [title]="'Ambientes'" [size]="'col-sm-6 col-xs-12'" [icon]="'fa fa-home'">
+                    <div *ngFor="let item of ambients; let i = index" class="checkbox" formArrayName="cbAmbients">
+                        <label>
+                            <input type="checkbox" [formControlName]="i"> {{ambients[i]}}
+                        </label>
+
+                        <!--<a class="btn text-right" (click)="removeAmbient(i)">
+                            <i class="fa fa-trash"></i> Remover
+                        </a>-->
+                        <a class="btn text-right" (click)="changeAmbientPosition('up', i)"><i class="fa fa-caret-up"></i></a>
+                        <a class="btn text-right" (click)="changeAmbientPosition('down', i)"><i class="fa fa-caret-down"></i></a>
+                        
+                    </div>
+                </sivp-primary-box>
+                <!--LISTA DE AMBIENTES -->
+            </div>
+            <!----------------------- LINHA COM TABELA DE ITENS E AMBIENTES ------------------------->
+
+            <!----------------------- TABELA COM ITENS DO ORÇAMENTO --------------------------------->
+            <div class="row" *ngIf="itemsBudget.length > 0">
+                <sivp-primary-box [title]="'Orçamento: '" [icon]="'fa fa-file'" [size]="'col-sm-12 col-xs-12'">
+                    <sivp-table [name]="''" [headers]="['Nº','Qtd', 'Cód', 'Item', 'Detalhe', 'Medida', 'Cômodo', 'Necessário', 'Valor Unitário', 'Valor Total', 'OS']" [searchBar]="false" [datas]="itemsBudget" [ids]="['number', 'qtd','cod', 'item', 'detail', 'measure', 'ambient', 'necessary', 'unitValue', 'totalValue', 'serviceOrderId']" [budgetTable]="true" [bncv2]="main" [ipp]="1000" [showPagination]="false" [removeItemOption]="true" [ambientsV2]="ambients">
+                    </sivp-table>
+
+                    <div class="row">
+                        <span>
+                            <label class="col-sm-10 col-xs-12 text-right">Valor Itens: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.totalValue - budget.freightValue)}}</p>
+                        </span>
+                        <span *ngIf="budget.discount > 0">
+                            <label class="col-sm-10 col-xs-12 text-right"> Desconto: </label>
+                            <p class="col-sm-2 col-xs-12"> {{budget.discount}} %</p>
+                            <label class="col-sm-10 col-xs-12 text-right">Valor com Desconto: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.discountValue)}} </p>
+                        </span>
+                        <span *ngIf="budget.freightValue > 0">
+                            <label class="col-sm-10 col-xs-12 text-right"> Frete: </label>
+                            <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.freightValue)}}</p>
+                        </span>
+                        <label class="col-sm-10 col-xs-12 text-right">Valor total: </label>
+                        <p class="col-sm-2 col-xs-12"> {{appService.converteFloatMoeda(budget.discountValue + budget.freightValue)}}</p>
+                    </div>
+                </sivp-primary-box>
+                
+                <div class="row" *ngIf="selectedItemBudget">
+                    <sivp-primary-box [title]="'Itens'" [icon]="'fa fa-pencil'" [size]="'col-sm-12 col-xs-12'">
+                        <div class="row">
+                            <sivp-input-container [label]="'Quantidade'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtQtd" placeholder="Qtd">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Necessário'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtNecessary" placeholder="Necessário">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Medida'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtMeasure" placeholder="Medida">
+                            </sivp-input-container>
+
+                            <sivp-input-container [label]="'Valor Unitário (R$)'" class="form-group col-sm-3 col-xs-12">
+                                <input type="text" class="form-control" formControlName="txtUnitValue" placeholder="Valor Unitário" currencyMask [(ngModel)]="value" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                            </sivp-input-container>
+                        </div>
+
+                        <div class="row">
+                            <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
+                                <textarea class="md-textarea form-control" rows="5" placeholder="Descrição" formControlName="txtDetail"></textarea>
+                            </sivp-input-container>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <a (click)="changeItemBudget()" class="btn btn-primary pull-right"><i class="fa fa-pencil"></i> Alterar
+                                </a>
+                            </div>
+                        </div>
+                    </sivp-primary-box>
+                </div>
+
+                <div class="row">
+                    <sivp-primary-box [title]="'Complemento'" [icon]="'fa fa-pencil'" [size]="'col-sm-12 col-xs-12'">
+                        <sivp-input-container [label]="'Descrição'" class="form-group col-sm-12 col-xs-12">
+                            <textarea class="md-textarea form-control" rows="5" placeholder="Observação" formControlName="txtNote"></textarea>
+                        </sivp-input-container>
+
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <sivp-input-container [label]="'desconto'" class="form-group pull-left">
+                                    <input type="text" class="form-control" formControlName="txtFreight" placeholder="Valor Frete" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                                </sivp-input-container>
+                            </div>
+                            <div class="col-xs-3">
+                                <a (click)="applyFreight()" class="btn btn-primary pull-left"><i class="fa fa-truck"></i> Aplicar Frete </a>
+                            </div>
+                            <div class="col-xs-3">
+                                <sivp-input-container [label]="'desconto'" class="form-group pull-left">
+                                    <input type="text" class="form-control" formControlName="txtDiscount" placeholder="Desconto (%)">
+                                </sivp-input-container>
+                            </div>
+                            <div class="col-xs-3">
+                                <a (click)="applyDiscount()" class="btn btn-primary pull-left"><i class="fa fa-money"></i> Aplicar Desconto </a>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12" *ngIf="budgetType=='New'">
+                                <a (click)="processBudget()" class="btn btn-success pull-right"><i class="fa fa-usd"></i> Processar Orçamento
+                                </a>
+                            </div>
+
+                            <div class="col-xs-12" *ngIf="budgetType=='Edit'">
+                                <a (click)="editBudget()" class="btn btn-success pull-right"><i class="fa fa-pencil"></i> Editar Orçamento
+                                </a>
+                            </div>
+
+                        </div>
+                    </sivp-primary-box>
+                </div>
+            </div>
+            <!----------------------- TABELA COM ITENS DO ORÇAMENTO --------------------------------->
+        </form>
+        <!-------------------- MODAL PARA MODIFICAR ITEM DO ORÇAMENTO CHAMADO PELA TABLE -------------------->
+        <a data-toggle="modal" [class.hide]="true" class="btn btn-danger" data-target="#modalId" id="openModalChangeItem"> Teste Modal! </a>
+        <sivp-modal [id]="'modalId'" [icon]="'fa fa-pencil'" [title]="'Modificar Item Orçamento'" (okClick)="okButtonModal($event)">
+
+            <sivp-table [name]="''" [headers]="['Id', 'Item', 'Valor Unitario']" [datas]="items" [ids]="['id','descricao','valorUnitario']" [bncv2]="main" [runClickRow]="true" [changeItemTable]="true">
+            </sivp-table>
+
+        </sivp-modal>
+        <!-------------------- MODAL PARA MODIFICAR ITEM DO ORÇAMENTO CHAMADO PELA TABLE -------------------->
+
+        <!--------------------- CONFIRMATION BOX PARA EXCLUSÃO DE ITEM COM ORDEM DE SERVIÇO ------------------>
+        <a data-toggle="modal" [class.hide]="true" class="btn btn-danger" data-target="#confirmationBox" id="openConfirmation"> confirmation! </a>
+        <sivp-confirmation-box (yesClick)="yesConfirmationBox($event)" (noClick)="noConfirmationBox($event)" [id]="'confirmationBox'">
+            <p>Este item possui uma ordem de serviço, a exclusão dele incide na exclusão de sua ordem de serviço.</p>
+            <h4><em><strong>Deseja Excluir?</strong></em></h4>
+        </sivp-confirmation-box>
+        <!--------------------- CONFIRMATION BOX PARA EXCLUSÃO DE ITEM COM ORDEM DE SERVIÇO ------------------>
+
+    </section>
+</section>
+
+<ngx-spinner [fullScreen]="true" bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade">
+    <p style="color:white;"> {{spinnerText}} </p>
+</ngx-spinner>

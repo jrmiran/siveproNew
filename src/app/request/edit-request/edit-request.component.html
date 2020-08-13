@@ -1,0 +1,264 @@
+<section class="content-header">
+</section>
+
+<section class="content">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p> Por Favor Aguarde </p>
+    </ngx-spinner>
+    <section class="invoice">
+        <div class="row">
+            <sivp-primary-box [size]="'col-sm-12'" [icon]="'fa fa-usd'" [title]="'Pedido'">
+                <div class="row">
+                    <div class="btn-group pull-right" style="margin-bottom: 5px">
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a [routerLink]="['/payment']" [queryParams]="{id: requestId}" class="btn pull-left"><i class="fa fa-money"></i> Novo Pagamento </a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label class="col-sm-2" *ngIf="header"> Pedido: </label>
+                    <p class="col-sm-4"> {{header.requestId}} </p>
+                    <label class="col-sm-2" *ngIf="header"> Status: </label>
+                    <p *ngIf="header.status == 'Pago'" class="col-sm-4" style="color: green"><b> {{header.status}} </b> </p>
+                    <p *ngIf="header.status == 'Não Pago'" class="col-sm-4" style="color: red"> <b> {{header.status}} </b> </p>
+                    <p *ngIf="header.status == 'Parcialmente Pago'" class="col-sm-4" style="color: goldenrod"> <b> {{header.status}} </b> </p>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2"> Loja: </label>
+                    <p class="col-sm-10"> {{header.store}} </p>
+                </div>
+                <div class="row">
+                    <label class="col-sm-2" *ngIf="header"> Data Pedido: </label>
+                    <p class="col-sm-4"> {{header.date}} </p>
+                    <label class="col-sm-2" *ngIf="header"> Data Pagamento: </label>
+                    <p class="col-sm-4">{{header.paymentDate}} </p>
+                </div>
+            </sivp-primary-box>
+
+            <!-------------------------------- START BUDGET SELLECTION ------------------------------>
+            <sivp-expandable-box [size]="'col-sm-12 col-xs-12'" [title]="'Seleção de Orçamentos'" *ngIf="budgetsStore.length > 0">
+                <div class="row">
+                    <div class="form-group col-sm-12 col-xs-12">
+                        <sivp-table [headers]="['Orçamento', 'Cliente','Valor', 'Desconto', 'Vendedor']" [datas]="budgetsStore" [ids]="['id','nomeCliente','valorTotal','desconto', 'nomeVendedor']" [erc]="self" [searchBar]="'true'" [runClickRow]="false" [budgetSellection]="true" [ipp]="5" [paginationId]="'1'">
+                        </sivp-table>
+                    </div>
+                </div>
+            </sivp-expandable-box>
+            <!-------------------------------- END BUDGET SELLECTION ------------------------------>
+            <div class="row" style="margin: 10px"></div>
+            <!--------------------- START BUDGET TABLE -------------------->
+            <sivp-expandable-box [size]="'col-sm-12'" [icon]="'fa fa-file'" [title]="'Orçamentos'">
+                <sivp-request-table [headers]="headerTable" [datas]="requestBudget" [idItemBudget]="idItemBudget" [erc]="self"></sivp-request-table>
+                <div class="pull-right">
+                    <p><b>Valor do Pedido: </b> {{appService.converteFloatMoeda(totalValueRequest)}} </p>
+                </div>
+                <div class="row pull-right">
+                    <a class="btn btn-success" (click)="editRequest()" *ngIf="enableEditRequestButton"><i class="fa fa-pencil"></i> Editar Pedido </a>
+                </div>
+            </sivp-expandable-box>
+            <!--------------------- END BUDGET TABLE -------------------->
+            <div class="row" style="margin: 10px"></div>
+            <!--------------------- START PAYMENT TABLE -------------------->
+            <sivp-expandable-box [size]="'col-sm-12'" [icon]="'fa fa-usd'" [title]="'Pagamentos'">
+                <sivp-table [headers]="['Id', 'Conta', 'Data', 'Valor', 'Cheque', 'Status', 'Forma Pgto.']" [datas]="payments" [ids]="['id','conta','data' , 'valor', 'numeroCheque', 'status', 'formaPagamento_formaPagamento']" [runClickRow]="true" [searchBar]="false"  [erc]="self" [showPagination]="false" [paginationId]="'2'"></sivp-table>
+                <div class="pull-right">
+                    <p><b>Valor dos Pagamentos: </b> {{totalValuePayments}} </p>
+                    <p style="color: green"><b>Valor Pago: </b> {{appService.converteFloatMoeda(totalValuePayed)}} </p>
+                    <p style="color: red"><b>Valor Não Pago: </b> {{appService.converteFloatMoeda(totalValueNotPayed)}} </p>
+                </div>
+            </sivp-expandable-box>
+            <!--------------------- END PAYMENT TABLE -------------------->
+        </div>
+    </section>
+</section>
+
+
+<a data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-Edit" id="editPayment" [class.hide]="true"><i class="fa fa-plus"></i> Editar Pagamento </a>
+<!----------------------------------- MODAL EDIT --------------------------------------------------------------------->
+<div class="modal fade" id="modal-Edit" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button  type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeButton">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"><i class="fa fa-usd"></i> Edição de Pagamento</h4>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="paymentFormEdit" novalidate>
+
+                    <div class="row">
+                        <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                            <label> Data </label>
+                            <br>
+                            <sivp-date-picker formControlName="txtDateEdit" #dPickerEdit></sivp-date-picker>
+                        </sivp-input-container>
+
+                        <sivp-input-container class="form-group col-sm-6 col-xs-12">
+                            <label> Tipo </label>
+                            <select class="form-control" formControlName="cmbInOutEdit">
+                                <option>Entrada</option>
+                                <option>Saída</option>
+                            </select>
+                        </sivp-input-container>
+                    </div>
+
+
+                    <div class="row">
+                        <sivp-input-container class="form-group col-sm-9 col-xs-12">
+                            <label> Assunto </label>
+                            <input type="text" class="form-control" formControlName="txtBillEdit">
+                        </sivp-input-container>
+                    </div>
+
+                    <div class="row">
+                        <sivp-input-container class="form-group col-sm-4 col-xs-12">
+                            <label> Valor </label>
+                            <input type="text" class="form-control" formControlName="txtValueEdit" currencyMask [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }">
+                        </sivp-input-container>
+
+                        <sivp-input-container class="form-group col-sm-5 col-xs-12">
+                            <label>Status</label>
+                            <select class="form-control" formControlName="cmbStatusEdit">
+                                <option *ngFor="let s of status">{{s}}</option>
+                            </select>
+                        </sivp-input-container>
+
+                        <sivp-input-container class="form-group col-sm-3 col-xs-12">
+                            <label> Cheque Nº </label>
+                            <input type="text" class="form-control" formControlName="txtCheckNumberEdit">
+                        </sivp-input-container>
+
+                    </div>
+
+                    <!--<div class="row">
+                        <sivp-input-container class="form-group col-sm-4 col-xs-12">
+                            <label> Forma de Pagamento </label>
+                            <select class="form-control" formControlName="cmbPaymentFormEdit">
+                                <option *ngFor="let pw of paymentWay">{{pw}}</option>
+                            </select>
+                        </sivp-input-container>
+
+                        <sivp-input-container class="form-group col-sm-4 col-xs-12">
+                            <label> Tipo Pagamento </label>
+                            <select class="form-control" formControlName="cmbTypePaymentEdit">
+                                <option *ngFor="let pt of paymentType">{{pt}}</option>
+                            </select>
+                        </sivp-input-container>
+
+                        <sivp-input-container class="form-group col-sm-4 col-xs-12">
+                            <sivp-input-container class="form-group col-sm-9 col-xs-12">
+                                <label> Orçamento </label>
+                                <input type="text" class="form-control" formControlName="txtBudgetEdit">
+                            </sivp-input-container>
+                        </sivp-input-container>
+                    </div>-->
+
+                    <div class="row">
+                        <sivp-input-container class="form-group col-sm-12 col-xs-12">
+                            <label> Observação </label>
+                            <input type="text" class="form-control" formControlName="txtNoteEdit">
+                        </sivp-input-container>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                <a class="btn btn-primary" (click)="submitEditPayment()" [class.disabled]="!paymentFormEdit.valid"><i class="fa fa-pencil"></i>Editar</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!------------------------------------------ END MODAL EDIT ----------------------------------------------------------->
+
+<a data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-Status" id="editStatus" [class.hide]="true"><i class="fa fa-plus"></i> Editar Status </a>
+<!----------------------------------- MODAL CONFIRMATION --------------------------------------------------------------------->
+<div class="modal fade" id="modal-Status" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeButton">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> Edição de Status</h4>
+            </div>
+            <div class="modal-body">
+
+                <p> O valor dos pagamentos se aproxima do valor total do pedido.</p>
+                <p> <b> Valor de Pagamentos com Status Pago: </b> {{appService.converteFloatMoeda(totalValuePayed)}}</p>
+                <p> <b> Valor do Pedido: </b> {{appService.converteFloatMoeda(totalValueRequest)}}</p>
+                <p> Mudar o status do pedido para <b style="color: green"> Pago</b>?</p>
+
+            </div>
+            <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                <a data-dismiss="modal" data-target="#modal-Status" class="btn btn-success" (click)="changeStatusRequest(true, 'Pago')"><i class="fa fa-check"></i>SIM</a>
+                <a data-dismiss="modal" data-target="#modal-Status" class="btn btn-danger" (click)="changeStatusRequest(false)"><i class="fa fa-close"></i>NÃO</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!------------------------------------------ END MODAL CONFIRMATION ----------------------------------------------------------->
+
+<a data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-StatusNotPayed" id="editStatusNotPayed" [class.hide]="true"><i class="fa fa-plus"></i> Editar Status </a>
+<!----------------------------------- MODAL CONFIRMATION --------------------------------------------------------------------->
+<div class="modal fade" id="modal-StatusNotPayed" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeButton">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> Edição de Status</h4>
+            </div>
+            <div class="modal-body">
+
+                <p> Não há pagamentos com status PAGO para este pedido.</p>
+                <p> <b> Valor de Pagamentos com Status Pago: </b> {{appService.converteFloatMoeda(totalValuePayed)}}</p>
+                <p> <b> Valor do Pedido: </b> {{appService.converteFloatMoeda(totalValueRequest)}}</p>
+                <p> Mudar o status do pedido para <b style="color: red"> Não Pago</b>?</p>
+
+            </div>
+            <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                <a data-dismiss="modal" data-target="#modal-StatusNotPayed" class="btn btn-success" (click)="changeStatusRequest(true, 'Não Pago')"><i class="fa fa-check"></i>SIM</a>
+                <a data-dismiss="modal" data-target="#modal-StatusNotPayed" class="btn btn-danger" (click)="changeStatusRequest(false)"><i class="fa fa-close"></i>NÃO</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!------------------------------------------ END MODAL CONFIRMATION ----------------------------------------------------------->
+
+<a data-toggle="modal" class="btn btn-primary pull-right" data-target="#modal-StatusPartialPayed" id="editStatusPartialPayed" [class.hide]="true"><i class="fa fa-plus"></i> Editar Status </a>
+<!----------------------------------- MODAL CONFIRMATION --------------------------------------------------------------------->
+<div class="modal fade" id="modal-StatusPartialPayed" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeButton">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"> Edição de Status</h4>
+            </div>
+            <div class="modal-body">
+
+                <p> O valor total de pagamentos com status PAGO é menor que o valor do pedido.</p>
+                <p> <b> Valor de Pagamentos com Status Pago: </b> {{appService.converteFloatMoeda(totalValuePayed)}}</p>
+                <p> <b> Valor do Pedido: </b> {{appService.converteFloatMoeda(totalValueRequest)}}</p>
+                <p> Mudar o status do pedido para <b style="color: goldenrod"> Parcialmente Pago</b>?</p>
+
+            </div>
+            <div class="modal-footer" style="{margin-top: 5; margin-bottom: 5}">
+                <a data-dismiss="modal" data-target="#modal-StatusPartialPayed" class="btn btn-success" (click)="changeStatusRequest(true, 'Parcialmente Pago')"><i class="fa fa-check"></i>SIM</a>
+                <a data-dismiss="modal" data-target="#modal-StatusPartialPayed" class="btn btn-danger" (click)="changeStatusRequest(false)"><i class="fa fa-close"></i>NÃO</a>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!------------------------------------------ END MODAL CONFIRMATION ----------------------------------------------------------->

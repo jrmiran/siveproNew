@@ -1,0 +1,44 @@
+<section class="content-header">
+</section>
+
+<section class="content">
+    <ngx-spinner bdOpacity=0.9 bdColor="rgba(44,14,100,0.50)" size="medium" color="#fff" type="line-spin-clockwise-fade" [fullScreen]="true">
+        <p> Por Favor Aguarde </p>
+    </ngx-spinner>
+    <section class="invoice">
+        <div class="row">
+            <form [formGroup]="filterForm" novalidate>
+                <div class="col-md-12">
+                    <!-- START COLLAPSED BOX -->
+                    <mat-accordion>
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    <h4 class="box-title"><i class="fa fa-filter"></i> Filtros</h4>
+                                </mat-panel-title>
+
+                            </mat-expansion-panel-header>
+
+
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                    <!-- END COLLAPSED BOX -->
+
+                </div>
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12 col-xs-12">
+                
+                <sivp-primary-box [size]="'col-sm-12 col-xs-12'" [title]="'Pedidos'" [icon]="'fa fa-dollar'">
+                    <sivp-table [datas] = "requests" [headers]="['Id', 'Loja', 'Data', 'Data Pagamento', 'Valor']" [ids]="['id', 'nomeCliente', 'data', 'dataPrevistaPagamento', 'valor']" [rc]="self" [paginationId]="'1'"></sivp-table>
+                </sivp-primary-box>
+                
+            </div>
+        </div>
+
+
+
+    </section>
+</section>

@@ -1,0 +1,28 @@
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th *ngFor="let header of headers" scope="col">{{header}}</th>
+        </tr>
+    </thead>
+    <tbody *ngFor="let data of datas">
+            <tr>
+                <td class="linhaSeparacao" colspan=14>Orçamento {{data['budgetId']}} <div class="pull-right">Valor: {{appService.converteFloatMoeda(data['totalValue'])}}</div></td>
+            </tr>
+
+            <tr *ngFor="let item of data['budgetItems']">
+                <td *ngFor="let id of idItemBudget">
+                    <span *ngIf="id == 'valorUnitario' || id=='valorComDesconto' || id == 'valorTotal'">
+                        {{appService.converteFloatMoeda(item[id])}}
+                    </span>
+                    <span *ngIf="!(id == 'valorUnitario' || id=='valorComDesconto' || id == 'valorTotal')">
+                        {{item[id]}}
+                    </span>
+                    
+                </td>
+                <td>
+                    <a class="btn" (click)="deleteItemBudget(data['budgetId'], item['id'])"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+
+    </tbody>
+</table>
