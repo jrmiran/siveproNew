@@ -36,7 +36,7 @@
     "b64-to-blob": "^1.2.19",
     "bootstrap": "^4.2.1",
     "bootstrap-select": "^1.13.6",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "core-js": "^2.5.4",
     "express": "^4.16.4",
     "font-awesome": "^4.7.0",
